@@ -1,0 +1,13 @@
+{
+    "iconDefinitions": {
+        "_scad_icon": {
+            "iconPath": "./icons/Openscad_SVG.svg"
+        }
+    },
+    "fileExtensions": {
+        "scad": "_scad_icon"
+    },
+    "languageIds": {
+        "scad": "_scad_icon"
+    }
+}

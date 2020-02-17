@@ -1,0 +1,37 @@
+{
+    "name": "scad",
+    "displayName": "OpenSCAD-lang",
+    "description": "I hope I can change this later",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.40.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "scad",
+                "aliases": [
+                    "OpenSCAD",
+                    "scad"
+                ],
+                "extensions": [
+                    ".scad"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "scad",
+                "scopeName": "source.scad",
+                "path": "./syntaxes/scad.tmLanguage"
+            }
+        ]
+    },
+    "devDependencies": {
+        "js-yaml": "^3.13.1"
+    }
+}

@@ -1,0 +1,194 @@
+fileTypes:
+- scad
+foldingStartMarker: /\*\*|\{\s*$
+foldingStopMarker: \*\*/|^\s*\}
+keyEquivalent: ^~S
+name: OpenSCAD
+patterns:
+- name: comment.block.documentation.scad
+  begin: /\*\*(?!/)
+  captures:
+    '0':
+      name: punctuation.definition.comment.scad
+  end: \*/
+- name: comment.block.scad
+  begin: /\*
+  captures:
+    '0':
+      name: punctuation.definition.comment.scad
+  end: \*/
+- name: comment.line.double-slash.scad
+  captures:
+    '1':
+      name: punctuation.definition.comment.scad
+  match: (//).*$\n?
+- name: string.quoted.double.scad
+  begin: '"'
+  end: '"'
+  patterns:
+  - name: constant.character.escape.scad
+    match: \\.
+- name: invalid.string.quoted.single.scad
+  begin: ''''
+  beginCaptures:
+    '0':
+      name: punctuation.definition.string.begin.scad
+  end: ''''
+  endCaptures:
+    '0':
+      name: punctuation.definition.string.end.scad
+  patterns:
+  - name: constant.character.escape.scad
+    match: \\(x[0-9A-Fa-f]{2}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.)
+- name: string.quoted.double.scad
+  begin: '"'
+  beginCaptures:
+    '0':
+      name: punctuation.definition.string.begin.scad
+  end: '"'
+  endCaptures:
+    '0':
+      name: punctuation.definition.string.end.scad
+  patterns:
+  - name: constant.character.escape.scad
+    match: \\(x{2}|[0-2][0-7]{,2}|3[0-6][0-7]|37[0-7]?|[4-7][0-7]?|.)
+- name: keyword.control.scad
+  match: \b(let|for|intersection_for|each|module|function|undef|assert)\b
+- name: keyword.control.conditional.scad
+  match: \b(if|else)\b
+- name: keyword.control.import.scad
+  match: \b(include|use|import|dxf_dim|dxf_cross|surface)\b
+- name: support.function.scad
+  match: \b(str|chr|concat|lookup|search|version|version_num|norm|cross|parent_module)\b
+- name: support.function.scad
+  match: \b(text|children|echo|group|offset)\b
+- name: support.function.math.scad
+  match: \b(abs|sign|rands|min|max|round|ceil|floor|pow|sqrt|exp|len|log|ln)\b
+- name: support.function.math.trig.scad
+  match: \b(sin|cos|asin|acos|tan|atan|atan2)\b
+- name: support.function.transform.scad
+  match: \b(scale|translate|rotate|multmatrix|color|projection|hull|resize|mirror|minkowski)\b
+- name: support.function.csgop.scad
+  match: \b(union|difference|intersection|render)\b
+- name: support.function.prim3d.scad
+  match: \b(cube|sphere|cylinder|polyhedron)\b
+- name: support.function.prim2d.scad
+  match: \b(square|circle|polygon)\b
+- name: support.function.extrude.scad
+  match: \b(linear_extrude|rotate_extrude)\b
+- name: invalid.deprecated
+  match: \b(assign|child|import_dxf|import_stl)\b
+- name: punctuation.terminator.statement.scad
+  match: \;
+- name: meta.delimiter.object.comma.scad
+  match: ',[ |\t]*'
+- name: meta.delimiter.method.period.scad
+  match: \.
+- name: meta.brace.curly.scad
+  match: \{|\}
+- name: meta.brace.round.scad
+  match: \(|\)
+- name: meta.brace.square.scad
+  match: \[|\]
+- name: keyword.operator.assignment.scad
+  match: =(?!=)
+- name: keyword.operator.arithmetic.scad
+  match: \+|\-|\*|\/|%
+- name: keyword.operator.logical.scad
+  match: '!|&&|\|\|'
+- name: keyword.operator.relational.scad
+  match: <=|<|==|!=|>=|>
+- name: keyword.operator.conditional.scad
+  match: '\?|\:'
+- name: keyword.operator.other.scad
+  match: '#|%|!'
+- name: constant.numeric.scad
+  match: \b((0(x|X)[0-9a-fA-F]+)|([0-9]+(\.[0-9]+)?))\b
+- name: constant.language.boolean.true.scad
+  match: \btrue\b
+- name: constant.language.boolean.false.scad
+  match: \bfalse\b
+- name: variable.language.scad
+  match: \$(children|fn|fa|fs|t|preview|vpt|vpr|vpd|parent_modules)\b
+
+  #Incorporated from PythonImproved grammar
+
+- name: meta.function.scad
+  begin: \s*(module|function)\s+(?=[[:alpha:]_][[:alnum:]_]*)   ########################## Function definition has {}
+  beginCaptures:
+    '1': {name: storage.type.function.scad}
+  end: (\()|\s*($\n?|#.*$\n?)
+  endCaptures:
+    '1': {name: punctuation.definition.parameters.begin.scad}
+    '2': {name: invalid.illegal.missing-parameters.scad}
+  patterns:
+  - contentName: entity.name.function.scad
+    begin: (?=[[:alpha:]_][[:alnum:]_]*)
+    end: (?![[:alnum:]_])
+    # patterns:
+    # - include: '#entity_name_function'
+  - contentName: meta.function.parameters.scad
+    begin: (\()
+    beginCaptures:
+      '1': {name: punctuation.definition.parameters.begin.scad}
+    end: (?=\)\s*(?:\:|-\>))
+    patterns:
+    # - include: '#annotated_arguments'
+    - include: '#keyword_arguments'
+    # - include: '#comments'
+    - match: \b(?:([[:alpha:]_][[:alnum:]_]*))\s*(?:(,)|(?=[\n\)]))
+      captures:
+        '1': {name: variable.parameter.function.language.scad}
+        '2': {name: variable.parameter.function.scad}
+        '3': {name: punctuation.separator.parameters.scad}
+  - begin: (\))\s*(\->)
+    beginCaptures:
+      '1': {name: punctuation.definition.parameters.end.scad}
+      '2': {name: punctuation.separator.annotation.result.scad}
+    end: (?=\{)
+    patterns:
+    - include: $self
+
+# - name: meta.function-call.scad
+#   begin: (?:\.)?([[:alpha:]_][[:alnum:]_]*)\s*(?=(\())
+#   beginCaptures:
+#     '1': {name: meta.function-call.generic.scad}
+#     '2': {name: punctuation.definition.arguments.begin.scad}
+#   end: (\))
+#   endCaptures:
+#     '1': {name: punctuation.definition.arguments.end.scad}
+#   patterns:
+#   # - begin: (?=[[:alpha:]_][[:alnum:]_]*(?:\.[[:alpha:]_][[:alnum:]_]*)*\s*\()
+#   #   end: (?=\s*\()
+#   #   patterns:
+#   #   - include: '#dotted_name'
+#   - contentName: meta.function-call.arguments.scad
+#     begin: (\()
+#     beginCaptures:
+#       '1': {name: punctuation.definition.arguments.begin.scad}
+#     end: (?=(\)))
+#     endCaptures:
+#       '1': {name: punctuation.definition.arguments.end.scad}
+#     patterns:
+#     - include: '#keyword_arguments'
+#     - include: $self
+#   # - begin: \G
+#   #   end: (?=\()
+#   #   patterns:
+#   #   - include: '#dotted_name'
+
+repository:
+  keyword_arguments:
+    comment: Incorporated from PythonImproved grammar
+    begin: \b([[:alpha:]_][[:alnum:]_]*)\s*(=)(?!=)
+    beginCaptures:
+      '1': {name: variable.parameter.function.keyword.scad}
+      '2': {name: keyword.operator.assignment.scad}
+    end: \s*(?:(,)|(?=[\)\:]))
+    endCaptures:
+      '1': {name: punctuation.separator.parameters.scad}
+    patterns:
+    - include: $self  
+
+scopeName: source.scad
+uuid: ED71CA06-521E-4D30-B9C0-480808749662
