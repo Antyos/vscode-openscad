@@ -1,7 +1,7 @@
 {
     "iconDefinitions": {
         "_scad_icon": {
-            "iconPath": "./icons/Openscad_SVG.svg"
+            "iconPath": "./images/Openscad_SVG.svg"
         }
     },
     "fileExtensions": {
