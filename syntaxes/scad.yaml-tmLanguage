@@ -8,52 +8,53 @@ patterns:
 - name: comment.block.documentation.scad
   begin: /\*\*(?!/)
   captures:
-    '0':
-      name: punctuation.definition.comment.scad
+    '0': {name: punctuation.definition.comment.scad}
   end: \*/
+
 - name: comment.block.scad
   begin: /\*
   captures:
-    '0':
-      name: punctuation.definition.comment.scad
+    '0': {name: punctuation.definition.comment.scad}
   end: \*/
+
 - name: comment.line.double-slash.scad
   captures:
-    '1':
-      name: punctuation.definition.comment.scad
+    '1': {name: punctuation.definition.comment.scad}
   match: (//).*$\n?
+
 - name: string.quoted.double.scad
   begin: '"'
   end: '"'
   patterns:
   - name: constant.character.escape.scad
     match: \\.
+
 - name: invalid.string.quoted.single.scad
   begin: ''''
   beginCaptures:
-    '0':
-      name: punctuation.definition.string.begin.scad
+    '0': {name: punctuation.definition.string.begin.scad}
   end: ''''
   endCaptures:
-    '0':
-      name: punctuation.definition.string.end.scad
+    '0': {name: punctuation.definition.string.end.scad}
   patterns:
   - name: constant.character.escape.scad
     match: \\(x[0-9A-Fa-f]{2}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.)
+
 - name: string.quoted.double.scad
   begin: '"'
   beginCaptures:
-    '0':
-      name: punctuation.definition.string.begin.scad
+    '0': {name: punctuation.definition.string.begin.scad}
   end: '"'
   endCaptures:
-    '0':
-      name: punctuation.definition.string.end.scad
+    '0': {name: punctuation.definition.string.end.scad}
   patterns:
   - name: constant.character.escape.scad
     match: \\(x{2}|[0-2][0-7]{,2}|3[0-6][0-7]|37[0-7]?|[4-7][0-7]?|.)
+
+- name: storage.type.function
+  match: '\b(module|function)\b'
 - name: keyword.control.scad
-  match: \b(let|for|intersection_for|each|module|function|undef|assert)\b
+  match: \b(let|for|intersection_for|undef|each|assert)\b
 - name: keyword.control.conditional.scad
   match: \b(if|else)\b
 - name: keyword.control.import.scad
@@ -82,37 +83,36 @@ patterns:
   match: \;
 - name: meta.delimiter.object.comma.scad
   match: ',[ |\t]*'
-- name: meta.delimiter.method.period.scad
-  match: \.
-- name: meta.brace.curly.scad
-  match: \{|\}
+
 - name: meta.brace.round.scad
-  match: \(|\)
+  match: '\(|\)'
 - name: meta.brace.square.scad
-  match: \[|\]
+  match: '\[|\]'
 - name: keyword.operator.assignment.scad
-  match: =(?!=)
+  match: '=(?!=)'
 - name: keyword.operator.arithmetic.scad
-  match: \+|\-|\*|\/|%
+  match: '\+|\-|\*|\/|%'
 - name: keyword.operator.logical.scad
   match: '!|&&|\|\|'
 - name: keyword.operator.relational.scad
-  match: <=|<|==|!=|>=|>
+  match: '<=|<|==|!=|>=|>'
 - name: keyword.operator.conditional.scad
   match: '\?|\:'
 - name: keyword.operator.other.scad
   match: '#|%|!'
 - name: constant.numeric.scad
-  match: \b((0(x|X)[0-9a-fA-F]+)|([0-9]+(\.[0-9]+)?))\b
+  match: '\b((0(x|X)[0-9a-fA-F]+)|([0-9]+(\.[0-9]+)?)|(\.[0-9]+))\b'
 - name: constant.language.boolean.true.scad
-  match: \btrue\b
+  match: '\btrue\b'
 - name: constant.language.boolean.false.scad
-  match: \bfalse\b
-- name: variable.language.scad
-  match: \$(children|fn|fa|fs|t|preview|vpt|vpr|vpd|parent_modules)\b
+  match: '\bfalse\b'
+
+- include: '#brace_block'
+
+
 
   #Incorporated from PythonImproved grammar
-
+#0: storage.type.function    1: entity.name.function
 - name: meta.function.scad
   begin: \s*(module|function)\s+(?=[[:alpha:]_][[:alnum:]_]*)   ########################## Function definition has {}
   beginCaptures:
@@ -178,6 +178,17 @@ patterns:
 #   #   - include: '#dotted_name'
 
 repository:
+  brace_block:
+    name: meta.block.scad 
+    begin: '\{'
+    end: '\}'
+    beginCaptures:
+      '0': {name: punctuation.section.block.begin.bracket.curly.scad}
+    endCaptures:
+      '0': {name: punctuation.section.block.end.bracket.curly.scad}
+    patterns:
+    - include: $self
+  
   keyword_arguments:
     comment: Incorporated from PythonImproved grammar
     begin: \b([[:alpha:]_][[:alnum:]_]*)\s*(=)(?!=)

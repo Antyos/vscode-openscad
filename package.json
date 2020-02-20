@@ -23,11 +23,17 @@
                 "configuration": "./language-configuration.json"
             }
         ],
+        "snippets": [
+			{
+				"language": "scad",
+				"path": "./snippets/snippets.json"
+			}
+		],
         "grammars": [
             {
                 "language": "scad",
                 "scopeName": "source.scad",
-                "path": "./syntaxes/scad.tmLanguage"
+                "path": "./syntaxes/scad.tmlanguage.json"
             }
         ]
     },
