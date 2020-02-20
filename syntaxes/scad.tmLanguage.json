@@ -90,58 +90,6 @@
       ]
     },
     {
-      "name": "storage.type.function",
-      "match": "\\b(module|function)\\b"
-    },
-    {
-      "name": "keyword.control.scad",
-      "match": "\\b(let|for|intersection_for|undef|each|assert)\\b"
-    },
-    {
-      "name": "keyword.control.conditional.scad",
-      "match": "\\b(if|else)\\b"
-    },
-    {
-      "name": "keyword.control.import.scad",
-      "match": "\\b(include|use|import|dxf_dim|dxf_cross|surface)\\b"
-    },
-    {
-      "name": "support.function.scad",
-      "match": "\\b(str|chr|concat|lookup|search|version|version_num|norm|cross|parent_module)\\b"
-    },
-    {
-      "name": "support.function.scad",
-      "match": "\\b(text|children|echo|group|offset)\\b"
-    },
-    {
-      "name": "support.function.math.scad",
-      "match": "\\b(abs|sign|rands|min|max|round|ceil|floor|pow|sqrt|exp|len|log|ln)\\b"
-    },
-    {
-      "name": "support.function.math.trig.scad",
-      "match": "\\b(sin|cos|asin|acos|tan|atan|atan2)\\b"
-    },
-    {
-      "name": "support.function.transform.scad",
-      "match": "\\b(scale|translate|rotate|multmatrix|color|projection|hull|resize|mirror|minkowski)\\b"
-    },
-    {
-      "name": "support.function.csgop.scad",
-      "match": "\\b(union|difference|intersection|render)\\b"
-    },
-    {
-      "name": "support.function.prim3d.scad",
-      "match": "\\b(cube|sphere|cylinder|polyhedron)\\b"
-    },
-    {
-      "name": "support.function.prim2d.scad",
-      "match": "\\b(square|circle|polygon)\\b"
-    },
-    {
-      "name": "support.function.extrude.scad",
-      "match": "\\b(linear_extrude|rotate_extrude)\\b"
-    },
-    {
       "name": "invalid.deprecated",
       "match": "\\b(assign|child|import_dxf|import_stl)\\b"
     },
@@ -154,12 +102,17 @@
       "match": ",[ |\\t]*"
     },
     {
-      "name": "meta.brace.round.scad",
-      "match": "\\(|\\)"
+      "name": "meta.dot.scad",
+      "match": "\\.(?![0-9])"
     },
     {
-      "name": "meta.brace.square.scad",
-      "match": "\\[|\\]"
+      "include": "#brace_block"
+    },
+    {
+      "include": "#paren_block"
+    },
+    {
+      "include": "#bracket_block"
     },
     {
       "name": "keyword.operator.assignment.scad",
@@ -186,8 +139,8 @@
       "match": "#|%|!"
     },
     {
-      "name": "constant.numeric.scad",
-      "match": "\\b((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?)|(\\.[0-9]+))\\b"
+      "name": "variable.language.scad",
+      "match": "\\$(children|fn|fa|fs|t|preview|vpt|vpr|vpd|parent_modules)\\b"
     },
     {
       "name": "constant.language.boolean.true.scad",
@@ -198,7 +151,34 @@
       "match": "\\bfalse\\b"
     },
     {
-      "include": "#brace_block"
+      "name": "constant.language.undef.scad",
+      "match": "\\bundef\\b"
+    },
+    {
+      "name": "constant.language.pi.scad",
+      "match": "\\bPI\\b"
+    },
+    {
+      "include": "#keyword_control"
+    },
+    {
+      "comment": "Ummm... why do we have three of these? This is one...",
+      "name": "constant.numeric.float.scad",
+      "match": "\\b(?i:(\\d+\\.\\d*(e[\\-\\+]?\\d+)?))(?=[^[:alpha:]_])"
+    },
+    {
+      "comment": "This is two...",
+      "name": "constant.numeric.float.scad",
+      "match": "(?<=[^[:alnum:]_])(?i:(\\.\\d+(e[\\-\\+]?\\d+)?))"
+    },
+    {
+      "comment": "And this is three...",
+      "name": "constant.numeric.float.scad",
+      "match": "\\b(?i:(\\d+e[\\-\\+]?\\d+))"
+    },
+    {
+      "name": "constant.numeric.integer.decimal.scad",
+      "match": "\\b([1-9]+[0-9]*|0)"
     },
     {
       "name": "meta.function.scad",
@@ -208,7 +188,7 @@
           "name": "storage.type.function.scad"
         }
       },
-      "end": "(\\()|\\s*($\\n?|#.*$\\n?)",
+      "end": "(?<=\\))",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.parameters.begin.scad"
@@ -231,7 +211,7 @@
               "name": "punctuation.definition.parameters.begin.scad"
             }
           },
-          "end": "(?=\\)\\s*(?:\\:|-\\>))",
+          "end": "(?=\\))",
           "patterns": [
             {
               "include": "#keyword_arguments"
@@ -243,7 +223,7 @@
                   "name": "variable.parameter.function.language.scad"
                 },
                 "2": {
-                  "name": "variable.parameter.function.scad"
+                  "name": "punctuation.separator.parameters.scad"
                 },
                 "3": {
                   "name": "punctuation.separator.parameters.scad"
@@ -262,7 +242,7 @@
               "name": "punctuation.separator.annotation.result.scad"
             }
           },
-          "end": "(?=\\{)",
+          "end": "(?<=\\))",
           "patterns": [
             {
               "include": "$self"
@@ -270,6 +250,59 @@
           ]
         }
       ]
+    },
+    {
+      "name": "storage.type.function",
+      "match": "\\b(module|function)\\b"
+    },
+    {
+      "name": "meta.function-call.scad",
+      "begin": "(?:\\.)?([[:alpha:]_][[:alnum:]_]*)\\s*(?=(\\())",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function.call.scad"
+        },
+        "2": {
+          "name": "punctuation.definition.arguments.begin.scad"
+        }
+      },
+      "end": "(\\))",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.arguments.end.scad"
+        }
+      },
+      "patterns": [
+        {
+          "contentName": "meta.function-call.arguments.scad",
+          "begin": "(\\()",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.arguments.begin.scad"
+            }
+          },
+          "end": "(?=(\\)))",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.definition.arguments.end.scad"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#keyword_arguments"
+            },
+            {
+              "include": "$self"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "include": "#let_keyword"
+    },
+    {
+      "include": "#function_builtin"
     }
   ],
   "repository": {
@@ -293,6 +326,110 @@
         }
       ]
     },
+    "paren_block": {
+      "name": "meta.block.parens.scad",
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.begin.bracket.round.scad"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.end.bracket.round.scad"
+        }
+      },
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "bracket_block": {
+      "name": "meta.block.scad",
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.block.begin.bracket.square.scad"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.block.end.bracket.square.scad"
+        }
+      },
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "let_keyword": {
+      "name": "keyword.control.scad",
+      "match": "\\b(let)\\b"
+    },
+    "function_builtin": {
+      "patterns": [
+        {
+          "name": "support.function.scad",
+          "match": "\\b(concat|lookupstr|chr|ord|search|version|version_num|parent_module)\\b"
+        },
+        {
+          "name": "support.function.scad",
+          "match": "\\b(children|echo|group|offset|render)\\b"
+        },
+        {
+          "name": "support.function.type-test.scad",
+          "match": "\\b(is_undef|is_bool|is_num|is_string|is_list)\\b"
+        },
+        {
+          "name": "support.function.math.scad",
+          "match": "\\b(abs|sign|floor|round|ceil|ln|len|log|pow|sqrt|exp|rands|min|max|norm|cross)\\b"
+        },
+        {
+          "name": "support.function.math.trig.scad",
+          "match": "\\b(sin|cos|asin|acos|tan|atan|atan2)\\b"
+        },
+        {
+          "name": "support.function.transform.scad",
+          "match": "\\b(scale|translate|rotate|multmatrix|color|projection|hull|resize|mirror|minkowski)\\b"
+        },
+        {
+          "name": "support.function.boolean.scad",
+          "match": "\\b(union|difference|intersection)\\b"
+        },
+        {
+          "name": "support.function.prim3d.scad",
+          "match": "\\b(cube|sphere|cylinder|polyhedron)\\b"
+        },
+        {
+          "name": "support.function.prim2d.scad",
+          "match": "\\b(square|circle|polygon|text)\\b"
+        },
+        {
+          "name": "support.function.extrude.scad",
+          "match": "\\b(linear_extrude|rotate_extrude)\\b"
+        }
+      ]
+    },
+    "keyword_control": {
+      "patterns": [
+        {
+          "name": "keyword.control.scad",
+          "match": "\\b(for|intersection_for|each|assert)\\b"
+        },
+        {
+          "name": "keyword.control.conditional.scad",
+          "match": "\\b(if|else)\\b"
+        },
+        {
+          "name": "keyword.control.import.scad",
+          "match": "\\b(include|use|import|dxf_dim|dxf_cross|surface)\\b"
+        }
+      ]
+    },
     "keyword_arguments": {
       "comment": "Incorporated from PythonImproved grammar",
       "begin": "\\b([[:alpha:]_][[:alnum:]_]*)\\s*(=)(?!=)",
@@ -304,7 +441,7 @@
           "name": "keyword.operator.assignment.scad"
         }
       },
-      "end": "\\s*(?:(,)|(?=[\\)\\:]))",
+      "end": "\\s*(?:(,)|(?=\\)))",
       "endCaptures": {
         "1": {
           "name": "punctuation.separator.parameters.scad"
