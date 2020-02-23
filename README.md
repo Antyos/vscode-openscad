@@ -1,7 +1,5 @@
 # OpenSCAD Extension
 
-OpenSCAD language support extension by Antyos.
-
 Edit OpenSCAD files with all the luxuries of VS Code!
 
 Project is available at: https://github.com/Antyos/vscode-openscad
