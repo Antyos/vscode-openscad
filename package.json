@@ -1,8 +1,9 @@
 {
-    "name": "scad",
-    "displayName": "OpenSCAD-lang",
-    "description": "I hope I can change this later",
+    "name": "openscad",
+    "displayName": "OpenSCAD",
+    "description": "OpenSCAD language support for VSCode",
     "version": "0.0.1",
+    "publisher": "Antyos",
     "engines": {
         "vscode": "^1.40.0"
     },
