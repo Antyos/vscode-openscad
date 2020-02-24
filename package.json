@@ -5,6 +5,7 @@
     "version": "0.0.1",
     "publisher": "Antyos",
     "license": "SEE LICENSE IN LICENSE.txt",
+    "icon": "https://github.com/Antyos/vscode-openscad/blob/master/images/logo.png",
     "homepage": "https://github.com/Antyos/vscode-openscad/blob/master/README.md",
     "bugs": {
         "url": "https://github.com/Antyos/vscode-openscad/issues"

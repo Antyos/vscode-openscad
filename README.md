@@ -34,12 +34,6 @@ When you save your file in VSCode, it will automatically preview in OpenSCAD.
    - Add option for custom OpenSCAD installation director
    - Extension should auto-install its own copy of OpenSCAD
 
-## Release Notes
-
-### 0.0.1
-
-Initial release.
-
 ## Notes
 I made this extension because I like OpenSCAD and there wasn't any language support in VS Code I liked. While I will try and keep this extension up to date, I make no promises. As is, it has taken me months (on and off) to learn RegEx and TextMate grammars to develop the syntax highlighting.
 

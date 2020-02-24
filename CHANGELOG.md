@@ -1,9 +1,9 @@
 # Change Log
 
-All notable changes to the "scad" extension will be documented in this file.
+## Release Notes
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### 0.0.1
 
-## [Unreleased]
+Initial release.
 
-- Initial release
+Includes syntax highlighting and snippets.
