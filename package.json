@@ -4,17 +4,8 @@
     "description": "OpenSCAD language support for VSCode",
     "version": "0.0.1",
     "publisher": "Antyos",
+    "icon": "images/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
-    "icon": "https://github.com/Antyos/vscode-openscad/blob/master/images/logo.png",
-    "homepage": "https://github.com/Antyos/vscode-openscad/blob/master/README.md",
-    "bugs": {
-        "url": "https://github.com/Antyos/vscode-openscad/issues"
-    },
-    "repository": 
-    {
-        "type": "git",
-        "utl": "https://github.com/Antyos/vscode-openscad"
-    },
     "engines": {
         "vscode": "^1.40.0"
     },
@@ -22,6 +13,14 @@
         "Programming Languages",
         "Snippets"
     ],
+    "homepage": "https://github.com/Antyos/vscode-openscad/blob/master/README.md",
+    "bugs": {
+        "url": "https://github.com/Antyos/vscode-openscad/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Antyos/vscode-openscad"
+    },
     "contributes": {
         "languages": [
             {

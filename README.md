@@ -4,7 +4,7 @@ Edit OpenSCAD files with all the luxuries of VSCode!
 
 Project is available at: https://github.com/Antyos/vscode-openscad
 
-This extension builds upon the "scad" extension by Erik Benson and expanded upon by GitHub user `atnbueno` (https://github.com/atnbueno/vscode-lang-scad)
+This extension builds upon the "scad" extension by Erik Benson and later expanded upon by GitHub user `atnbueno` (https://github.com/atnbueno/vscode-lang-scad)
 
 ## Features
 
@@ -13,23 +13,36 @@ This extension features:
 - Snippets
 
 Comparison of VSCode with OpenSCAD plugin (left) and default OpenSCAD editor (right)
-![Comparison](https://github.com/Antyos/vscode-openscad/blob/master/images/comparison.png)
+![Comparison](images/comparison.png)
 Code: https://files.openscad.org/examples/Basics/intersection.html
+
+## Requirements
+
+Install OpenSCAD here: https://www.openscad.org/downloads.html
 
 ## Usage
 
 Open your `.scad` file in VSCode and also in OpenSCAD.
 
-Make sure to have `Automatic Reload and Preview` checked under `Design > Automatic Reload and Preview`.
+In OpenSCAD, make sure to have `Automatic Reload and Preview` checked under `Design > Automatic Reload and Preview`. You may also want to hide the editor and customizer panels in OpenSCAD by checking `View > Hide Editor` and `View > Hide Customizer`.
 
-You may also want to disable the editor and customizer panels in OpenSCAD by checking `View > Hide Editor` and `View > Hide Customizer`.
+When you save your file in VSCode, it will automatically reload and preview in OpenSCAD.
 
-When you save your file in VSCode, it will automatically preview in OpenSCAD.
+### Code Runner support
+
+Until previewing is built into this extension, you can use Code Runner by formulahendry. To add support support for Code Runner, add the following to your `settings.json` file:
+
+```
+"code-runner.executorMap": {
+        "scad": "\"C:\\Program Files\\openscad\\openscad.exe\""
+    },
+```
+Note: If you installed OpenSCAD to another location, use that instead.
+
 
 ## To-Do
 - Add OpenSCAD logo for .scad file extensions once that becomes a feature in vscode. 
 (See [Issue: 14662](https://github.com/microsoft/vscode/issues/14662)).
-- Add screenshots and gifs
 - Add "Preview with OpenSCAD" button (Opens and previes the file in OpenSCAD)
    - Add option for custom OpenSCAD installation director
    - Extension should auto-install its own copy of OpenSCAD
