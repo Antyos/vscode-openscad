@@ -15,6 +15,7 @@ This extension features:
 VSCode with OpenSCAD Plugin| OpenSCAD Editor
 :-------------------------:|:-------------------------:
 ![Comparison_vsc](images/comparison-vsc.png) | ![Comparison_os](images/comparison-os.png)
+
 Code: https://files.openscad.org/examples/Basics/intersection.html
 
 # Usage
