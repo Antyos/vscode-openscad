@@ -29,12 +29,24 @@
     },
     {
       "name": "comment.line.double-slash.scad",
+      "match": "(\\/\\/\\s*)(\\[.*\\])[ \\t]*$\\n?",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.scad"
+        },
+        "2": {
+          "name": "keyword.other.customizer.scad"
+        }
+      }
+    },
+    {
+      "name": "comment.line.double-slash.scad",
+      "match": "(//).*$\\n?",
       "captures": {
         "1": {
           "name": "punctuation.definition.comment.scad"
         }
-      },
-      "match": "(//).*$\\n?"
+      }
     },
     {
       "name": "string.quoted.double.scad",

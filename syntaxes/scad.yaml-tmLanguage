@@ -17,10 +17,19 @@ patterns:
     '0': {name: punctuation.definition.comment.scad}
   end: \*/
 
+# - include: '#customizer_comment'
+# WIP: Single line comment with customizer syntax
+# Can match: [10], [10:20], [-10:0.2:10], [foo, bar, baz], [10:S, 20:M, 30:L], [S:Small, M:Medium, L:Large]
 - name: comment.line.double-slash.scad
+  match: (\/\/\s*)(\[.*\])[ \t]*$\n?
   captures:
     '1': {name: punctuation.definition.comment.scad}
+    '2': {name: keyword.other.customizer.scad}
+
+- name: comment.line.double-slash.scad
   match: (//).*$\n?
+  captures:
+    '1': {name: punctuation.definition.comment.scad}
 
 - name: string.quoted.double.scad
   begin: '"'
@@ -50,6 +59,11 @@ patterns:
   patterns:
   - name: constant.character.escape.scad
     match: \\(x{2}|[0-2][0-7]{,2}|3[0-6][0-7]|37[0-7]?|[4-7][0-7]?|.)
+
+# Customizer injection into comments
+# - injectionSelector: 'comment.line.double-slash'
+
+
 
 - name: invalid.deprecated
   match: \b(assign|child|import_dxf|import_stl)\b
@@ -113,8 +127,7 @@ patterns:
 - name: constant.numeric.integer.decimal.scad
   match: \b([1-9]+[0-9]*|0)
 
-#0: storage.type.function    1: entity.name.function
-# TODO: Focus on parameter list. If it has the 'module' or 'function' before it, then it's a definition and should highlight " varname, " otherwise it's a function call and shouldn't
+# Function definition
 - name: meta.function.scad
   begin: \s*(module|function)\s+(?=[[:alpha:]_][[:alnum:]_]*)
   beginCaptures:
@@ -167,10 +180,6 @@ patterns:
   endCaptures:
     '1': {name: punctuation.definition.arguments.end.scad}
   patterns:
-  # - begin: (?=[[:alpha:]_][[:alnum:]_]*(?:\.[[:alpha:]_][[:alnum:]_]*)*\s*\()
-  #   end: (?=\s*\()
-  #   patterns:
-  #   - include: '#dotted_name'
   - contentName: meta.function-call.arguments.scad
     begin: (\()
     beginCaptures:
@@ -181,10 +190,6 @@ patterns:
     patterns:
     - include: '#keyword_arguments'
     - include: $self
-  # - begin: \G
-  #   end: (?=\()
-  #   patterns:
-  #   - include: '#dotted_name'
 #################################################################
 
 - include: '#let_keyword'
@@ -224,42 +229,47 @@ repository:
     patterns:
     - include: $self
   
+  # customizer_comment:
+  #   match: '(\[.*\])'
+  #   captures: 
+  #     '1': {name: keyword.other.customizer.scad}
+
   let_keyword:
     name: keyword.control.scad
     match: '\b(let)\b'
 
   function_builtin:
     patterns:
-      - name: support.function.scad
-        match: \b(concat|lookupstr|chr|ord|search|version|version_num|parent_module)\b
-      - name: support.function.scad
-        match: \b(children|echo|group|offset|render)\b
-      - name: support.function.type-test.scad
-        match: \b(is_undef|is_bool|is_num|is_string|is_list)\b
-      - name: support.function.math.scad
-        match: \b(abs|sign|floor|round|ceil|ln|len|log|pow|sqrt|exp|rands|min|max|norm|cross)\b
-      - name: support.function.math.trig.scad
-        match: \b(sin|cos|asin|acos|tan|atan|atan2)\b
-      - name: support.function.transform.scad
-        match: \b(scale|translate|rotate|multmatrix|color|projection|hull|resize|mirror|minkowski)\b
-      - name: support.function.boolean.scad
-        match: \b(union|difference|intersection)\b
-      - name: support.function.prim3d.scad
-        match: \b(cube|sphere|cylinder|polyhedron)\b
-      - name: support.function.prim2d.scad
-        match: \b(square|circle|polygon|text)\b
-      - name: support.function.extrude.scad
-        match: \b(linear_extrude|rotate_extrude)\b
+    - name: support.function.scad
+      match: \b(concat|lookupstr|chr|ord|search|version|version_num|parent_module)\b
+    - name: support.function.scad
+      match: \b(children|echo|group|offset|render)\b
+    - name: support.function.type-test.scad
+      match: \b(is_undef|is_bool|is_num|is_string|is_list)\b
+    - name: support.function.math.scad
+      match: \b(abs|sign|floor|round|ceil|ln|len|log|pow|sqrt|exp|rands|min|max|norm|cross)\b
+    - name: support.function.math.trig.scad
+      match: \b(sin|cos|asin|acos|tan|atan|atan2)\b
+    - name: support.function.transform.scad
+      match: \b(scale|translate|rotate|multmatrix|color|projection|hull|resize|mirror|minkowski)\b
+    - name: support.function.boolean.scad
+      match: \b(union|difference|intersection)\b
+    - name: support.function.prim3d.scad
+      match: \b(cube|sphere|cylinder|polyhedron)\b
+    - name: support.function.prim2d.scad
+      match: \b(square|circle|polygon|text)\b
+    - name: support.function.extrude.scad
+      match: \b(linear_extrude|rotate_extrude)\b
 
   keyword_control:
     patterns:
-      # - include: '#let_keyword'
-      - name: keyword.control.scad
-        match: \b(for|intersection_for|each|assert)\b
-      - name: keyword.control.conditional.scad
-        match: \b(if|else)\b
-      - name: keyword.control.import.scad
-        match: \b(include|use|import|dxf_dim|dxf_cross|surface)\b
+    # - include: '#let_keyword'
+    - name: keyword.control.scad
+      match: \b(for|intersection_for|each|assert)\b
+    - name: keyword.control.conditional.scad
+      match: \b(if|else)\b
+    - name: keyword.control.import.scad
+      match: \b(include|use|import|dxf_dim|dxf_cross|surface)\b
 
   keyword_arguments:
     comment: Incorporated from PythonImproved grammar
