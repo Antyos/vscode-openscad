@@ -11,6 +11,14 @@ patterns:
     '0': {name: punctuation.definition.comment.scad}
   end: \*/
 
+# Customizer section header
+- name: comment.block.scad
+  match: (/\*)\s*((?:\[[\s\w]*\]\s*)+)\s*(\*/)
+  captures:
+    '1': {name: punctuation.definition.comment.scad}
+    '2': {name: keyword.other.customizer.scad}
+    '3': {name: punctuation.definition.comment.scad}
+
 - name: comment.block.scad
   begin: /\*
   captures:
@@ -21,7 +29,17 @@ patterns:
 # WIP: Single line comment with customizer syntax
 # Can match: [10], [10:20], [-10:0.2:10], [foo, bar, baz], [10:S, 20:M, 30:L], [S:Small, M:Medium, L:Large]
 - name: comment.line.double-slash.scad
-  match: (\/\/\s*)(\[.*\])[ \t]*$\n?
+  match: |-
+    (?x)
+      (\/\/\s*)
+      (
+        \[(?:
+            (?:-?\d+(?:.\d)*)(?:\s*:\s*-?\d+(?:.\d)*){0,2} |
+            (?:(?:[^:,]+:)?[^:,]+,)*(?:(?:[^:,]+:)?[^:,]+)
+          )
+        \]
+      )
+      [ \t]*$\n?
   captures:
     '1': {name: punctuation.definition.comment.scad}
     '2': {name: keyword.other.customizer.scad}
