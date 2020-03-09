@@ -1,0 +1,180 @@
+/* https://github.com/openscad/openscad.github.com/blob/master/cheatsheet/css/main.css (0354879) */
+body {
+	font-family: "UbuntuMonoRegular", "Ubuntu Mono", 'courier new', monospace, sans-serif;
+	font-size: 100%;
+	line-height: 1em;
+	color: #999;
+	padding: 0.6em;
+}
+
+a {
+	color: #000099;
+}
+
+h1 {
+	font-family: "UbuntuMonoBold", "Ubuntu Mono", 'courier new', monospace, sans-serif;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 1.8em;
+	color: #DEBA00;
+	margin: 0 0 0.6em 0;
+}
+
+header h1 {
+	display: inline-block;
+	margin-right: 1ex;
+}
+
+/* colour the header 'Open' & 'SCAD' and make bolder and chunky
+like the cornfield default scheme from colormap.cc
+Open - #9dcb51;} OPENCSG_FACE_BACK_COLOR - green
+SCAD - #f9d72c;} OPENCSG_FACE_FRONT_COLOR - yellow
+ - for reference #FFFFE5;} BACKGROUND_COLOR - pale yellow/cream, used above 
+*/
+header h1.title {color:#f9d72c; letter-spacing:-1px; font-weight:700;}
+header h1 span.green {color:#9dcb51; letter-spacing:0px;}
+
+header h2.subtitle {color:black; letter-spacing:-1px;}
+
+/* colour OPEN & SCAD in the home/section heading the same*/
+section h1 strong {color:#f9d72c; font-weight:700; letter-spacing:-1px;}
+section h1 strong span.green {color:#9dcb51; letter-spacing:0px;}
+
+h2 {
+	font-family: "UbuntuMonoBold", "Ubuntu Mono", 'courier new', monospace, sans-serif;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 1.4em;
+	color: #79A22E;
+	margin: 0 0 10px 0;
+}
+
+header h2 {
+	display: inline;
+	color: #bbb;
+}
+
+header h2 a {
+	color: #bbb;
+}
+
+section {
+	float: left;
+}
+
+section section article {
+	float: none;
+}
+
+article {
+	background: #FFFFDD;
+	-webkit-border-radius: 0.6em;
+	-moz-border-radius: 0.6em;
+	border-radius: 0.6em;
+	padding: 0.6em 0.6em 0.6em 0.6em;
+	float: left;
+	margin: 0 0.6em 0.6em 0;
+	border: 1px solid #DEBA00;
+}
+
+article.info {
+	background: #fff;
+	border: 1px solid #ddd;
+}
+
+article.info h2 {
+	color: #bbb;
+}
+
+code {
+	font-family: "UbuntuMonoRegular", "Ubuntu Mono", 'courier new', monospace, sans-serif;
+	color: #000;
+	display: block;
+	margin: 0 0 0.5em 0;
+}
+
+code span {
+	color: #999;
+}
+
+dt code {
+	display: inline;
+}
+
+dt {
+	float: left;
+	clear: left;
+}
+
+dd {
+	margin: 0 0 .5em 3em;
+        color: #000
+}
+
+ul {
+	margin: 0 0 0.5em;
+	padding: 0 1em;
+}
+
+ul li {
+	/*margin: 0 0 0.2em 0;*/
+	line-height: 1.2em;
+}
+
+footer {
+	clear: both;
+	float: right;
+	font-size: 0.7em;
+	margin: 0 0.6em 0.6em 0;
+	text-align: right;
+}
+
+.clear {
+	clear: both;
+}
+
+.fork {
+	position: absolute;
+	top: 0;
+	right:0;
+}
+
+.fork img{
+	border: none;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: #79A22E;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  padding: 8px;
+  border-radius: 6px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 3em;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #79A22E transparent transparent transparent;
+}
