@@ -21,7 +21,18 @@
         "type": "git",
         "url": "https://github.com/Antyos/vscode-openscad"
     },
+    "activationEvents": [
+        "onCommand:scad.cheatsheet"
+    ],
+    "main": "./out/extension.js",
     "contributes": {
+        "commands": [
+            {
+                "command": "scad.cheatsheet",
+                "title": "Opens OpenSCAD CheatSheet",
+                "category": "OpenSCAD"
+            }
+        ],
         "languages": [
             {
                 "id": "scad",
@@ -48,12 +59,42 @@
                 "scopeName": "source.scad",
                 "path": "./syntaxes/scad.tmlanguage.json"
             }
-        ]
+        ],
+        "configuration":
+        {
+            "title": "OpenSCAD",
+            "properties": {
+                "openscad.cheatsheet.displayInStatusBar":
+                {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Displays \"Open CheatSheet\" in status bar."
+                },
+                "openscad.cheatsheet.openToSide":
+                {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Opens OpenSCAD cheatsheet in another column"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"lint": "tslint -p ./",
+		"watch": "tsc -watch -p ./"
     },
     "devDependencies": {
+        "@types/node": "^9.4.6",
+        "typescript": "^3.5.1",
+        "tslint": "^5.16.0",
+        "@types/vscode": "^1.40.0",
         "js-yaml": "^3.13.1"
     },
     "dependencies": {
-        "vsce": "^1.73.0"
+        "commonjs": "0.0.1",
+        "vsce": "^1.73.0",
+        "web-request": "^1.0.7"
     }
 }

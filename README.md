@@ -61,7 +61,7 @@ Note: If you installed OpenSCAD to another location, use that instead.
 > Most of the features that I'm working on are features that ***I*** personally want in this extension. If you want to add something that I don't plan on getting around to, feel free to make a pull request.
 
 ## Notes
-I made this extension because I like OpenSCAD and there wasn't any language support in VS Code I liked. While I will try and keep this extension up to date, I make no promises. As is, it has taken me months (on and off) to learn RegEx and TextMate grammars to develop the syntax highlighting.
+I made this extension because I like OpenSCAD and there wasn't any language support in VS Code I liked. While I will try and keep this extension up to date, I make no promises. As is, it has taken me months (on and off) to learn RegEx, TextMate grammars and more to develop the syntax highlighting alone.
 
 If you want to make changes to the grammar in the `.yaml-tmlanguage` file, you will need to convert it to `.json` before VSCode can use it. 
 
