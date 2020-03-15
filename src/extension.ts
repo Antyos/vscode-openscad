@@ -22,6 +22,18 @@ export function activate(context: vscode.ExtensionContext) {
     
     // Create a new status bar item
     context.subscriptions.push(Cheatsheet.createStatusBar());
+
+    // Register serializer event action to recreate webview panel if vscode restarts
+    if (vscode.window.registerWebviewPanelSerializer)
+    {
+        // Make sure we register a serializer in action event
+        vscode.window.registerWebviewPanelSerializer(Cheatsheet.viewType, {
+            async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
+                console.log(`Got state: ${state}`);
+                Cheatsheet.revive(webviewPanel);
+            }
+        });
+    }
     
     // Register listeners to make sure cheatsheet items are up-to-date
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));

@@ -4,27 +4,27 @@ import * as vscode from 'vscode';
 // Cheatsheet config values
 export interface CheatsheetConfig
 {
-    displayInStatusBar?: boolean;
+    displayInStatusBar?: string;
     openToSide?: boolean;
 }
 
 // Class for Cheatsheet webview and commands
 export class Cheatsheet
 {
-    public static readonly csCommandId: string = 'scad.cheatsheet'; // Command id for opening the cheatsheet
+    public static readonly csCommandId = 'scad.cheatsheet'; // Command id for opening the cheatsheet
+    public static readonly viewType = 'cheatsheet';                 // Internal reference to cheatsheet panel
 
-    public static currentPanel: Cheatsheet | undefined;        // Webview Panel
-
+    public static currentPanel: Cheatsheet | undefined;             // Webview Panel
     public static csStatusBarItem: vscode.StatusBarItem;            // Cheatsheet status bar item 
 
-    private readonly _panel: vscode.WebviewPanel;
+    private readonly _panel: vscode.WebviewPanel;                   // Webview panels
+    private static config: CheatsheetConfig = {};                   // Extension config
+    private static isScadDocument: boolean;                         // Is current document openSCAD
+    
     private _disposables: vscode.Disposable[] = [];
-    private static config: CheatsheetConfig = {};   
-    private static isScadDocument: boolean;                     // Is current document openSCAD
-
+    
     // Create or show cheatsheet panel
-    public static createOrShowPanel() 
-    {
+    public static createOrShowPanel() {
         // Determine which column to show cheatsheet in
         // If not active editor, check config to open in current window to to the side
         let column = vscode.window.activeTextEditor
@@ -41,7 +41,7 @@ export class Cheatsheet
         
         // Otherwise, create and show new panel
         const panel = vscode.window.createWebviewPanel(
-            'cheatsheet',                                   // Indentifies the type of webview. Used internally
+            Cheatsheet.viewType,                            // Indentifies the type of webview. Used internally
             'OpenSCAD Cheat Sheet',                         // Title of panel displayed to the user
             column || vscode.ViewColumn.One,        // Editor column
             {
@@ -50,15 +50,14 @@ export class Cheatsheet
             }   // Webview options
         );
 
-        // const onDiskPath = vscode.Uri.file(
-        //     path.join(context.extensionPath, 'cheat-sheet', 'OpenSCAD CheatSheet.html')
-        // );
-
-        // currentPanel.webview.asWebviewUri(onDiskPath);
-
-        // Set HTML content
+        // Create new panel
         Cheatsheet.currentPanel = new Cheatsheet(panel);
 
+    }
+
+    // Recreate panel in case vscode restarts
+    public static revive(panel: vscode.WebviewPanel) {
+        Cheatsheet.currentPanel = new Cheatsheet(panel);
     }
 
     // Constructor
@@ -69,7 +68,16 @@ export class Cheatsheet
         // This happens when user closes the panel or when the panel is closed progamatically
         this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
+        // Set HTML content
         this._panel.webview.html = this.getRawCS();
+
+        // Notes for how to get html from file        
+        // const onDiskPath = vscode.Uri.file(
+        //     path.join(context.extensionPath, 'cheat-sheet', 'OpenSCAD CheatSheet.html')
+        // );
+
+        // currentPanel.webview.asWebviewUri(onDiskPath);
+
     }
 
     // Dispose of panel and clean up resources
@@ -99,8 +107,26 @@ export class Cheatsheet
 
     // Show or hide status bar item (OpenSCAD Cheatsheet)
     public static updateStatusBar() {
-        // Show `open cheatsheet` button if enabled in config AND current document is of type `openscad`
-        if (Cheatsheet.isScadDocument && Cheatsheet.config.displayInStatusBar)
+        let showCsStatusBarItem: boolean = false;   // Show cheatsheet status bar item or not
+
+        // Determine to show cheatsheet status bar icon based on extension config
+        switch(Cheatsheet.config.displayInStatusBar) {
+            case 'always':
+                showCsStatusBarItem = true;
+                break;
+            case 'openDoc':
+                showCsStatusBarItem = Cheatsheet.isScadDocOpen();
+                break;
+            case 'activeDoc':
+                showCsStatusBarItem = Cheatsheet.isScadDocument;
+                break;
+            case 'never':
+                showCsStatusBarItem = false;
+                break;
+        }
+
+        // Show or hide `Open Cheatsheet` button 
+        if (showCsStatusBarItem)
         {
             Cheatsheet.csStatusBarItem.text = 'Open Cheatsheet';
             Cheatsheet.csStatusBarItem.show();
@@ -114,32 +140,49 @@ export class Cheatsheet
     // Run on change active text editor
     public static onDidChangeActiveTextEditor() {
         // Determine the languageId of the active text document
-        let langId: string | undefined = undefined;
-        if (vscode.window.activeTextEditor)
-        {
-            const currentDocument = vscode.window.activeTextEditor.document;
-            
-            langId = currentDocument.languageId;
-
-            // See affectsConfiguration | ConfigurationScope
+        if (vscode.window.activeTextEditor) {
+            Cheatsheet.isScadDocument = Cheatsheet.isDocScad(vscode.window.activeTextEditor.document);
         }
-        vscode.window.showInformationMessage("Lang id: " + langId); // DEBUG
-
+        else {
+            Cheatsheet.isScadDocument = false;
+        }
+        
         // Set if the document type is SCAD based on the language id
         // Or current current document is the cheatsheet (for visual consistency)
         // Show if SCAD document is open (doesn't have to be active) or there is one in the working directory
-        Cheatsheet.isScadDocument = (langId === 'scad')
         Cheatsheet.updateStatusBar();
     }
 
     // Run when configurations are changed
     public static onDidChangeConfiguration(config: vscode.WorkspaceConfiguration) {
         // Load the configuration changes
-        Cheatsheet.config.displayInStatusBar = config.get<boolean>('cheatsheet.displayInStatusBar', true);
+        Cheatsheet.config.displayInStatusBar = config.get<string>('cheatsheet.displayInStatusBar', 'openDoc');
         Cheatsheet.config.openToSide = config.get<boolean>('cheatsheet.openToSide', true);
 
         // Update the status bar
         Cheatsheet.updateStatusBar();
+    }
+
+    // Returns true if there is at least one open document of languageId 'scad'
+    private static isScadDocOpen() {
+        const openDocs = vscode.workspace.textDocuments;
+        let isScadDocOpen: boolean = false;
+
+        // Iterate through open text documents
+        openDocs.forEach( (doc) => {
+            if (this.isDocScad(doc)) // If document is of type 'scad' return true
+                isScadDocOpen = true;
+        } );
+
+        return isScadDocOpen;
+    }
+
+    // Returns true is current document is of type 'scad'
+    private static isDocScad(doc: vscode.TextDocument)
+    {
+        let langId = doc.languageId;
+        // vscode.window.showInformationMessage("Doc: " + doc.fileName + "\nLang id: " + langId); // DEBUG
+        return langId === 'scad'
     }
 
     // Returns raw HTML for cheatsheet

@@ -22,7 +22,10 @@
         "url": "https://github.com/Antyos/vscode-openscad"
     },
     "activationEvents": [
-        "onCommand:scad.cheatsheet"
+        "onLanguage:scad",
+        "workspaceContains:*.scad",
+        "onCommand:scad.cheatsheet",
+        "onWebviewPanel:cheatsheet"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -66,9 +69,21 @@
             "properties": {
                 "openscad.cheatsheet.displayInStatusBar":
                 {
-                    "type": "boolean",
-                    "default": true,
-                    "markdownDescription": "Displays \"Open CheatSheet\" in status bar."
+                    "type": "string",
+                    "enum": [
+                        "always",
+                        "openDoc",
+                        "activeDoc",
+                        "never"
+                    ],
+                    "default": "openDoc",
+                    "markdownDescription": "When to display the \"Open Cheatsheet\" status bar icon",
+                    "enumDescriptions": [
+                        "Always displays \"Open Cheatsheet\" in status bar",
+                        "Only display \"Open Cheatsheet\" in status bar when a '.scad' is in an open editor",
+                        "Only display \"Open Cheatsheet\" in status bar when a '.scad' is the active text editor",
+                        "Never display \"Open Cheatsheet\" in status bar"
+                    ]
                 },
                 "openscad.cheatsheet.openToSide":
                 {
