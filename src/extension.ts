@@ -1,13 +1,6 @@
 import * as vscode from 'vscode';
 import { Cheatsheet } from './cheatsheet';
 
-// declare module '*.html';
-// import cshtml from '../SCAD_CheatSheet.html';
-
-// Cheatsheet command
-// let cheatsheet: Cheatsheet;
-let docIsSCAD:vscode.DocumentSelector = {language: 'scad'};
-
 // Called when extension is activated
 // Extension is activated the first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -21,7 +14,8 @@ export function activate(context: vscode.ExtensionContext) {
     );
     
     // Create a new status bar item
-    context.subscriptions.push(Cheatsheet.createStatusBar());
+    Cheatsheet.initStatusBar();
+    context.subscriptions.push(Cheatsheet.csStatusBarItem);
 
     // Register serializer event action to recreate webview panel if vscode restarts
     if (vscode.window.registerWebviewPanelSerializer)
@@ -56,5 +50,5 @@ function onDidChangeActiveTextEditor() {
 function onDidChangeConfiguration() {
   const config = vscode.workspace.getConfiguration('openscad');   // Get new config  
   Cheatsheet.onDidChangeConfiguration(config);                    // Update the cheatsheet with new config
-  // vscode.window.showInformationMessage("Config change!"); // Debug
+  // vscode.window.showInformationMessage("Config change!"); // DEBUG
 }

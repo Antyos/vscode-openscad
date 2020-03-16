@@ -93,10 +93,10 @@
                         "auto"
                     ],
                     "default": "auto",
-                    "description": "The color scheme to uses when displaying the OpenSCAD cheatsheet\nNote: Currently doesn't work",
+                    "description": "The color scheme to use when displaying the OpenSCAD cheatsheet",
                     "enumDescriptions": [
                         "Use original OpenSCAD cheatsheet color scheme",
-                        "Use vscode's current theme for cheatsheet color sceheme" 
+                        "Use VSCode's current theme for cheatsheet color sceheme" 
                     ]
                 },
                 "openscad.cheatsheet.openToSide":

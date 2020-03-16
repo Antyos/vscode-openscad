@@ -4,15 +4,16 @@ import * as fs from 'fs';
 
 // Cheatsheet color schemes. Located in [extensionPath]/media/
 const colorScheme = {
-    'original': 'cheatsheet-original.css',
-    'auto': 'cheatsheet-auto.css'
+    original: 'cheatsheet-original.css',
+    auto: 'cheatsheet-auto.css'
 }
 
 // Cheatsheet config values
-export interface CheatsheetConfig
+interface CheatsheetConfig
 {
     displayInStatusBar?: string;
     colorScheme?: string;
+    lastColorScheme?: string;
     openToSide?: boolean;
 }
 
@@ -29,8 +30,7 @@ export class Cheatsheet
     private readonly _panel: vscode.WebviewPanel;               // Webview panels
     private readonly _extensionPath: string;                    // Extension path
     private static config: CheatsheetConfig = {};               // Extension config
-    private static isScadDocument: boolean;                     // Is current document openSCAD
-    private static lastColorScheme: string;                     // HTML content for webview read directly from file
+    // private isScadDocument: boolean;                         // Is current document openSCAD
 
     
     private _disposables: vscode.Disposable[] = [];
@@ -82,14 +82,7 @@ export class Cheatsheet
         this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
         // Set HTML content
-        this._panel.webview.html = this.getWebviewContent(colorScheme['auto']);
-
-        // Notes for how to get html from file        
-        // const onDiskPath = vscode.Uri.file(
-        //     path.join(context.extensionPath, 'cheat-sheet', 'OpenSCAD CheatSheet.html')
-        // );
-
-        // currentPanel.webview.asWebviewUri(onDiskPath);
+        this.updateWebviewContent();
 
     }
 
@@ -111,11 +104,9 @@ export class Cheatsheet
     }
 
     // Initializes the status bar
-    public static createStatusBar() {
+    public static initStatusBar() {
         Cheatsheet.csStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
         Cheatsheet.csStatusBarItem.command = Cheatsheet.csCommandId;
-
-        return Cheatsheet.csStatusBarItem;     
     }
 
     // Show or hide status bar item (OpenSCAD Cheatsheet)
@@ -131,7 +122,10 @@ export class Cheatsheet
                 showCsStatusBarItem = Cheatsheet.isScadDocOpen();
                 break;
             case 'activeDoc':
-                showCsStatusBarItem = Cheatsheet.isScadDocument;
+                // Check the languageId of the active text document
+                if (vscode.window.activeTextEditor) {
+                    showCsStatusBarItem = Cheatsheet.isDocScad(vscode.window.activeTextEditor.document);
+                }
                 break;
             case 'never':
                 showCsStatusBarItem = false;
@@ -151,18 +145,8 @@ export class Cheatsheet
     }
 
     // Run on change active text editor
-    public static onDidChangeActiveTextEditor() {
-        // Determine the languageId of the active text document
-        if (vscode.window.activeTextEditor) {
-            Cheatsheet.isScadDocument = Cheatsheet.isDocScad(vscode.window.activeTextEditor.document);
-        }
-        else {
-            Cheatsheet.isScadDocument = false;
-        }
-        
-        // Set if the document type is SCAD based on the language id
-        // Or current current document is the cheatsheet (for visual consistency)
-        // Show if SCAD document is open (doesn't have to be active) or there is one in the working directory
+    public static onDidChangeActiveTextEditor() {      
+        // Update to the "Open Cheatsheet" status bar icon
         Cheatsheet.updateStatusBar();
     }
 
@@ -174,16 +158,24 @@ export class Cheatsheet
         Cheatsheet.config.openToSide = config.get<boolean>('cheatsheet.openToSide', true);
 
         // Update the status bar
-        Cheatsheet.updateStatusBar();
+        this.updateStatusBar();
 
         // Update css of webview (if config option has changed)
-        // TODO: Make work
-        // if (this.lastColorScheme !== Cheatsheet.config.colorScheme)
-        // {
-        //     this.lastColorScheme = Cheatsheet.config.colorScheme;
-        //     Cheatsheet.currentPanel._panel.html = Cheatsheet.getWebviewContent('');
-        // }
+        if (Cheatsheet.config.lastColorScheme !== Cheatsheet.config.colorScheme && Cheatsheet.currentPanel !== undefined)
+        {
+            Cheatsheet.config.lastColorScheme = Cheatsheet.config.colorScheme;  // Update last colorScheme
+            Cheatsheet.currentPanel.updateWebviewContent();   // Update webview html content
+        }
 
+    }
+
+    // Updates webview html content
+    public updateWebviewContent()
+    {
+        // If config.colorScheme isn't defined, use colorScheme 'auto'
+        let colorScheme: string = (Cheatsheet.config.colorScheme !== undefined ? Cheatsheet.config.colorScheme : 'auto');
+
+        this._panel.webview.html = this.getWebviewContent(colorScheme);
     }
 
     //*****************************************************************************
@@ -213,24 +205,22 @@ export class Cheatsheet
     }
 
     // Returns cheatsheet html for webview
-    private getWebviewContent(styleSrc: string)
+    private getWebviewContent(styleKey: string)
     {
         // Read HTML from file
-        let htmlContent = fs.readFileSync(path.join(this._extensionPath, 'media', 'cheatsheet.html')).toString();//,  
-        // Get style sheet URI
-        let styleUri = vscode.Uri.file(path.join(this._extensionPath, 'media', colorScheme.auto)).with({ scheme: 'vscode-resource' });
+        let htmlContent = fs.readFileSync(path.join(this._extensionPath, 'media', 'cheatsheet.html')).toString();
 
+        // Get the filename of the given colorScheme
+        // Thank you: https://blog.smartlogic.io/accessing-object-attributes-based-on-a-variable-in-typescript/
+        const styleSrc = (styleKey in colorScheme) ? colorScheme[styleKey as keyof typeof colorScheme] : colorScheme['auto'];
+        
+        // Get style sheet URI
+        const styleUri = vscode.Uri.file(path.join(this._extensionPath, 'media', styleSrc)).with({ scheme: 'vscode-resource' });
+        // console.log("Style" + styleUri); // DEBUG
+
+        // Replace `{{styleSrc}}` with the vscode URI for the desired `.css` file
         htmlContent = htmlContent.replace('{{styleSrc}}', styleUri.toString());
-        // Leftover from when using async. Left in because it is probably a good idea to implement again
-        //     (err, data) => {
-        //         if (err) {
-        //             console.error(err);
-        //         }
-        //         console.log("Data:\n" + data.toString());
-        //         myHtml = data.toString();
-        //     }
-        // )
-        // console.log("myHtml:\n" + myHtml);   // DEBUG
+
         return htmlContent;
     }
 
