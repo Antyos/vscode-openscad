@@ -78,7 +78,7 @@ article {
 	padding: 0.6em 0.6em 0.6em 0.6em;
 	float: left;
 	margin: 0 0.6em 0.6em 0;
-	border: 1px solid;
+	border: 1px solid var(--vscode-tab-inactiveForeground);
 }
 
 article.info {

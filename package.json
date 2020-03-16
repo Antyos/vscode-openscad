@@ -4,7 +4,7 @@
     "description": "OpenSCAD language support for VSCode",
     "version": "0.0.1",
     "publisher": "Antyos",
-    "icon": "images/logo.png",
+    "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
     "engines": {
         "vscode": "^1.40.0"
@@ -32,7 +32,7 @@
         "commands": [
             {
                 "command": "scad.cheatsheet",
-                "title": "Opens OpenSCAD CheatSheet",
+                "title": "Open OpenSCAD Cheatsheet",
                 "category": "OpenSCAD"
             }
         ],
@@ -77,7 +77,7 @@
                         "never"
                     ],
                     "default": "openDoc",
-                    "markdownDescription": "When to display the \"Open Cheatsheet\" status bar icon",
+                    "description": "When to display the \"Open Cheatsheet\" status bar icon",
                     "enumDescriptions": [
                         "Always displays \"Open Cheatsheet\" in status bar",
                         "Only display \"Open Cheatsheet\" in status bar when a '.scad' is in an open editor",
@@ -93,7 +93,7 @@
                         "auto"
                     ],
                     "default": "auto",
-                    "description": "The color scheme to uses when displaying the OpenSCAD cheatsheet\n Note: Currently doesn't work",
+                    "description": "The color scheme to uses when displaying the OpenSCAD cheatsheet\nNote: Currently doesn't work",
                     "enumDescriptions": [
                         "Use original OpenSCAD cheatsheet color scheme",
                         "Use vscode's current theme for cheatsheet color sceheme" 
@@ -103,7 +103,7 @@
                 {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Opens OpenSCAD cheatsheet in another column"
+                    "description": "Opens OpenSCAD cheatsheet in another column"
                 }
             }
         }

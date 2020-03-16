@@ -1,6 +1,10 @@
 .vscode/**
 .vscode-test/**
 .gitignore
-test
-node_modules
+test/**
+src/**
+tsconfig.json
+tslint.json
 vsc-extension-quickstart.md
+scad-icon-theme.json
+makescad.bat
