@@ -85,6 +85,20 @@
                         "Never display \"Open Cheatsheet\" in status bar"
                     ]
                 },
+                "openscad.cheatsheet.colorScheme":
+                {
+                    "type": "string",
+                    "enum": [
+                        "original",
+                        "auto"
+                    ],
+                    "default": "auto",
+                    "description": "The color scheme to uses when displaying the OpenSCAD cheatsheet\n Note: Currently doesn't work",
+                    "enumDescriptions": [
+                        "Use original OpenSCAD cheatsheet color scheme",
+                        "Use vscode's current theme for cheatsheet color sceheme" 
+                    ]
+                },
                 "openscad.cheatsheet.openToSide":
                 {
                     "type": "boolean",
@@ -105,11 +119,8 @@
         "typescript": "^3.5.1",
         "tslint": "^5.16.0",
         "@types/vscode": "^1.40.0",
+        "vsce": "^1.73.0",
         "js-yaml": "^3.13.1"
     },
-    "dependencies": {
-        "commonjs": "0.0.1",
-        "vsce": "^1.73.0",
-        "web-request": "^1.0.7"
-    }
+    "dependencies": {}
 }

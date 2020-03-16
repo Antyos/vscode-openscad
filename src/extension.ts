@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register 'Open SCAD cheatsheet' command
     context.subscriptions.push(
-        vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel())
+        vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel(context.extensionPath))
     );
     
     // Create a new status bar item
@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.registerWebviewPanelSerializer(Cheatsheet.viewType, {
             async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
                 console.log(`Got state: ${state}`);
-                Cheatsheet.revive(webviewPanel);
+                Cheatsheet.revive(webviewPanel, context.extensionPath);
             }
         });
     }

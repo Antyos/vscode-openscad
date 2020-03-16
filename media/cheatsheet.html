@@ -1,16 +1,17 @@
 <!DOCTYPE HTML>
-<!-- From: https://github.com/openscad/openscad.github.com/blob/master/cheatsheet/snapshot.html (ba67cba) -->
+<!-- From: https://github.com/openscad/openscad.github.com/blob/master/cheatsheet/index.html (4c03911) -->
 <html>
 <head>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no;"/>
   <meta charset="UTF-8">
   <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-  <link type="text/css" rel="stylesheet" href="css/normalize.css" media="all" />
-  <link type="text/css" rel="stylesheet" href="css/fonts.css" media="all" />
-  <link type="text/css" rel="stylesheet" href="css/main.css" media="all" />
-  <link type="text/css" rel="stylesheet" href="css/print.css" media="print" />
+  <!-- <link type="text/css" rel="stylesheet" href="css/normalize.css" media="all" />
+  <link type="text/css" rel="stylesheet" href="css/fonts.css" media="all" /> -->
+  <link type="text/css" rel="stylesheet" href="{{styleSrc}}" media="all" />
+  <!-- <link type="text/css" rel="stylesheet" href="css/print.css" media="print" /> -->
   <title>OpenSCAD CheatSheet</title>
-        <script type="text/javascript">
+        <!-- Don't need this script ;) -->
+        <!-- <script type="text/javascript">
           var _gaq = _gaq || [];
           _gaq.push(['_setAccount', 'UA-26999768-1']);
           _gaq.push(['_setDomainName', 'openscad.org']);
@@ -23,12 +24,12 @@
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
           })();
-        </script>
+        </script> -->
 </head>
 <body>
   <header>
     <h1 class="title" style="position:relative;"><span class="green">Open</span>SCAD</h1>
-    <h2>(<a href="http://www.openscad.org/downloads.html#snapshots">dev snapshot</a>)</h2>
+    <h2>v2019.05</h2>
   </header>
   <section>
     <section>
@@ -36,7 +37,6 @@
         <h2>Syntax</h2>
         <code><a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/General#Variables">var</a> = <a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/General#Values_and_Data_Types">value</a>;</code>
         <code><a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/General#Variables">var</a> = cond <a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Conditional_and_Iterator_Functions#Conditional_?_:">?</a> value_if_true <a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Conditional_and_Iterator_Functions#Conditional_?_:">:</a> value_if_false;</code>
-        <code><a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/General#Variables">var</a> = <a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/User-Defined_Functions_and_Modules#Function_Literals">function</a> (x) x + x;</code>
         <code><a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/User-Defined_Functions_and_Modules#Modules">module</a> name(&hellip;) { &hellip; }<br/>
         name();</code>
         <code><a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/User-Defined_Functions_and_Modules#Functions">function</a> name(&hellip;) = &hellip;<br/>
@@ -168,7 +168,6 @@
         <code><a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Type_Test_Functions#is_num">is_num</a></code>
         <code><a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Type_Test_Functions#is_string">is_string</a></code>
         <code><a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Type_Test_Functions#is_list">is_list</a></code>
-        <code><a href="https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Type_Test_Functions#is_function">is_function</a></code>
       </article>
       <article>
         <h2>Other</h2>
