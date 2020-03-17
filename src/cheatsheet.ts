@@ -109,6 +109,15 @@ export class Cheatsheet
         Cheatsheet.csStatusBarItem.command = Cheatsheet.csCommandId;
     }
 
+    // Dispose of status bar
+    public static disposeStatusBar() {
+        if (!Cheatsheet.csStatusBarItem) { 
+            return; 
+        }
+        Cheatsheet.csStatusBarItem.dispose();
+        // Cheatsheet.csStatusBarItem = null; // Typescript doesn't like this...
+    }
+
     // Show or hide status bar item (OpenSCAD Cheatsheet)
     public static updateStatusBar() {
         let showCsStatusBarItem: boolean = false;   // Show cheatsheet status bar item or not
