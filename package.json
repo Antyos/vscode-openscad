@@ -1,8 +1,8 @@
 {
     "name": "openscad",
     "displayName": "OpenSCAD",
-    "description": "OpenSCAD language support for VSCode",
-    "version": "0.0.1",
+    "description": "OpenSCAD highlighting, snippets, and more for VSCode!",
+    "version": "0.1.0",
     "publisher": "Antyos",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
@@ -23,7 +23,7 @@
     },
     "activationEvents": [
         "onLanguage:scad",
-        "workspaceContains:*.scad",
+        "workspaceContains:**/*.scad",
         "onCommand:scad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
