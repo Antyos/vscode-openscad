@@ -4,6 +4,8 @@
 test/**
 src/**
 out/*.js.map
+syntaxes/references/**
+syntaxes/scad.yaml-tmLanguage
 tsconfig.json
 tslint.json
 vsc-extension-quickstart.md
