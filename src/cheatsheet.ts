@@ -105,7 +105,7 @@ export class Cheatsheet
 
     // Initializes the status bar
     public static initStatusBar() {
-        Cheatsheet.csStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+        Cheatsheet.csStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
         Cheatsheet.csStatusBarItem.command = Cheatsheet.csCommandId;
     }
 
