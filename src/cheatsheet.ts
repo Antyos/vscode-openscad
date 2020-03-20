@@ -1,20 +1,12 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import { ScadConfig } from './config';
 
 // Cheatsheet color schemes. Located in [extensionPath]/media/
 const colorScheme = {
     original: 'cheatsheet-original.css',
     auto: 'cheatsheet-auto.css'
-}
-
-// Cheatsheet config values
-interface CheatsheetConfig
-{
-    displayInStatusBar?: string;
-    colorScheme?: string;
-    lastColorScheme?: string;
-    openToSide?: boolean;
 }
 
 // Class for Cheatsheet webview and commands
@@ -29,7 +21,7 @@ export class Cheatsheet
 
     private readonly _panel: vscode.WebviewPanel;               // Webview panels
     private readonly _extensionPath: string;                    // Extension path
-    private static config: CheatsheetConfig = {};               // Extension config
+    private static config: ScadConfig = {};               // Extension config
     // private isScadDocument: boolean;                         // Is current document openSCAD
 
     
