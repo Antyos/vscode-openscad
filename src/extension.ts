@@ -3,43 +3,25 @@ import { Cheatsheet } from './cheatsheet';
 import { PreviewManager } from './previewManager';
 
 // New launch object
-let launcher = new PreviewManager();
+const previewManager = new PreviewManager();
 
 // Called when extension is activated
-// Extension is activated the first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-    // Register 'Open SCAD cheatsheet' command
-    context.subscriptions.push(
-        vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel(context.extensionPath))
-    );
+    // Create 'Open SCAD cheatsheet' command
+    const openCheatsheet = vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel(context.extensionPath));
     
-    // Create a new status bar item
+    // Initialize cheatsheet status bar item
     Cheatsheet.initStatusBar();
+
+    // Create preview commands
+    const openCurrentFile = vscode.commands.registerCommand(PreviewManager.commandId.preview, () => previewManager.openCurrentFile());
+    const kill = vscode.commands.registerCommand(PreviewManager.commandId.kill, () => previewManager.kill());
+
+    // Register commands
+    context.subscriptions.push(openCheatsheet);
     context.subscriptions.push(Cheatsheet.csStatusBarItem);
-
-    // Register serializer event action to recreate webview panel if vscode restarts
-    if (vscode.window.registerWebviewPanelSerializer)
-    {
-        // Make sure we register a serializer in action event
-        vscode.window.registerWebviewPanelSerializer(Cheatsheet.viewType, {
-            async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
-                console.log(`Got state: ${state}`);
-                Cheatsheet.revive(webviewPanel, context.extensionPath);
-            }
-        });
-    }
-
-    // Register preview commands
-    context.subscriptions.push(
-        vscode.commands.registerCommand(PreviewManager.commandId.preview, () => 
-            launcher.openCurrentFile() 
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand(PreviewManager.commandId.kill, () => 
-        launcher.kill() 
-        )
-    );
+    context.subscriptions.push(openCurrentFile);
+    context.subscriptions.push(kill);
     
     // Register listeners to make sure cheatsheet items are up-to-date
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));
@@ -48,6 +30,17 @@ export function activate(context: vscode.ExtensionContext) {
     
     // Update status bar item once at start
     Cheatsheet.updateStatusBar();
+
+    // Register serializer event action to recreate webview panel if vscode restarts
+    if (vscode.window.registerWebviewPanelSerializer) {
+        // Make sure we register a serializer in action event
+        vscode.window.registerWebviewPanelSerializer(Cheatsheet.viewType, {
+            async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
+                console.log(`Got state: ${state}`);
+                Cheatsheet.revive(webviewPanel, context.extensionPath);
+            }
+        });
+    }
 }
 
 // Called when extension is deactivated
@@ -62,6 +55,6 @@ function onDidChangeActiveTextEditor() {
 function onDidChangeConfiguration() {
   const config = vscode.workspace.getConfiguration('openscad'); // Get new config  
   Cheatsheet.onDidChangeConfiguration(config);                  // Update the cheatsheet with new config
-  launcher.onDidChangeConfiguration(config);                      // Update launcher with new config
+  previewManager.onDidChangeConfiguration(config);              // Update launcher with new config
   // vscode.window.showInformationMessage("Config change!"); // DEBUG
 }
