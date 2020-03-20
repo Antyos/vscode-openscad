@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
 import { Cheatsheet } from './cheatsheet';
+import { PreviewManager } from './previewManager';
+
+// New launch object
+let launcher = new PreviewManager();
 
 // Called when extension is activated
 // Extension is activated the first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
-    // Track current webview panel
-    let currentPanel: vscode.WebviewPanel | undefined = undefined;
-
     // Register 'Open SCAD cheatsheet' command
     context.subscriptions.push(
         vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel(context.extensionPath))
@@ -28,6 +28,18 @@ export function activate(context: vscode.ExtensionContext) {
             }
         });
     }
+
+    // Register preview commands
+    context.subscriptions.push(
+        vscode.commands.registerCommand(PreviewManager.commandId.preview, () => 
+            launcher.openCurrentFile() 
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand(PreviewManager.commandId.kill, () => 
+        launcher.kill() 
+        )
+    );
     
     // Register listeners to make sure cheatsheet items are up-to-date
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));
@@ -48,7 +60,8 @@ function onDidChangeActiveTextEditor() {
 
 // Run when configuration is changed
 function onDidChangeConfiguration() {
-  const config = vscode.workspace.getConfiguration('openscad');   // Get new config  
-  Cheatsheet.onDidChangeConfiguration(config);                    // Update the cheatsheet with new config
+  const config = vscode.workspace.getConfiguration('openscad'); // Get new config  
+  Cheatsheet.onDidChangeConfiguration(config);                  // Update the cheatsheet with new config
+  launcher.onDidChangeConfiguration(config);                      // Update launcher with new config
   // vscode.window.showInformationMessage("Config change!"); // DEBUG
 }

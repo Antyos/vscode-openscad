@@ -32,10 +32,28 @@
         "commands": [
             {
                 "command": "scad.cheatsheet",
-                "title": "Open OpenSCAD Cheatsheet",
+                "title": "Open Cheatsheet",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "scad.preview",
+                "title": "Preview Model",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "scad.kill",
+                "title": "Kill OpenSCAD Preview",
                 "category": "OpenSCAD"
             }
         ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "scad.preview",
+                    "when": "editorLangId == scad"
+                }
+            ]
+        },
         "languages": [
             {
                 "id": "scad",
@@ -67,6 +85,19 @@
         {
             "title": "OpenSCAD",
             "properties": {
+                "openscad.launchPath": {
+                    "type": "string",
+                    "default": "C:\\Program Files\\openscad\\openscad.exe",
+                    "markdownDescription": "Path to `openscad.exe`"
+                },
+                "openscad.maxInstances": {
+                    "type": "number",
+                    "default": 3,
+                    "markdownDescription": [
+                        "The maximum number of instances of OpenSCAD allowed. (UNUSED)",
+                        "> Note: Probably don't decrease this with active editors open ;)"
+                    ]
+                },
                 "openscad.cheatsheet.displayInStatusBar":
                 {
                     "type": "string",
