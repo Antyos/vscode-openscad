@@ -2,7 +2,7 @@
     "name": "openscad",
     "displayName": "OpenSCAD",
     "description": "OpenSCAD highlighting, snippets, and more for VSCode!",
-    "version": "0.1.1",
+    "version": "0.2.1",
     "publisher": "Antyos",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
@@ -99,10 +99,7 @@
                 "openscad.maxInstances": {
                     "type": "number",
                     "default": 3,
-                    "markdownDescription": [
-                        "The maximum number of instances of OpenSCAD allowed",
-                        "> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
-                    ]
+                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
                 },
                 "openscad.cheatsheet.displayInStatusBar":
                 {
