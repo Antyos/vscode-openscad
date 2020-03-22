@@ -54,15 +54,25 @@ export class PreviewManager {
     }
 
     // Open current file
-    public openCurrentFile() {
+    public async openCurrentFile() {
+        const editor = vscode.window.activeTextEditor;
         // Error checking
-        if (!vscode.window.activeTextEditor) { 
+        if (!editor) { 
             console.error("No active text editor");
             vscode.window.showErrorMessage("No active text editor");
             return; 
         }
 
-        this.openFile(vscode.window.activeTextEditor.document.uri);
+        // Make user save their document before previewing if it is untitled
+        if (editor.document.isUntitled) {
+            vscode.window.showInformationMessage("Save untitled document before previewing");
+            await vscode.window.showSaveDialog({
+                defaultUri: editor.document.uri,
+                filters: {'OpenSCAD Designs': ['scad']}
+            });
+        }
+
+        this.openFile(editor.document.uri);
     }
 
     // Prompt user for instances to kill
