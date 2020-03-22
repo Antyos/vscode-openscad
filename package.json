@@ -24,6 +24,7 @@
     "activationEvents": [
         "onLanguage:scad",
         "workspaceContains:**/*.scad",
+        "onCommand:scad.preview",
         "onCommand:scad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
@@ -43,6 +44,11 @@
             {
                 "command": "scad.kill",
                 "title": "Kill OpenSCAD Preview",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "scad.killAll",
+                "title": "Kill All OpenSCAD Previews",
                 "category": "OpenSCAD"
             }
         ],
@@ -94,8 +100,8 @@
                     "type": "number",
                     "default": 3,
                     "markdownDescription": [
-                        "The maximum number of instances of OpenSCAD allowed. (UNUSED)",
-                        "> Note: Probably don't decrease this with active editors open ;)"
+                        "The maximum number of instances of OpenSCAD allowed",
+                        "> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
                     ]
                 },
                 "openscad.cheatsheet.displayInStatusBar":

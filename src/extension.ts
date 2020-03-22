@@ -16,12 +16,14 @@ export function activate(context: vscode.ExtensionContext) {
     // Create preview commands
     const openCurrentFile = vscode.commands.registerCommand(PreviewManager.commandId.preview, () => previewManager.openCurrentFile());
     const kill = vscode.commands.registerCommand(PreviewManager.commandId.kill, () => previewManager.kill());
+    const killAll = vscode.commands.registerCommand(PreviewManager.commandId.killAll, () => previewManager.killAll());
 
     // Register commands
     context.subscriptions.push(openCheatsheet);
     context.subscriptions.push(Cheatsheet.csStatusBarItem);
     context.subscriptions.push(openCurrentFile);
     context.subscriptions.push(kill);
+    context.subscriptions.push(killAll);
     
     // Register listeners to make sure cheatsheet items are up-to-date
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));

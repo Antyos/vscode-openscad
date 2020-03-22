@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as child from 'child_process';
 
-// Preview class to open OpenSCAD
+// Preview class to open instance of OpenSCAD
 export class Preview {
     // Paths
     private static _scadPath: string;
@@ -14,8 +14,8 @@ export class Preview {
         // Set local arguments
         this._fileUri = fileUri;
 
-        // const commandArgs: string[] = (args) ? args?.concat(filePath) : [filePath];
-        const commandArgs: string[] = [this._fileUri.fsPath];
+        const commandArgs: string[] = (args) ? args.concat(this._fileUri.fsPath) : [this._fileUri.fsPath];
+        // const commandArgs: string[] = [this._fileUri.fsPath];
 
         console.log(`commangArgs: ${commandArgs}`); // DEBUG
 
@@ -33,6 +33,7 @@ export class Preview {
         
         this._process.on('exit', (code) => {
             console.log(`Child exited with code ${code}`);
+            this._isRunning = false;
         });
 
         // Child process is now running
@@ -42,8 +43,19 @@ export class Preview {
     // Kill child process
     public dispose() {
         this._process.kill();
-        this._isRunning = false;
+        // this._isRunning = false;
     }
+
+    // Returns if the given Uri is equivalent to the preview's Uri
+    public matchUri(uri: vscode.Uri): boolean {
+        return (this._fileUri === uri);
+    }
+
+    // Return Uri
+    public getUri() { return this._fileUri; }
+
+    // Get if running
+    public isRunning() { return this._isRunning; }
 
 
     // Static factory method. Create new preview child process
@@ -58,11 +70,12 @@ export class Preview {
         }
 
         // New file
-        return new Preview(resource);
+        return new Preview(resource, args);
         
     }
 
     // Used to set the path to `openscad.exe` on the system. Necessary to open children
+    // TODO: Config is override. Autodetects path by OS otherwise
     public static setScadPath(scadPath: string){
         Preview._scadPath = scadPath;
         console.log(`Path: '${this._scadPath}'`);   // DEBUG
