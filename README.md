@@ -95,8 +95,6 @@ If you would like to contribute, here's what you can do:
 
 ### Contributing to the Grammar
 
-If you want to make changes to the grammar in the `.yaml-tmlanguage` file, you will need to convert it to `.json` before VSCode can use it.
+VSCode can only read tmLanguage files in `xml` or `json` format. If you want to make changes to the grammar in the `.yaml-tmlanguage` file, you will need to convert it to `.json` before VSCode can use it.
 
-Run: `npm install` to download `js-yaml` for the conversion process.
-
-After that, you can run: `npx js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json`. Or, just run `makescad.bat` to convert `syntaxes/scad.yaml-tmlanguage` to `syntaxes/scad.tmlanguage.json`
+Assuming you have followed the steps above to obtain a local copy of the extension, run the `update-grammar` script to convert `syntaxes/scad.yaml-tmlanguage` to `syntaxes/scad.tmlanguage.json`

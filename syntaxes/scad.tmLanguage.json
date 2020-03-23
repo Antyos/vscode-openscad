@@ -19,7 +19,7 @@
     },
     {
       "name": "comment.block.scad",
-      "match": "(\\/\\*)\\s*((?:\\[[\\s\\w]*\\]\\s*)+)\\s*(\\*\\/)",
+      "match": "(/\\*)\\s*((?:\\[[\\s\\w]*\\]\\s*)+)\\s*(\\*/)",
       "captures": {
         "1": {
           "name": "punctuation.definition.comment.scad"
