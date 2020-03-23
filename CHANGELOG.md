@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.2] - (2020-03-23)
+
+### Fixes
+
+- Fixed syntax highlighting not working on case sensitive operating systems (i.e. Linux)
+
 ## [0.1.0] - (2020-03-17)
 
 ### Added

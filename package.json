@@ -2,7 +2,7 @@
     "name": "openscad",
     "displayName": "OpenSCAD",
     "description": "OpenSCAD highlighting, snippets, and more for VSCode!",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "publisher": "Antyos",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
@@ -60,7 +60,7 @@
             {
                 "language": "scad",
                 "scopeName": "source.scad",
-                "path": "./syntaxes/scad.tmlanguage.json"
+                "path": "./syntaxes/scad.tmLanguage.json"
             }
         ],
         "configuration":
