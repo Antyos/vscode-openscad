@@ -51,6 +51,14 @@ export class PreviewStore /* extends vscode.Disposable */ {
         preview.onKilled.subscribe(() => this._previews.delete(preview)); // Auto delete when killed
     }
 
+    // Create new preview (if not one with same uri) and then add it
+    public createAndAdd(uri: vscode.Uri, args?: string[]) {
+        if (this.get(uri) === undefined) {
+            const newPreview = Preview.create(uri, args);
+            if (newPreview) this.add(newPreview);
+        }
+    }
+
     // Delete and dispose of a preview
     public delete(preview: Preview, informUser?: boolean) {
         preview.dispose();

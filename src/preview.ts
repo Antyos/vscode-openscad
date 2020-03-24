@@ -53,7 +53,7 @@ export class Preview {
 
     // Returns if the given Uri is equivalent to the preview's Uri
     public matchUri(uri: vscode.Uri): boolean {
-        return (this._fileUri === uri);
+        return (this._fileUri.toString() === uri.toString());
     }
 
     // Return Uri

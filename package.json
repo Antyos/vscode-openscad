@@ -38,7 +38,7 @@
             },
             {
                 "command": "scad.preview",
-                "title": "Preview Model",
+                "title": "Preview Model in OpenSCAD",
                 "category": "OpenSCAD"
             },
             {
@@ -53,6 +53,20 @@
             }
         ],
         "menus": {
+            "editor/title/context": [
+                {
+                    "command": "scad.preview",
+                    "when": "resourceLangId == scad",
+                    "group": "navigation"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "scad.preview",
+                    "when": "resourceLangId == scad",
+                    "group": "navigation"
+                }
+            ],
             "commandPalette": [
                 {
                     "command": "scad.preview",

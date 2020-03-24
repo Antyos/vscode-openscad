@@ -14,14 +14,13 @@ export function activate(context: vscode.ExtensionContext) {
     Cheatsheet.initStatusBar();
 
     // Create preview commands
-    const openCurrentFile = vscode.commands.registerCommand(PreviewManager.commandId.preview, () => previewManager.openCurrentFile());
+    const preview = vscode.commands.registerCommand('scad.preview', (args) => previewManager.openFile(args));
     const kill = vscode.commands.registerCommand(PreviewManager.commandId.kill, () => previewManager.kill());
     const killAll = vscode.commands.registerCommand(PreviewManager.commandId.killAll, () => previewManager.killAll());
 
     // Register commands
     context.subscriptions.push(openCheatsheet);
     context.subscriptions.push(Cheatsheet.csStatusBarItem);
-    context.subscriptions.push(openCurrentFile);
     context.subscriptions.push(kill);
     context.subscriptions.push(killAll);
     
