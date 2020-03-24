@@ -34,15 +34,21 @@ export class PreviewManager {
     // Opens file in OpenSCAD
     public openFile(resource: vscode.Uri, args?: string[] | undefined) {
         // Error checking
+        if (!Preview.isValidScadPath) {
+            console.error("Path to openscad.exe is invalid");
+            vscode.window.showErrorMessage("Failed to open preview: Path to openscad.exe is invalid.");
+            return;
+        }
+
         if (this.previewStore.size() >= this.previewStore.maxPreviews || this.previewStore.maxPreviews === 0) {
             console.error("Max number of preview windows already open."); 
-            vscode.window.showErrorMessage("Max number of preview windows already open.");
+            vscode.window.showErrorMessage("Failed to open preview: Max number of preview windows already open.");
             return;
         }
         
         if (this.previewStore.get(resource) !== undefined) {
-            console.log("File already open");
-            vscode.window.showInformationMessage("File already open");
+            console.log("File is already open");
+            vscode.window.showInformationMessage("File is already open.");
             return;
         }
 
@@ -129,7 +135,7 @@ export class PreviewManager {
 
         // Set the path in the preview
         if (this.config.openscadPath) {
-            Preview.setScadPath(this.config.openscadPath);
+            Preview.scadPath = this.config.openscadPath;
         }
 
         // Set the max previews

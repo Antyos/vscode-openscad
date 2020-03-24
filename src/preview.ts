@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
 import * as child from 'child_process';
+import * as fs from 'fs';
 import { SignalDispatcher } from 'ste-signals';
 
 // Preview class to open instance of OpenSCAD
 export class Preview {
     // Paths
     private static _scadPath: string;
+    private static _isValidScadPath: boolean;
     private readonly _fileUri: vscode.Uri;
     private readonly _process: child.ChildProcess;
     private _isRunning: boolean;
@@ -83,8 +85,17 @@ export class Preview {
 
     // Used to set the path to `openscad.exe` on the system. Necessary to open children
     // TODO: Config is override. Autodetects path by OS otherwise
-    public static setScadPath(scadPath: string){
+    public static set scadPath(scadPath: string) {
         Preview._scadPath = scadPath;
         console.log(`Path: '${this._scadPath}'`);   // DEBUG
+        this._isValidScadPath = fs.existsSync(Preview._scadPath);
+    }
+
+    public static get scadPath(): string {
+        return Preview._scadPath;
+    }
+
+    public static get isValidScadPath() : boolean {
+        return this._isValidScadPath;
     }
 }
