@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as child from 'child_process';
+import { SignalDispatcher } from 'ste-signals';
 
 // Preview class to open instance of OpenSCAD
 export class Preview {
@@ -8,6 +9,7 @@ export class Preview {
     private readonly _fileUri: vscode.Uri;
     private readonly _process: child.ChildProcess;
     private _isRunning: boolean;
+    private _onKilled = new SignalDispatcher();
 
     // Constructor
     private constructor(fileUri: vscode.Uri, args?: string[] | undefined) {
@@ -15,7 +17,6 @@ export class Preview {
         this._fileUri = fileUri;
 
         const commandArgs: string[] = (args) ? args.concat(this._fileUri.fsPath) : [this._fileUri.fsPath];
-        // const commandArgs: string[] = [this._fileUri.fsPath];
 
         console.log(`commangArgs: ${commandArgs}`); // DEBUG
 
@@ -31,9 +32,11 @@ export class Preview {
             console.error(data.toString());
         });
         
+        // Run on child exit
         this._process.on('exit', (code) => {
             console.log(`Child exited with code ${code}`);
             this._isRunning = false;
+            this._onKilled.dispatch();  // Dispatch 'onKilled' event
         });
 
         // Child process is now running
@@ -42,7 +45,7 @@ export class Preview {
 
     // Kill child process
     public dispose() {
-        this._process.kill();
+        if (this._isRunning) this._process.kill();
         // this._isRunning = false;
     }
 
@@ -52,11 +55,15 @@ export class Preview {
     }
 
     // Return Uri
-    public getUri() { return this._fileUri; }
+    public get uri(): vscode.Uri { return this._fileUri; }
 
     // Get if running
-    public isRunning() { return this._isRunning; }
+    public get isRunning(): boolean { return this._isRunning; }
 
+    // On killed handlers
+    public get onKilled() {
+        return this._onKilled.asEvent();
+    }
 
     // Static factory method. Create new preview child process
     // Needed to make sure path to `openscad.exe` is defined

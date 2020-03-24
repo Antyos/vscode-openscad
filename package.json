@@ -87,22 +87,20 @@
                 "path": "./syntaxes/scad.tmlanguage.json"
             }
         ],
-        "configuration":
-        {
+        "configuration": {
             "title": "OpenSCAD",
             "properties": {
                 "openscad.launchPath": {
                     "type": "string",
                     "default": "C:\\Program Files\\openscad\\openscad.exe",
-                    "markdownDescription": "Path to `openscad.exe`"
+                    "markdownDescription": "Path to `openscad.exe`."
                 },
                 "openscad.maxInstances": {
                     "type": "number",
                     "default": 3,
-                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
+                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
                 },
-                "openscad.cheatsheet.displayInStatusBar":
-                {
+                "openscad.cheatsheet.displayInStatusBar": {
                     "type": "string",
                     "enum": [
                         "always",
@@ -111,7 +109,7 @@
                         "never"
                     ],
                     "default": "openDoc",
-                    "description": "When to display the \"Open Cheatsheet\" status bar icon",
+                    "description": "When to display the \"Open Cheatsheet\" status bar icon.",
                     "enumDescriptions": [
                         "Always displays \"Open Cheatsheet\" in status bar",
                         "Only display \"Open Cheatsheet\" in status bar when a '.scad' is in an open editor",
@@ -119,43 +117,43 @@
                         "Never display \"Open Cheatsheet\" in status bar"
                     ]
                 },
-                "openscad.cheatsheet.colorScheme":
-                {
+                "openscad.cheatsheet.colorScheme": {
                     "type": "string",
                     "enum": [
                         "original",
                         "auto"
                     ],
                     "default": "auto",
-                    "description": "The color scheme to use when displaying the OpenSCAD cheatsheet",
+                    "description": "The color scheme to use when displaying the OpenSCAD cheatsheet.",
                     "enumDescriptions": [
                         "Use original OpenSCAD cheatsheet color scheme",
-                        "Use VSCode's current theme for cheatsheet color sceheme" 
+                        "Use VSCode's current theme for cheatsheet color sceheme"
                     ]
                 },
-                "openscad.cheatsheet.openToSide":
-                {
+                "openscad.cheatsheet.openToSide": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Opens OpenSCAD cheatsheet in another column"
+                    "description": "Opens OpenSCAD cheatsheet in another column."
                 }
             }
         }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"lint": "tslint -p ./",
-		"watch": "tsc -watch -p ./",
+        "compile": "tsc -p ./",
+        "lint": "tslint -p ./",
+        "watch": "tsc -watch -p ./",
         "update-grammar": "npx js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json"
     },
     "devDependencies": {
+        "js-yaml": "^3.13.1",
         "@types/node": "^9.4.6",
-        "typescript": "^3.5.1",
         "tslint": "^5.16.0",
-        "@types/vscode": "^1.40.0",
+        "typescript": "^3.5.1",
         "vsce": "^1.73.0",
-        "js-yaml": "^3.13.1"
+        "@types/vscode": "^1.40.0"
     },
-    "dependencies": {}
+    "dependencies": {
+        "ste-signals": "^1.6.11"
+    }
 }

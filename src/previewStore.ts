@@ -4,7 +4,7 @@ import { Preview }  from './preview';
 // Used to keep track of Set of Previews
 export class PreviewStore /* extends vscode.Disposable */ {
     private readonly _previews = new Set<Preview>();
-    private maxPreviews: number;
+    private _maxPreviews: number;
 
     // Dispose of the PreviewStore
     public dispose(): void {
@@ -22,18 +22,17 @@ export class PreviewStore /* extends vscode.Disposable */ {
     
     // Constructor
     public constructor(maxPreviews?: number) {
-        this.maxPreviews = maxPreviews ? maxPreviews : 0;
+        this._maxPreviews = maxPreviews ? maxPreviews : 0;
     }
 
     // Clean up any non-running previews
-    // TODO: Convert to emmit onKilled() event to delete old previews instead of requireing cleanup()
-    public cleanup() {
-        for (const preview of this._previews) {
-            if (!preview.isRunning()) {
-                this._previews.delete(preview);
-            }
-        }
-    }
+    // public cleanup() {
+    //     for (const preview of this._previews) {
+    //         if (!preview.isRunning) {
+    //             this._previews.delete(preview);
+    //         }
+    //     }
+    // }
 
     // Finds a resource in the PreviewStore by uri
     // Returns the preview if found, otherwise undefined
@@ -49,12 +48,13 @@ export class PreviewStore /* extends vscode.Disposable */ {
     // Add preview
     public add(preview: Preview) {
         this._previews.add(preview)
+        preview.onKilled.subscribe(() => this._previews.delete(preview)); // Auto delete when killed
     }
 
     // Delete and dispose of a preview
     public delete(preview: Preview, informUser?: boolean) {
         preview.dispose();
-        if (informUser) vscode.window.showInformationMessage(`Killed: ${preview.getUri().path.replace(/\/.*\//g, '')}`);
+        if (informUser) vscode.window.showInformationMessage(`Killed: ${preview.uri.path.replace(/\/.*\//g, '')}`);
         this._previews.delete(preview);
     }
 
@@ -62,7 +62,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     public deleteAll(informUser?: boolean) {
         for (const preview of this._previews) {
             preview.dispose();
-            if (informUser) vscode.window.showInformationMessage(`Killed: ${preview.getUri().path.replace(/\/.*\//g, '')}`);
+            if (informUser) vscode.window.showInformationMessage(`Killed: ${preview.uri.path.replace(/\/.*\//g, '')}`);
         }
         this._previews.clear();
     }
@@ -71,10 +71,10 @@ export class PreviewStore /* extends vscode.Disposable */ {
     public getUris(): vscode.Uri[] {
         let uris: vscode.Uri[] = [];
 
-        this.cleanup(); // Clean up any killed instances that weren't caught
+        // this.cleanup(); // Clean up any killed instances that weren't caught
 
         for (const preview of this._previews) {
-            uris.push(preview.getUri());
+            uris.push(preview.uri);
         }
 
         return uris;
@@ -85,9 +85,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
         return this._previews.size;
     }
 
-    // Get max previews
-    public getMaxPreviews() { return this.maxPreviews; }
-    // Set max previews
-    public setMaxPreviews(num: number) { this.maxPreviews = num; }
+    public get maxPreviews(): number { return this._maxPreviews; }
+    public set maxPreviews(num: number) { this._maxPreviews = num; }
 
 }
