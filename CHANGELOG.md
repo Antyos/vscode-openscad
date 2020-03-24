@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Added 'Preview'
+
+- `scad.preview` command launches an instance of OpenSCAD to preview a `.scad` file
+- `scad.kill` and `scad.killAll` commands kill selected or all open previews
+- Configurations
+  - `openscad.launchPath` specifies the location of the `openscad.exe` executable
+  - `openscad.maxInstances` limits the max number of preview windows open at one time
+
 ## [0.1.0] - (2020-03-17)
 
 ### Added
