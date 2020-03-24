@@ -81,7 +81,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Returns size (length) of PreviewStore
-    public size() {
+    public get size() {
         return this._previews.size;
     }
 

@@ -6,9 +6,9 @@ import { PreviewStore } from './previewStore';
 // PreviewItems used for `scad.kill` quick pick menu
 class PreviewItem implements vscode.QuickPickItem {
 
-	label: string;      // File name
-	description:string; // File path
-    uri: vscode.Uri;    // Raw file uri
+	label: string;          // File name
+	description: string;    // File path
+    uri: vscode.Uri;        // Raw file uri
 	
 	constructor(public file: vscode.Uri) {
 		this.label = file.path.replace(/\/.*\//g, '');  // Remove path before filename
@@ -16,6 +16,18 @@ class PreviewItem implements vscode.QuickPickItem {
         this.uri = file;
 	}
 }
+
+class MessageItem implements vscode.QuickPickItem {
+
+    label: string;
+    
+    constructor(public message: string) {
+        this.label = message;
+    }
+}
+
+const mKillAll = new MessageItem('Kill All');
+const mNoPreviews = new MessageItem('No open previews');
 
 // Launcher class to handle launching instance of scad 
 export class PreviewManager {
@@ -40,7 +52,7 @@ export class PreviewManager {
             return;
         }
 
-        if (this.previewStore.size() >= this.previewStore.maxPreviews || this.previewStore.maxPreviews === 0) {
+        if (this.previewStore.size >= this.previewStore.maxPreviews || this.previewStore.maxPreviews === 0) {
             console.error("Max number of preview windows already open."); 
             vscode.window.showErrorMessage("Failed to open preview: Max number of preview windows already open.");
             return;
@@ -83,35 +95,43 @@ export class PreviewManager {
 
     // Prompt user for instances to kill
     public async kill() {
-        // Check that there are open previews
-        if (this.previewStore.size() <= 0) {
-            console.error("No open previews");
-            vscode.window.showQuickPick(["No open previews."]);
-            return;
-        }
+        // Create list for menu items
+        let menuItems: (PreviewItem | MessageItem)[] = [];
+        menuItems.push(this.previewStore.size > 0 ? mKillAll : mNoPreviews);    // Push MessageItem depending on num open previews
 
-        const uris: vscode.Uri[] = this.previewStore.getUris();
-        let picks: PreviewItem[] = [];
-        uris.forEach(uri => picks.push(new PreviewItem(uri)));
+        const uris: vscode.Uri[] = this.previewStore.getUris(); // Get list of uris in PreviewStore
+        uris.forEach(uri => menuItems.push(new PreviewItem(uri)));  // Populate quickpick list with open previews
 
-        const selected = await vscode.window.showQuickPick(picks, {
+        // Get from user
+        const selected = await vscode.window.showQuickPick(menuItems, {
             placeHolder: 'Select open preview to kill'
         });
 
-        if (!selected) return;
+        if (!selected) return;  // Return if selected is undefined
 
+        // Check for message item
+        if (selected instanceof MessageItem) {
+            switch (selected) {
+                case (mKillAll):
+                    this.killAll();
+                    break;
+                default:
+                    break;
+            }
+            return;
+        }
+
+        // Get preview to delete
         const previewToDelete = this.previewStore.get(selected.uri)
         if (!previewToDelete) return;
 
         this.previewStore.delete(previewToDelete, true);
-        
-        // vscode.window.showInformationMessage(`Killed: ${selected.label}`);
     }
 
     // Kill all the current previews
     public killAll() {
         // Check that there are open previews
-        if (this.previewStore.size() <= 0) {
+        if (this.previewStore.size <= 0) {
             console.error("No open previews");
             vscode.window.showErrorMessage("No open previews.");
             return;
