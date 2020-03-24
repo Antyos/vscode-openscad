@@ -34,7 +34,7 @@ export class PreviewManager {
     // Opens file in OpenSCAD
     public openFile(resource: vscode.Uri, args?: string[] | undefined) {
         // Error checking
-        if (this.previewStore.size() >= this.previewStore.maxPreviews) {
+        if (this.previewStore.size() >= this.previewStore.maxPreviews || this.previewStore.maxPreviews === 0) {
             console.error("Max number of preview windows already open."); 
             vscode.window.showErrorMessage("Max number of preview windows already open.");
             return;

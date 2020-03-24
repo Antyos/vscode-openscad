@@ -98,7 +98,7 @@
                 "openscad.maxInstances": {
                     "type": "number",
                     "default": 3,
-                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
+                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
                 },
                 "openscad.cheatsheet.displayInStatusBar": {
                     "type": "string",
