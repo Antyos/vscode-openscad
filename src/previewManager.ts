@@ -82,7 +82,7 @@ export class PreviewManager {
             }
 
             // Make sure we don't surpass max previews allowed
-            if (this.previewStore.size >= this.previewStore.maxPreviews || this.previewStore.maxPreviews === 0) {
+            if (this.previewStore.size >= this.previewStore.maxPreviews && this.previewStore.maxPreviews > 0) {
                 console.error("Max number of OpenSCAD previews already open."); // DEBUG
                 vscode.window.showErrorMessage("Max number of OpenSCAD previews already open.");
                 return;
