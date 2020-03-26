@@ -64,26 +64,26 @@
             "editor/title": [
                 {
                     "command": "scad.preview",
-                    "when": "editorLangId == scad",
+                    "when": "editorLangId == scad && config.openscad.showPreviewIconInEditorTitleMenu",
                     "group": "navigation@-1"
                 },
                 {
                     "command": "scad.kill",
-                    "when": "editorLangId == scad",
-                    "group": "navigation@0"
+                    "when": "editorLangId == scad && config.openscad.showPreviewIconInEditorTitleMenu",
+                    "group": "navigation@-1"
                 }
             ],
             "editor/title/context": [
                 {
                     "command": "scad.preview",
-                    "when": "resourceLangId == scad",
+                    "when": "resourceLangId == scad && config.openscad.showPreviewCommandInEditorTitleContextMenu",
                     "group": "navigation"
                 }
             ],
             "explorer/context": [
                 {
                     "command": "scad.preview",
-                    "when": "resourceLangId == scad",
+                    "when": "resourceLangId == scad && config.openscad.showPreviewCommandInExplorerContextMenu",
                     "group": "navigation"
                 }
             ],
@@ -91,6 +91,14 @@
                 {
                     "command": "scad.preview",
                     "when": "editorLangId == scad"
+                },
+                {
+                    "command": "scad.kill",
+                    "when": "areOpenScadPreviews"
+                },
+                {
+                    "command": "scad.killAll",
+                    "when": "areOpenScadPreviews"
                 }
             ]
         },
@@ -134,11 +142,23 @@
                     "default": 0,
                     "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
                 },
-                "openscad.showInEditorTitleMenu": 
+                "openscad.showPreviewIconInEditorTitleMenu": 
                 {
                     "type": "boolean",
                     "default": true,
-                    "description": "Show preview button in editor context [Fix later]"
+                    "description": "Show preview and kill buttons in editor title menu"
+                },
+                "openscad.showPreviewCommandInEditorTitleContextMenu": 
+                {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show preview command in editor title (tab) context menu"
+                },
+                "openscad.showPreviewCommandInExplorerContextMenu": 
+                {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show preview command in explorer context menu"
                 },
                 "openscad.cheatsheet.displayInStatusBar": {
                     "type": "string",
