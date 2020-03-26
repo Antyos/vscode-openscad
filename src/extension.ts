@@ -16,6 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Create preview commands
     const preview = vscode.commands.registerCommand(PreviewManager.commandId.preview, (args) => previewManager.openFile(args));
     const kill = vscode.commands.registerCommand(PreviewManager.commandId.kill, () => previewManager.kill());
+    const autoKill = vscode.commands.registerCommand('scad.autoKill', () => previewManager.kill(true));
     const killAll = vscode.commands.registerCommand(PreviewManager.commandId.killAll, () => previewManager.killAll());
 
     // Register commands
@@ -23,6 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(Cheatsheet.csStatusBarItem);
     context.subscriptions.push(preview);
     context.subscriptions.push(kill);
+    context.subscriptions.push(autoKill);
     context.subscriptions.push(killAll);
     
     // Register listeners to make sure cheatsheet items are up-to-date

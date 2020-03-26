@@ -103,7 +103,20 @@ export class PreviewManager {
     }
 
     // Prompt user for instances to kill
-    public async kill() {
+    public async kill(autoKill?: boolean) {
+        // If autoKill (for menu button usage), don't display the menu for 0 or 1 open previews
+        if (autoKill) {
+            // No active previews: Inform user
+            if (this.previewStore.size === 0) {
+                vscode.window.showInformationMessage("No open previews.");
+                return;
+            } 
+            // 1 active preview: delete it
+            else if (this.previewStore.size === 1) {
+                this.previewStore.deleteAll(this.config.showKillMessage);
+                return;
+            }
+        }
         // Create list for menu items
         let menuItems: (PreviewItem | MessageItem)[] = [];
         menuItems.push(this.previewStore.size > 0 ? mKillAll : mNoPreviews);    // Push MessageItem depending on num open previews
@@ -134,7 +147,7 @@ export class PreviewManager {
         const previewToDelete = this.previewStore.get(selected.uri)
         if (!previewToDelete) return;
 
-        this.previewStore.delete(previewToDelete, true);
+        this.previewStore.delete(previewToDelete, this.config.showKillMessage);
     }
 
     // Kill all the current previews
@@ -142,11 +155,11 @@ export class PreviewManager {
         // Check that there are open previews
         if (this.previewStore.size <= 0) {
             console.error("No open previews");
-            vscode.window.showErrorMessage("No open previews.");
+            vscode.window.showInformationMessage("No open previews.");
             return;
         }
 
-        this.previewStore.deleteAll(true);
+        this.previewStore.deleteAll(this.config.showKillMessage);
         // this._previews = undefined;
     }
 
@@ -161,6 +174,7 @@ export class PreviewManager {
         // Update configuration
         this.config.openscadPath = config.get<string>('launchPath');
         this.config.maxInstances = config.get<number>('maxInstances');
+        this.config.showKillMessage = config.get<boolean>('showKillMessage');
 
         // Set the path in the preview
         if (this.config.openscadPath) {
