@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { ScadConfig } from './config';
 import { Preview }  from './preview';
 import { PreviewStore } from './previewStore';
+import { uriFileName } from './utils';
 
 // PreviewItems used for `scad.kill` quick pick menu
 class PreviewItem implements vscode.QuickPickItem {
@@ -11,7 +12,8 @@ class PreviewItem implements vscode.QuickPickItem {
     uri: vscode.Uri;        // Raw file uri
 	
 	constructor(public file: vscode.Uri) {
-		this.label = file.path.replace(/\/.*\//g, '');  // Remove path before filename
+        const fileName = uriFileName(file);
+		this.label = fileName ? fileName : '';  // Remove path before filename
         this.description = file.path.substring(1);      // Remove first '/'
         this.uri = file;
 	}
@@ -90,8 +92,8 @@ export class PreviewManager {
             
             // Make sure file is not already open
             if (this.previewStore.get(resource) !== undefined) {
-                console.log("File is already open");
-                vscode.window.showInformationMessage(`File is already open: "${resource.fsPath}"`);
+                console.log(`File is already open: "${resource.fsPath}"`);
+                vscode.window.showInformationMessage(`${uriFileName(resource)} is already open: "${resource.fsPath}"`);
                 return;
             }
 
