@@ -3,6 +3,8 @@ import { Preview }  from './preview';
 
 // Used to keep track of Set of Previews
 export class PreviewStore /* extends vscode.Disposable */ {
+    private static readonly areOpenScadPreviewsContextKey = 'areOpenScadPreviews';
+
     private readonly _previews = new Set<Preview>();
     private _maxPreviews: number;
 
@@ -23,16 +25,8 @@ export class PreviewStore /* extends vscode.Disposable */ {
     // Constructor
     public constructor(maxPreviews?: number) {
         this._maxPreviews = maxPreviews ? maxPreviews : 0;
+        this.setAreOpenPreviews(false);
     }
-
-    // Clean up any non-running previews
-    // public cleanup() {
-    //     for (const preview of this._previews) {
-    //         if (!preview.isRunning) {
-    //             this._previews.delete(preview);
-    //         }
-    //     }
-    // }
 
     // Finds a resource in the PreviewStore by uri
     // Returns the preview if found, otherwise undefined
@@ -49,6 +43,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     public add(preview: Preview) {
         this._previews.add(preview)
         preview.onKilled.subscribe(() => this._previews.delete(preview)); // Auto delete when killed
+        this.setAreOpenPreviews(true);
     }
 
     // Create new preview (if not one with same uri) and then add it
@@ -64,6 +59,10 @@ export class PreviewStore /* extends vscode.Disposable */ {
         preview.dispose();
         if (informUser) vscode.window.showInformationMessage(`Killed: ${preview.uri.path.replace(/\/.*\//g, '')}`);
         this._previews.delete(preview);
+
+        if (this.size === 0) {
+            this.setAreOpenPreviews(false);
+        }
     }
 
     // Functionally same as dispose() but without super.dispose()
@@ -73,6 +72,8 @@ export class PreviewStore /* extends vscode.Disposable */ {
             if (informUser) vscode.window.showInformationMessage(`Killed: ${preview.uri.path.replace(/\/.*\//g, '')}`);
         }
         this._previews.clear();
+
+        this.setAreOpenPreviews(false);
     }
 
     // Returns a list of all the uris
@@ -89,11 +90,13 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Returns size (length) of PreviewStore
-    public get size() {
-        return this._previews.size;
-    }
+    public get size() { return this._previews.size; }
 
     public get maxPreviews(): number { return this._maxPreviews; }
     public set maxPreviews(num: number) { this._maxPreviews = num; }
 
+    // Set context 'areOpenPreviews' for use in 'when' clauses
+    private setAreOpenPreviews(value: boolean) {
+        vscode.commands.executeCommand('setContext', PreviewStore.areOpenScadPreviewsContextKey, value);
+    }
 }
