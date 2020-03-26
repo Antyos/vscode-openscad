@@ -39,12 +39,20 @@
             {
                 "command": "scad.preview",
                 "title": "Preview Model in OpenSCAD",
-                "category": "OpenSCAD"
+                "category": "OpenSCAD",
+                "icon": {
+                    "light": "./media/icons/preview-light.svg",
+                    "dark": "./media/icons/preview-dark.svg"
+                }
             },
             {
                 "command": "scad.kill",
                 "title": "Kill OpenSCAD Preview",
-                "category": "OpenSCAD"
+                "category": "OpenSCAD",
+                "icon": {
+                    "light": "./media/icons/kill-light.svg",
+                    "dark": "./media/icons/kill-dark.svg"
+                }
             },
             {
                 "command": "scad.killAll",
@@ -53,6 +61,18 @@
             }
         ],
         "menus": {
+            "editor/title": [
+                {
+                    "command": "scad.preview",
+                    "when": "editorLangId == scad",
+                    "group": "navigation@-1"
+                },
+                {
+                    "command": "scad.kill",
+                    "when": "editorLangId == scad",
+                    "group": "navigation@0"
+                }
+            ],
             "editor/title/context": [
                 {
                     "command": "scad.preview",
@@ -113,6 +133,12 @@
                     "type": "number",
                     "default": 0,
                     "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
+                },
+                "openscad.showInEditorTitleMenu": 
+                {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show preview button in editor context [Fix later]"
                 },
                 "openscad.cheatsheet.displayInStatusBar": {
                     "type": "string",

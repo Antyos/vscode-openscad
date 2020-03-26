@@ -2,6 +2,7 @@
 .vscode-test/**
 .gitignore
 out/*.js.map
+media/icons/source/**
 scad-icon-theme.json
 src/**
 syntaxes/references/**
