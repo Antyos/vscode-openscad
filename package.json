@@ -171,7 +171,8 @@
                 "openscad.launchPath": {
                     "type": "string",
                     "default": "C:\\Program Files\\openscad\\openscad.exe",
-                    "markdownDescription": "Path to `openscad.exe`."
+                    "markdownDescription": "Path to `openscad.exe`.",
+                    "scope": "machine-overridable"
                 },
                 "openscad.maxInstances": {
                     "type": "number",
