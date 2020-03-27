@@ -14,7 +14,8 @@ export function activate(context: vscode.ExtensionContext) {
     Cheatsheet.initStatusBar();
 
     // Create preview commands
-    const preview = vscode.commands.registerCommand(PreviewManager.commandId.preview, (args) => previewManager.openFile(args));
+    const preview = vscode.commands.registerCommand(PreviewManager.commandId.preview, (mainUri, allUris) => previewManager.openFile(mainUri,allUris));
+    const exportToStl = vscode.commands.registerCommand('scad.exportToStl', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'stl'));
     const kill = vscode.commands.registerCommand(PreviewManager.commandId.kill, () => previewManager.kill());
     const autoKill = vscode.commands.registerCommand('scad.autoKill', () => previewManager.kill(true));
     const killAll = vscode.commands.registerCommand(PreviewManager.commandId.killAll, () => previewManager.killAll());
@@ -23,6 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(openCheatsheet);
     context.subscriptions.push(Cheatsheet.csStatusBarItem);
     context.subscriptions.push(preview);
+    context.subscriptions.push(exportToStl);
     context.subscriptions.push(kill);
     context.subscriptions.push(autoKill);
     context.subscriptions.push(killAll);

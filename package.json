@@ -25,6 +25,10 @@
         "onLanguage:scad",
         "workspaceContains:**/*.scad",
         "onCommand:scad.preview",
+        "onCommand:scad.kill",
+        "onCommand:scad.autoKill",
+        "onCommand:scad.killAll",
+        "onCommand:scad.exportToStl",
         "onCommand:scad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
@@ -67,6 +71,11 @@
                 "command": "scad.killAll",
                 "title": "Kill All OpenSCAD Previews",
                 "category": "OpenSCAD"
+            },
+            {
+                "command": "scad.exportToStl",
+                "title": "Export to STL",
+                "category": "OpenSCAD"
             }
         ],
         "menus": {
@@ -74,26 +83,36 @@
                 {
                     "command": "scad.preview",
                     "when": "editorLangId == scad && config.openscad.showPreviewIconInEditorTitleMenu",
-                    "group": "navigation@-1"
+                    "group": "navigation@-1.1"
                 },
                 {
                     "command": "scad.autoKill",
                     "when": "editorLangId == scad && config.openscad.showPreviewIconInEditorTitleMenu",
-                    "group": "navigation@-1"
+                    "group": "navigation@-1.2"
                 }
             ],
             "editor/title/context": [
                 {
                     "command": "scad.preview",
                     "when": "resourceLangId == scad && config.openscad.showPreviewCommandInEditorTitleContextMenu",
-                    "group": "navigation"
+                    "group": "navigation@0"
+                },
+                {
+                    "command": "scad.exportToStl",
+                    "when": "resourceLangId == scad && config.openscad.interface.showExportToStlExplorerContextMenu",
+                    "group": "navigation@1"
                 }
             ],
             "explorer/context": [
                 {
                     "command": "scad.preview",
                     "when": "resourceLangId == scad && config.openscad.showPreviewCommandInExplorerContextMenu",
-                    "group": "navigation"
+                    "group": "navigation@0"
+                },
+                {
+                    "command": "scad.exportToStl",
+                    "when": "resourceLangId == scad && config.openscad.interface.showExportToStlExplorerContextMenu",
+                    "group": "navigation@1"
                 }
             ],
             "commandPalette": [
@@ -112,6 +131,10 @@
                 {
                     "command": "scad.killAll",
                     "when": "areOpenScadPreviews"
+                },
+                {
+                    "command": "scad.exportToStl",
+                    "when": "editorLangId == scad"
                 }
             ]
         },
@@ -153,7 +176,7 @@
                 "openscad.maxInstances": {
                     "type": "number",
                     "default": 0,
-                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
+                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit. Instances include any open previews and any active exports.\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
                 },
                 "openscad.showKillMessage": 
                 {
@@ -178,6 +201,12 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Show preview command in explorer context menu"
+                },
+                "openscad.interface.showExportToStlExplorerContextMenu": 
+                {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show `Export to STL` command in explorer context menu"
                 },
                 "openscad.cheatsheet.displayInStatusBar": {
                     "type": "string",

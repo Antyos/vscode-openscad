@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { ScadConfig } from './config';
 import { Preview }  from './preview';
 import { PreviewStore } from './previewStore';
-import { uriFileName } from './utils';
+import { uriFileName, uriFileNameNoExt } from './utils';
 
 // PreviewItems used for `scad.kill` quick pick menu
 class PreviewItem implements vscode.QuickPickItem {
@@ -31,6 +32,24 @@ class MessageItem implements vscode.QuickPickItem {
 const mKillAll = new MessageItem('Kill All');
 const mNoPreviews = new MessageItem('No open previews');
 
+export type ExportFileExt = 'stl'|'off'|'amf'|'3mf'|'csg'|'dxf'|'svg'|'png'|'echo'|'ast'|'term'|'nef3'|'nefdbg';
+
+// const exportFileTypes = [
+//     'stl',
+//     'off',
+//     'amf',
+//     '3mf',
+//     'csg',
+//     'dxf',
+//     'svg',
+//     'png',
+//     'echo',
+//     'ast',
+//     'term',
+//     'nef3',
+//     'nefdbg'
+// ]
+
 // Launcher class to handle launching instance of scad 
 export class PreviewManager {
     // Command IDs
@@ -46,7 +65,7 @@ export class PreviewManager {
     // public activate() {}
 
     // Opens file in OpenSCAD
-    public openFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], args?: string[] | undefined) {
+    public openFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[]) {
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach( async (uri) => {
             let resource: vscode.Uri;
 
@@ -54,54 +73,51 @@ export class PreviewManager {
 
             // If uri not given, try opening activeTextEditor
             if (!(uri instanceof vscode.Uri)) { 
-                const editor = vscode.window.activeTextEditor;
-                if (!editor) return;
-
-                // Make user save their document before previewing if it is untitled
-                if (editor.document.isUntitled) {
-                    vscode.window.showInformationMessage("Save untitled document before previewing");
-                    // Prompt save window
-                    const savedUri = await vscode.window.showSaveDialog({
-                        defaultUri: editor.document.uri,
-                        filters: {'OpenSCAD Designs': ['scad']}
-                    });
-                    // If user saved, set `resource` otherwise, return
-                    if (savedUri) resource = savedUri;
-                    else return;
-                } 
-                // If document is already saved, set `resource`
-                else resource = editor.document.uri;
+                const newUri = await this.getActiveEditorUri();
+                if (newUri) resource = newUri;
+                else return;
             }
             // Uri is given, set `resource`
             else resource = uri;
 
-            // Error checking
-            // Make sure path to openscad.exe is valid
-            if (!Preview.isValidScadPath) {
-                console.error("Path to openscad.exe is invalid");   // DEBUG
-                vscode.window.showErrorMessage("Path to openscad.exe is invalid.");
-                return;
-            }
-
-            // Make sure we don't surpass max previews allowed
-            if (this.previewStore.size >= this.previewStore.maxPreviews && this.previewStore.maxPreviews > 0) {
-                console.error("Max number of OpenSCAD previews already open."); // DEBUG
-                vscode.window.showErrorMessage("Max number of OpenSCAD previews already open.");
-                return;
-            }
+            // Check if a new preview can be opened
+            if (!this.canOpenNewPreview(resource)) return;
             
-            // Make sure file is not already open
-            if (this.previewStore.get(resource) !== undefined) {
-                console.log(`File is already open: "${resource.fsPath}"`);
-                vscode.window.showInformationMessage(`${uriFileName(resource)} is already open: "${resource.fsPath}"`);
-                return;
-            }
-
             console.log(`uri: ${resource}`);    // DEBUG
 
             // Create and add new OpenSCAD preview to PreviewStore
+            this.previewStore.createAndAdd(resource);
+        });
+    }
+
+    // Export file
+    public exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: ExportFileExt) {
+        (Array.isArray(allUris) ? allUris : [mainUri]).forEach( async (uri) => {
+            let resource: vscode.Uri;
+            let args: string[] = [];
+
+            if (!fileExt) return;
+            
+            // If uri not given, try opening activeTextEditor
+            if (!(uri instanceof vscode.Uri)) { 
+                const newUri = await this.getActiveEditorUri();
+                if (newUri) resource = newUri;
+                else return;
+            }
+            // Uri is given, set `resource`
+            else resource = uri;
+
+            args.push('-o');
+            args.push(`${path.dirname(resource.fsPath)}/${path.basename(resource.fsPath, path.extname(resource.fsPath))}.${fileExt}`);
+
+            // Check if a new preview can be opened
+            if (!this.canOpenNewPreview(resource)) return;
+            
+            console.log(`uri: ${resource}`); // DEBUG
+
+            // Create and add new OpenSCAD preview to PreviewStore
             this.previewStore.createAndAdd(resource, args);
-        })
+        });
     }
 
     // Prompt user for instances to kill
@@ -185,5 +201,52 @@ export class PreviewManager {
 
         // Set the max previews
         this.previewStore.maxPreviews = (this.config.maxInstances ? this.config.maxInstances : 0);
+    }
+
+    // Gets the uri of the active editor
+    private async getActiveEditorUri() {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) return undefined;
+
+        // Make user save their document before previewing if it is untitled
+        // TODO: Consider implementing as virtual (or just temp) document in the future
+        if (editor.document.isUntitled) {
+            vscode.window.showInformationMessage("Save untitled document before previewing");
+            // Prompt save window
+            const savedUri = await vscode.window.showSaveDialog({
+                defaultUri: editor.document.uri,
+                filters: {'OpenSCAD Designs': ['scad']}
+            });
+            // If user saved, set `resource` otherwise, return
+            if (savedUri) return savedUri;
+            else return undefined;
+        } 
+        // If document is already saved, set `resource`
+        else return editor.document.uri;
+    }
+
+    private canOpenNewPreview(resource: vscode.Uri): boolean {
+        // Make sure path to openscad.exe is valid
+        if (!Preview.isValidScadPath) {
+            console.error("Path to openscad.exe is invalid");   // DEBUG
+            vscode.window.showErrorMessage("Path to openscad.exe is invalid.");
+            return false;
+        }
+
+        // Make sure we don't surpass max previews allowed
+        else if (this.previewStore.size >= this.previewStore.maxPreviews && this.previewStore.maxPreviews > 0) {
+            console.error("Max number of OpenSCAD previews already open."); // DEBUG
+            vscode.window.showErrorMessage("Max number of OpenSCAD previews already open.");
+            return false;
+        }
+        
+        // Make sure file is not already open
+        else if (this.previewStore.get(resource) !== undefined) {
+            console.log(`File is already open: "${resource.fsPath}"`);
+            vscode.window.showInformationMessage(`${uriFileName(resource)} is already open: "${resource.fsPath}"`);
+            return false;
+        }
+
+        else return true;
     }
 }
