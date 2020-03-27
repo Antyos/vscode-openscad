@@ -73,6 +73,11 @@
                 "category": "OpenSCAD"
             },
             {
+                "command": "scad.export",
+                "title": "Export Model",
+                "category": "OpenSCAD"
+            },
+            {
                 "command": "scad.exportToStl",
                 "title": "Export to STL",
                 "category": "OpenSCAD"
@@ -98,6 +103,11 @@
                     "group": "navigation@0"
                 },
                 {
+                    "command": "scad.export",
+                    "when": "resourceLangId == scad && config.openscad.interface.showExportInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
+                    "group": "navigation@1"
+                },
+                {
                     "command": "scad.exportToStl",
                     "when": "resourceLangId == scad && config.openscad.interface.showExportToStlInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
                     "group": "navigation@1"
@@ -107,12 +117,17 @@
                 {
                     "command": "scad.preview",
                     "when": "resourceLangId == scad && config.openscad.interface.showPreviewInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
-                    "group": "navigation@0"
+                    "group": "navigation@-1.3"
+                },
+                {
+                    "command": "scad.export",
+                    "when": "resourceLangId == scad && config.openscad.interface.showExportInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
+                    "group": "navigation@-1.1"
                 },
                 {
                     "command": "scad.exportToStl",
                     "when": "resourceLangId == scad && config.openscad.interface.showExportToStlInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
-                    "group": "navigation@1"
+                    "group": "navigation@-1.2"
                 }
             ],
             "commandPalette": [
@@ -131,6 +146,10 @@
                 {
                     "command": "scad.killAll",
                     "when": "areOpenScadPreviews"
+                },
+                {
+                    "command": "scad.export",
+                    "when": "editorLangId == scad || resourceLangId == scad"
                 },
                 {
                     "command": "scad.exportToStl",
@@ -208,6 +227,11 @@
                     "type": "boolean",
                     "default": true,
                     "markdownDescription": "Show `Preview in OpenSCAD` command in context menus"
+                },
+                "openscad.interface.showExportInContextMenus": {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show `Export Model` command in context menus"
                 },
                 "openscad.interface.showExportToStlInContextMenus": {
                     "type": "boolean",

@@ -33,8 +33,9 @@ const mKillAll = new MessageItem('Kill All');
 const mNoPreviews = new MessageItem('No open previews');
 
 // Avaiable file extensions for export
-export type TExportFileExt =  'stl'|'off'|'amf'|'3mf'|'csg'|'dxf'|'svg'|'png'|'echo'|'ast'|'term'|'nef3'|'nefdbg';
-export const ExportFileExt = ['stl','off','amf','3mf','csg','dxf','svg','png','echo','ast','term','nef3','nefdbg'];
+export type TExportFileExt = 'stl'|'off'|'amf'|'3mf'|'csg'|'dxf'|'svg'|'png'|'echo'|'ast'|'term'|'nef3'|'nefdbg';
+export const ExportFileExt:TExportFileExt[] = 
+                            ['stl','off','amf','3mf','csg','dxf','svg','png','echo','ast','term','nef3','nefdbg'];
 
 // Launcher class to handle launching instance of scad 
 export class PreviewManager {
@@ -77,12 +78,24 @@ export class PreviewManager {
     }
 
     // Export file
-    public exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: TExportFileExt) {
+    public async exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: TExportFileExt) {
+        // If file extension is not supplied, prompt user
+        if (!fileExt) {
+            // Show quick pick menu to prompt user for file extension
+            const pick = await vscode.window.showQuickPick(ExportFileExt, {placeHolder: 'Select file extension for export'});
+
+            if (pick) fileExt = <TExportFileExt>pick;   // If user selected a file, cast and set fileExt
+            if (!fileExt) {                             // Still no file extension, return
+                // console.error("Export failed. No specified file type.");
+                // vscode.window.showErrorMessage("Export failed. No specified file type.")
+                return;
+            }    
+        }
+
+        // Iterate through uris 
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach( async (uri) => {
             let resource: vscode.Uri;
             let args: string[] = [];
-
-            if (!fileExt) return;
             
             // If uri not given, try opening activeTextEditor
             if (!(uri instanceof vscode.Uri)) { 
