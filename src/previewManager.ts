@@ -32,23 +32,9 @@ class MessageItem implements vscode.QuickPickItem {
 const mKillAll = new MessageItem('Kill All');
 const mNoPreviews = new MessageItem('No open previews');
 
-export type ExportFileExt = 'stl'|'off'|'amf'|'3mf'|'csg'|'dxf'|'svg'|'png'|'echo'|'ast'|'term'|'nef3'|'nefdbg';
-
-// const exportFileTypes = [
-//     'stl',
-//     'off',
-//     'amf',
-//     '3mf',
-//     'csg',
-//     'dxf',
-//     'svg',
-//     'png',
-//     'echo',
-//     'ast',
-//     'term',
-//     'nef3',
-//     'nefdbg'
-// ]
+// Avaiable file extensions for export
+export type TExportFileExt =  'stl'|'off'|'amf'|'3mf'|'csg'|'dxf'|'svg'|'png'|'echo'|'ast'|'term'|'nef3'|'nefdbg';
+export const ExportFileExt = ['stl','off','amf','3mf','csg','dxf','svg','png','echo','ast','term','nef3','nefdbg'];
 
 // Launcher class to handle launching instance of scad 
 export class PreviewManager {
@@ -65,7 +51,7 @@ export class PreviewManager {
     // public activate() {}
 
     // Opens file in OpenSCAD
-    public openFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[]) {
+    public openFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], args?: string[]) {
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach( async (uri) => {
             let resource: vscode.Uri;
 
@@ -86,12 +72,12 @@ export class PreviewManager {
             console.log(`uri: ${resource}`);    // DEBUG
 
             // Create and add new OpenSCAD preview to PreviewStore
-            this.previewStore.createAndAdd(resource);
+            this.previewStore.createAndAdd(resource, args);
         });
     }
 
     // Export file
-    public exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: ExportFileExt) {
+    public exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: TExportFileExt) {
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach( async (uri) => {
             let resource: vscode.Uri;
             let args: string[] = [];
@@ -115,7 +101,6 @@ export class PreviewManager {
             
             console.log(`uri: ${resource}`); // DEBUG
 
-            // Create and add new OpenSCAD preview to PreviewStore
             this.previewStore.createAndAdd(resource, args);
         });
     }

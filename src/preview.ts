@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import * as child from 'child_process';
 import * as fs from 'fs';
 import { SignalDispatcher } from 'ste-signals';
+import { PreviewStore } from './previewStore';
+
+export type PreviewType = 'view'|'output';
 
 // Preview class to open instance of OpenSCAD
 export class Preview {
@@ -10,13 +13,15 @@ export class Preview {
     private static _isValidScadPath: boolean;
     private readonly _fileUri: vscode.Uri;
     private readonly _process: child.ChildProcess;
+    private readonly _previewType: PreviewType;
     private _isRunning: boolean;
     private _onKilled = new SignalDispatcher();
 
     // Constructor
-    private constructor(fileUri: vscode.Uri, args?: string[] | undefined) {
+    private constructor(fileUri: vscode.Uri, previewType?: PreviewType, args?: string[] | undefined) {
         // Set local arguments
         this._fileUri = fileUri;
+        this._previewType = (previewType ? previewType : 'view');
 
         const commandArgs: string[] = (args) ? args.concat(this._fileUri.fsPath) : [this._fileUri.fsPath];
 
@@ -52,8 +57,8 @@ export class Preview {
     }
 
     // Returns if the given Uri is equivalent to the preview's Uri
-    public matchUri(uri: vscode.Uri): boolean {
-        return (this._fileUri.toString() === uri.toString());
+    public matchUri(uri: vscode.Uri, previewType?: PreviewType): boolean {
+        return (this._fileUri.toString() === uri.toString()) && (this._previewType === (previewType ? previewType : 'view'));
     }
 
     // Return Uri
@@ -69,7 +74,7 @@ export class Preview {
 
     // Static factory method. Create new preview child process
     // Needed to make sure path to `openscad.exe` is defined
-    public static create(resource: vscode.Uri, args?: string[]): Preview | undefined {
+    public static create(resource: vscode.Uri, previewType?: PreviewType, args?: string[]): Preview | undefined {
         // Error checking
         // Make sure scad path is defined
         if (!Preview._scadPath) {
@@ -77,11 +82,16 @@ export class Preview {
             vscode.window.showErrorMessage("OpenSCAD path does not exist.");
             return undefined;
         }
+        
+        // If previewType is undefined, automatically assign it based on arguemnts
+        if(!previewType) previewType = args?.some(item => ['-o', '--o'].includes(item)) ? 'output' : 'view';
 
         // New file
-        return new Preview(resource, args);
+        return new Preview(resource, previewType, args);
         
     }
+
+    public get previewType() { return this._previewType; }
 
     // Used to set the path to `openscad.exe` on the system. Necessary to open children
     // TODO: Config is override. Autodetects path by OS otherwise
@@ -91,11 +101,6 @@ export class Preview {
         this._isValidScadPath = fs.existsSync(Preview._scadPath);
     }
 
-    public static get scadPath(): string {
-        return Preview._scadPath;
-    }
-
-    public static get isValidScadPath() : boolean {
-        return this._isValidScadPath;
-    }
+    public static get scadPath(): string { return Preview._scadPath; }
+    public static get isValidScadPath() : boolean { return this._isValidScadPath; }
 }
