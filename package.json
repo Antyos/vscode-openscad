@@ -51,7 +51,7 @@
             },
             {
                 "command": "scad.kill",
-                "title": "Kill OpenSCAD Preview",
+                "title": "Kill OpenSCAD Previews",
                 "category": "OpenSCAD",
                 "icon": {
                     "light": "./media/icons/kill-light.svg",
@@ -60,7 +60,7 @@
             },
             {
                 "command": "scad.autoKill",
-                "title": "Kill OpenSCAD Preview",
+                "title": "Kill OpenSCAD Previews",
                 "category": "OpenSCAD",
                 "icon": {
                     "light": "./media/icons/kill-light.svg",
@@ -82,43 +82,43 @@
             "editor/title": [
                 {
                     "command": "scad.preview",
-                    "when": "editorLangId == scad && config.openscad.showPreviewIconInEditorTitleMenu",
+                    "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu",
                     "group": "navigation@-1.1"
                 },
                 {
                     "command": "scad.autoKill",
-                    "when": "editorLangId == scad && config.openscad.showPreviewIconInEditorTitleMenu",
+                    "when": "editorLangId == scad && config.openscad.interface.showKillIconInEditorTitleMenu",
                     "group": "navigation@-1.2"
                 }
             ],
             "editor/title/context": [
                 {
                     "command": "scad.preview",
-                    "when": "resourceLangId == scad && config.openscad.showPreviewCommandInEditorTitleContextMenu",
+                    "when": "resourceLangId == scad && config.openscad.interface.showPreviewInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
                     "group": "navigation@0"
                 },
                 {
                     "command": "scad.exportToStl",
-                    "when": "resourceLangId == scad && config.openscad.interface.showExportToStlExplorerContextMenu",
+                    "when": "resourceLangId == scad && config.openscad.interface.showExportToStlInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
                     "group": "navigation@1"
                 }
             ],
             "explorer/context": [
                 {
                     "command": "scad.preview",
-                    "when": "resourceLangId == scad && config.openscad.showPreviewCommandInExplorerContextMenu",
+                    "when": "resourceLangId == scad && config.openscad.interface.showPreviewInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
                     "group": "navigation@0"
                 },
                 {
                     "command": "scad.exportToStl",
-                    "when": "resourceLangId == scad && config.openscad.interface.showExportToStlExplorerContextMenu",
+                    "when": "resourceLangId == scad && config.openscad.interface.showExportToStlInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
                     "group": "navigation@1"
                 }
             ],
             "commandPalette": [
                 {
                     "command": "scad.preview",
-                    "when": "editorLangId == scad"
+                    "when": "editorLangId == scad || resourceLangId == scad"
                 },
                 {
                     "command": "scad.kill",
@@ -134,7 +134,7 @@
                 },
                 {
                     "command": "scad.exportToStl",
-                    "when": "editorLangId == scad"
+                    "when": "editorLangId == scad || resourceLangId == scad"
                 }
             ]
         },
@@ -162,7 +162,7 @@
             {
                 "language": "scad",
                 "scopeName": "source.scad",
-                "path": "./syntaxes/scad.tmlanguage.json"
+                "path": "./syntaxes/scad.tmLanguage.json"
             }
         ],
         "configuration": {
@@ -179,35 +179,40 @@
                     "default": 0,
                     "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit. Instances include any open previews and any active exports.\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
                 },
-                "openscad.showKillMessage": 
-                {
+                "openscad.showKillMessage": {
                     "type": "boolean",
                     "default": true,
                     "description": "Show message when a preview is killed"
                 },
-                "openscad.showPreviewIconInEditorTitleMenu": 
-                {
+                "openscad.interface.showPreviewIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Show preview and kill buttons in editor title menu"
+                    "markdownDescription": "Show `Preview in OpenSCAD` button in editor title menu (right side of tabs)"
                 },
-                "openscad.showPreviewCommandInEditorTitleContextMenu": 
-                {
+                "openscad.interface.showKillIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Show preview command in editor title (tab) context menu"
+                    "markdownDescription": "Show `Kill OpenSCAD Previews` button in editor title menu (right side of tabs)"
                 },
-                "openscad.showPreviewCommandInExplorerContextMenu": 
-                {
+                "openscad.interface.showCommandsInEditorTitleContextMenu": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Show preview command in explorer context menu"
+                    "description": "Show commands in editor title (tab) context menu"
                 },
-                "openscad.interface.showExportToStlExplorerContextMenu": 
-                {
+                "openscad.interface.showCommandsInExplorerContextMenu": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show `Export to STL` command in explorer context menu"
+                    "description": "Show commands in explorer context menu"
+                },
+                "openscad.interface.showPreviewInContextMenus": {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show `Preview in OpenSCAD` command in context menus"
+                },
+                "openscad.interface.showExportToStlInContextMenus": {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show `Export to STL` command in context menus"
                 },
                 "openscad.cheatsheet.displayInStatusBar": {
                     "type": "string",
