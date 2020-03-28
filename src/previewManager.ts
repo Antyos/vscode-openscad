@@ -86,7 +86,7 @@ export class PreviewManager {
         let exportExt: TExportFileExt | undefined;  // File extension for export
         
         // If file extension is not supplied, prompt user
-        if (!fileExt || (fileExt === 'auto' && this.config.preferredExportFileExtensions === 'none')) {
+        if (!fileExt || (fileExt === 'auto' && this.config.preferredExportFileExtension === 'none')) {
             // Show quick pick menu to prompt user for file extension
             const pick = await vscode.window.showQuickPick(ExportFileExt, {placeHolder: 'Select file extension for export'});
 
@@ -99,7 +99,7 @@ export class PreviewManager {
         }
         // Get file extension from config
         else if (fileExt === 'auto') {
-            exportExt = <TExportFileExt>this.config.preferredExportFileExtensions;
+            exportExt = <TExportFileExt>this.config.preferredExportFileExtension;
         }
         else exportExt = fileExt;
         
@@ -203,7 +203,7 @@ export class PreviewManager {
         this.config.openscadPath = config.get<string>('launchPath');
         this.config.maxInstances = config.get<number>('maxInstances');
         this.config.showKillMessage = config.get<boolean>('showKillMessage');
-        this.config.preferredExportFileExtensions = config.get<string>('preferredExportFileExtensions');
+        this.config.preferredExportFileExtension = config.get<string>('preferredExportFileExtension');
 
         // Set the path in the preview
         if (this.config.openscadPath) {

@@ -4,7 +4,7 @@ export interface ScadConfig
     openscadPath?: string;
     maxInstances?: number;
     showKillMessage?: boolean;
-    preferredExportFileExtensions?: string;
+    preferredExportFileExtension?: string;
     displayInStatusBar?: string;
     colorScheme?: string;
     lastColorScheme?: string;

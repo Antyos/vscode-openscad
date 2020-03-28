@@ -221,11 +221,11 @@
                     "default": true,
                     "description": "Show message when a preview is killed"
                 },
-                "openscad.preferredExportFileExtensions": {
+                "openscad.preferredExportFileExtension": {
                     "type": "string",
                     "enum": ["none","stl","off","amf","3mf","csg","dxf","svg","png","echo","ast","term","nef3","nefdbg"],
                     "default": "stl",
-                    "description": "Preferred file extension to use when exporting. Set to 'none' to select the file extension each time."
+                    "description": "Preferred file extension to use when exporting using the 'Export' button in the editor title bar. Set to 'none' to select the file extension each time."
                 },
                 "openscad.interface.showPreviewIconInEditorTitleMenu": {
                     "type": "boolean",
