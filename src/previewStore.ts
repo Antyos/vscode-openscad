@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import { basename } from 'path';
 import { Preview, PreviewType }  from './preview';
-import { uriFileName } from './utils';
 
 // Used to keep track of Set of Previews
 export class PreviewStore /* extends vscode.Disposable */ {
@@ -69,7 +68,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     // Delete and dispose of a preview
     public delete(preview: Preview, informUser?: boolean) {
         preview.dispose();
-        if (informUser) vscode.window.showInformationMessage(`Killed: ${uriFileName(preview.uri)}`);
+        if (informUser) vscode.window.showInformationMessage(`Killed: ${basename(preview.uri.fsPath)}`);
         this._previews.delete(preview);
 
         if (this.size === 0) {
@@ -81,7 +80,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     public deleteAll(informUser?: boolean) {
         for (const preview of this._previews) {
             preview.dispose();
-            if (informUser) vscode.window.showInformationMessage(`Killed: ${uriFileName(preview.uri)}`);
+            if (informUser) vscode.window.showInformationMessage(`Killed: ${basename(preview.uri.fsPath)}`);
         }
         this._previews.clear();
 

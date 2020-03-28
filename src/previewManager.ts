@@ -3,7 +3,6 @@ import * as path from 'path';
 import { ScadConfig } from './config';
 import { Preview }  from './preview';
 import { PreviewStore } from './previewStore';
-import { uriFileName, uriFileNameNoExt } from './utils';
 
 // PreviewItems used for `scad.kill` quick pick menu
 class PreviewItem implements vscode.QuickPickItem {
@@ -13,7 +12,7 @@ class PreviewItem implements vscode.QuickPickItem {
     uri: vscode.Uri;        // Raw file uri
 	
 	constructor(public file: vscode.Uri) {
-        const fileName = uriFileName(file);
+        const fileName = path.basename(file.fsPath);
 		this.label = fileName ? fileName : '';  // Remove path before filename
         this.description = file.path.substring(1);      // Remove first '/'
         this.uri = file;
@@ -36,6 +35,11 @@ const mNoPreviews = new MessageItem('No open previews');
 export type TExportFileExt = 'stl'|'off'|'amf'|'3mf'|'csg'|'dxf'|'svg'|'png'|'echo'|'ast'|'term'|'nef3'|'nefdbg';
 export const ExportFileExt:TExportFileExt[] = 
                             ['stl','off','amf','3mf','csg','dxf','svg','png','echo','ast','term','nef3','nefdbg'];
+
+// Returns file name without extension
+function fileNameNoExt(uri: vscode.Uri) {
+    return path.basename(uri.fsPath, path.extname(uri.fsPath))
+}
 
 // Launcher class to handle launching instance of scad 
 export class PreviewManager {
@@ -115,7 +119,7 @@ export class PreviewManager {
             else resource = uri;
 
             args.push('-o');
-            args.push(`${path.dirname(resource.fsPath)}/${path.basename(resource.fsPath, path.extname(resource.fsPath))}.${exportExt}`);
+            args.push(`${path.dirname(resource.fsPath)}/${fileNameNoExt(resource)}.${exportExt}`);
 
             // Check if a new preview can be opened
             if (!this.canOpenNewPreview(resource)) return;
@@ -250,7 +254,7 @@ export class PreviewManager {
         // Make sure file is not already open
         else if (this.previewStore.get(resource) !== undefined) {
             console.log(`File is already open: "${resource.fsPath}"`);
-            vscode.window.showInformationMessage(`${uriFileName(resource)} is already open: "${resource.fsPath}"`);
+            vscode.window.showInformationMessage(`${path.basename(resource.fsPath)} is already open: "${resource.fsPath}"`);
             return false;
         }
 
