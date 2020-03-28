@@ -78,19 +78,27 @@ export class PreviewManager {
     }
 
     // Export file
-    public async exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: TExportFileExt) {
+    public async exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: TExportFileExt|'auto') {
+        let exportExt: TExportFileExt | undefined;  // File extension for export
+        
         // If file extension is not supplied, prompt user
-        if (!fileExt) {
+        if (!fileExt || (fileExt === 'auto' && this.config.preferredExportFileExtensions === 'none')) {
             // Show quick pick menu to prompt user for file extension
             const pick = await vscode.window.showQuickPick(ExportFileExt, {placeHolder: 'Select file extension for export'});
 
-            if (pick) fileExt = <TExportFileExt>pick;   // If user selected a file, cast and set fileExt
-            if (!fileExt) {                             // Still no file extension, return
+            if (pick) exportExt = <TExportFileExt>pick;   // If user selected a file, cast and set fileExt
+            if (!fileExt || !exportExt) {                             // Still no file extension, return
                 // console.error("Export failed. No specified file type.");
                 // vscode.window.showErrorMessage("Export failed. No specified file type.")
                 return;
             }    
         }
+        // Get file extension from config
+        else if (fileExt === 'auto') {
+            exportExt = <TExportFileExt>this.config.preferredExportFileExtensions;
+        }
+        else exportExt = fileExt;
+        
 
         // Iterate through uris 
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach( async (uri) => {
@@ -107,7 +115,7 @@ export class PreviewManager {
             else resource = uri;
 
             args.push('-o');
-            args.push(`${path.dirname(resource.fsPath)}/${path.basename(resource.fsPath, path.extname(resource.fsPath))}.${fileExt}`);
+            args.push(`${path.dirname(resource.fsPath)}/${path.basename(resource.fsPath, path.extname(resource.fsPath))}.${exportExt}`);
 
             // Check if a new preview can be opened
             if (!this.canOpenNewPreview(resource)) return;
@@ -191,6 +199,7 @@ export class PreviewManager {
         this.config.openscadPath = config.get<string>('launchPath');
         this.config.maxInstances = config.get<number>('maxInstances');
         this.config.showKillMessage = config.get<boolean>('showKillMessage');
+        this.config.preferredExportFileExtensions = config.get<string>('preferredExportFileExtensions');
 
         // Set the path in the preview
         if (this.config.openscadPath) {

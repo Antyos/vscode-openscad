@@ -37,6 +37,7 @@ export class Preview {
           
         this._process.stderr.on('data', (data) => {
             console.error(data.toString());
+            vscode.window.showErrorMessage(`Error: ${data.toString()}`);
         });
         
         // Run on child exit

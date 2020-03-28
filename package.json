@@ -78,6 +78,15 @@
                 "category": "OpenSCAD"
             },
             {
+                "command": "scad.exportByConfig",
+                "title": "Export Model",
+                "category": "OpenSCAD",
+                "icon": {
+                    "light": "./media/icons/export-light.svg",
+                    "dark": "./media/icons/export-dark.svg"
+                }
+            },
+            {
                 "command": "scad.exportToStl",
                 "title": "Export to STL",
                 "category": "OpenSCAD"
@@ -88,12 +97,17 @@
                 {
                     "command": "scad.preview",
                     "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu",
-                    "group": "navigation@-1.1"
+                    "group": "navigation@-1.2"
                 },
                 {
                     "command": "scad.autoKill",
                     "when": "editorLangId == scad && config.openscad.interface.showKillIconInEditorTitleMenu",
-                    "group": "navigation@-1.2"
+                    "group": "navigation@-1.3"
+                },
+                {
+                    "command": "scad.exportByConfig",
+                    "when": "editorLangId == scad && config.openscad.interface.showExportIconInEditorTitleMenu",
+                    "group": "navigation@-1.1"
                 }
             ],
             "editor/title/context": [
@@ -152,6 +166,10 @@
                     "when": "editorLangId == scad || resourceLangId == scad"
                 },
                 {
+                    "command": "scad.exportByConfig",
+                    "when": "never"
+                },
+                {
                     "command": "scad.exportToStl",
                     "when": "editorLangId == scad || resourceLangId == scad"
                 }
@@ -203,6 +221,12 @@
                     "default": true,
                     "description": "Show message when a preview is killed"
                 },
+                "openscad.preferredExportFileExtensions": {
+                    "type": "string",
+                    "enum": ["none","stl","off","amf","3mf","csg","dxf","svg","png","echo","ast","term","nef3","nefdbg"],
+                    "default": "stl",
+                    "description": "Preferred file extension to use when exporting. Set to 'none' to select the file extension each time."
+                },
                 "openscad.interface.showPreviewIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
@@ -212,6 +236,11 @@
                     "type": "boolean",
                     "default": true,
                     "markdownDescription": "Show `Kill OpenSCAD Previews` button in editor title menu (right side of tabs)"
+                },
+                "openscad.interface.showExportIconInEditorTitleMenu": {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Show `Export` button in editor title menu (right side of tabs)"
                 },
                 "openscad.interface.showCommandsInEditorTitleContextMenu": {
                     "type": "boolean",
