@@ -45,7 +45,7 @@ function fileNameNoExt(uri: vscode.Uri) {
 const pathByPlatform = {
     Linux: 'openscad',
     Darwin: '/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD',
-    Windows_NT: 'C:\\Program Files\\Openscad\\openscad'
+    Windows_NT: 'C:\\Program Files\\Openscad\\openscad.exe'
 }
 
 // Launcher class to handle launching instance of scad 

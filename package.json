@@ -210,7 +210,7 @@
                 "openscad.launchPath": {
                     "type": "string",
                     "default": "",
-                    "markdownDescription": "Path to `openscad` executable. Use \"`openscad`\" (no quotes) if openscad is in the path. Overides defaults below:\n- Windows: `C:\\Program Files\\Openscad\\openscadn- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCADn- Linux: `openscad` (Automatically in path)",
+                    "markdownDescription": "Path to `openscad` executable. Use \"`openscad`\" (no quotes) if openscad is in the path. Overides defaults below:\n- Windows: `C:\\Program Files\\Openscad\\openscad.exe`\n  - _Note:_ Must specify path to `openscad.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)",
                     "scope": "machine-overridable"
                 },
                 "openscad.maxInstances": {
@@ -242,7 +242,7 @@
                         "nefdbg"
                     ],
                     "default": "stl",
-                    "description": "Preferred file extension to use when exporting using the 'Export' button in the editor title bar. Set to 'none' to select the file extension each time."
+                    "markdownDescription": "Preferred file extension to use when exporting using the 'Export' button in the editor title bar. Set to `none` to select the file extension each time."
                 },
                 "openscad.interface.showPreviewIconInEditorTitleMenu": {
                     "type": "boolean",
