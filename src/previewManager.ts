@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as os from 'os';
 import { ScadConfig } from './config';
 import { Preview }  from './preview';
 import { PreviewStore } from './previewStore';
@@ -39,6 +40,12 @@ export const ExportFileExt:TExportFileExt[] =
 // Returns file name without extension
 function fileNameNoExt(uri: vscode.Uri) {
     return path.basename(uri.fsPath, path.extname(uri.fsPath))
+}
+
+const pathByPlatform = {
+    Linux: 'openscad',
+    Darwin: '/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD',
+    Windows_NT: 'C:\\Program Files\\Openscad\\openscad'
 }
 
 // Launcher class to handle launching instance of scad 
@@ -205,9 +212,17 @@ export class PreviewManager {
         this.config.showKillMessage = config.get<boolean>('showKillMessage');
         this.config.preferredExportFileExtension = config.get<string>('preferredExportFileExtension');
 
-        // Set the path in the preview
+        // Only update openscad path if the path value changes
+        if (this.config.lastOpenscadPath !== this.config.openscadPath) {
+            this.config.lastOpenscadPath = this.config.openscadPath;
+            // Set the path for Previews
         if (this.config.openscadPath) {
             Preview.scadPath = this.config.openscadPath;
+        }
+            // Use OS default paths if one is not supplied
+            else {
+                Preview.scadPath = pathByPlatform[os.type() as keyof typeof pathByPlatform];
+            }
         }
 
         // Set the max previews

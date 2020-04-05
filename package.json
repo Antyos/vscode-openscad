@@ -28,6 +28,8 @@
         "onCommand:scad.kill",
         "onCommand:scad.autoKill",
         "onCommand:scad.killAll",
+        "onCommand:scad.export",
+        "onCommand:scad.exportByConfig",
         "onCommand:scad.exportToStl",
         "onCommand:scad.cheatsheet",
         "onWebviewPanel:cheatsheet"
@@ -207,8 +209,8 @@
             "properties": {
                 "openscad.launchPath": {
                     "type": "string",
-                    "default": "C:\\Program Files\\openscad\\openscad.exe",
-                    "markdownDescription": "Path to `openscad.exe`.",
+                    "default": "",
+                    "markdownDescription": "Path to `openscad` executable. Use \"`openscad`\" (no quotes) if openscad is in the path. Overides defaults below:\n- Windows: `C:\\Program Files\\Openscad\\openscadn- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCADn- Linux: `openscad` (Automatically in path)",
                     "scope": "machine-overridable"
                 },
                 "openscad.maxInstances": {
@@ -223,7 +225,22 @@
                 },
                 "openscad.preferredExportFileExtension": {
                     "type": "string",
-                    "enum": ["none","stl","off","amf","3mf","csg","dxf","svg","png","echo","ast","term","nef3","nefdbg"],
+                    "enum": [
+                        "none",
+                        "stl",
+                        "off",
+                        "amf",
+                        "3mf",
+                        "csg",
+                        "dxf",
+                        "svg",
+                        "png",
+                        "echo",
+                        "ast",
+                        "term",
+                        "nef3",
+                        "nefdbg"
+                    ],
                     "default": "stl",
                     "description": "Preferred file extension to use when exporting using the 'Export' button in the editor title bar. Set to 'none' to select the file extension each time."
                 },
@@ -313,14 +330,15 @@
         "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json"
     },
     "devDependencies": {
-        "js-yaml": "^3.13.1",
         "@types/node": "^9.4.6",
+        "@types/vscode": "^1.40.0",
+        "js-yaml": "^3.13.1",
         "tslint": "^5.16.0",
         "typescript": "^3.5.1",
-        "vsce": "^1.73.0",
-        "@types/vscode": "^1.40.0"
+        "vsce": "^1.73.0"
     },
     "dependencies": {
+        "command-exists": "^1.2.8",
         "ste-signals": "^1.6.11"
     }
 }

@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import { SignalDispatcher } from 'ste-signals';
 import { PreviewStore } from './previewStore';
 
+var commandExists = require('command-exists');
+
 export type PreviewType = 'view'|'output';
 
 // Preview class to open instance of OpenSCAD
@@ -99,7 +101,8 @@ export class Preview {
     public static set scadPath(scadPath: string) {
         Preview._scadPath = scadPath;
         console.log(`Path: '${this._scadPath}'`);   // DEBUG
-        this._isValidScadPath = fs.existsSync(Preview._scadPath);
+        this._isValidScadPath = false;  // Set to false until can test if the command exists
+        commandExists(Preview._scadPath, (err: boolean) => { this._isValidScadPath = !err });
     }
 
     public static get scadPath(): string { return Preview._scadPath; }

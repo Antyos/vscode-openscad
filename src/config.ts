@@ -2,6 +2,7 @@
 export interface ScadConfig
 {
     openscadPath?: string;
+    lastOpenscadPath?: string;
     maxInstances?: number;
     showKillMessage?: boolean;
     preferredExportFileExtension?: string;
