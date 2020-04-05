@@ -77,7 +77,11 @@
             {
                 "command": "scad.export",
                 "title": "Export Model",
-                "category": "OpenSCAD"
+                "category": "OpenSCAD",
+                "icon": {
+                    "light": "./media/icons/export-light.svg",
+                    "dark": "./media/icons/export-dark.svg"
+                }
             },
             {
                 "command": "scad.exportByConfig",
@@ -108,6 +112,7 @@
                 },
                 {
                     "command": "scad.exportByConfig",
+                    "alt": "scad.export",
                     "when": "editorLangId == scad && config.openscad.interface.showExportIconInEditorTitleMenu",
                     "group": "navigation@-1.1"
                 }
