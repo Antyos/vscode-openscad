@@ -12,11 +12,11 @@ class PreviewItem implements vscode.QuickPickItem {
 	description: string;    // File path
     uri: vscode.Uri;        // Raw file uri
 	
-	constructor(public file: vscode.Uri) {
-        const fileName = path.basename(file.fsPath);
-		this.label = fileName ? fileName : '';  // Remove path before filename
-        this.description = file.path.substring(1);      // Remove first '/'
-        this.uri = file;
+	constructor(public preview: Preview) {
+        const fileName = path.basename(preview.uri.fsPath);
+		this.label = (preview.previewType === 'output' ? 'Exporting: ' : '') + (fileName ? fileName : '');  // Remove path before filename
+        this.description = preview.uri.path.substring(1);      // Remove first '/'
+        this.uri = preview.uri;
 	}
 }
 
@@ -79,7 +79,7 @@ export class PreviewManager {
             else resource = uri;
 
             // Check if a new preview can be opened
-            if (!this.canOpenNewPreview(resource)) return;
+            if (!this.canOpenNewPreview(resource, args)) return;
             
             console.log(`uri: ${resource}`);    // DEBUG
 
@@ -129,7 +129,7 @@ export class PreviewManager {
             args.push(`${path.dirname(resource.fsPath)}/${fileNameNoExt(resource)}.${exportExt}`);
 
             // Check if a new preview can be opened
-            if (!this.canOpenNewPreview(resource)) return;
+            if (!this.canOpenNewPreview(resource, args)) return;
             
             console.log(`uri: ${resource}`); // DEBUG
 
@@ -156,8 +156,7 @@ export class PreviewManager {
         let menuItems: (PreviewItem | MessageItem)[] = [];
         menuItems.push(this.previewStore.size > 0 ? mKillAll : mNoPreviews);    // Push MessageItem depending on num open previews
 
-        const uris: vscode.Uri[] = this.previewStore.getUris(); // Get list of uris in PreviewStore
-        uris.forEach(uri => menuItems.push(new PreviewItem(uri)));  // Populate quickpick list with open previews
+        for (const preview of this.previewStore) { menuItems.push(new PreviewItem(preview)) };  // Populate quickpick list with open previews
 
         // Get from user
         const selected = await vscode.window.showQuickPick(menuItems, {
@@ -216,9 +215,9 @@ export class PreviewManager {
         if (this.config.lastOpenscadPath !== this.config.openscadPath) {
             this.config.lastOpenscadPath = this.config.openscadPath;
             // Set the path for Previews
-        if (this.config.openscadPath) {
-            Preview.scadPath = this.config.openscadPath;
-        }
+            if (this.config.openscadPath) {
+                Preview.scadPath = this.config.openscadPath;
+            }
             // Use OS default paths if one is not supplied
             else {
                 Preview.scadPath = pathByPlatform[os.type() as keyof typeof pathByPlatform];
@@ -251,7 +250,7 @@ export class PreviewManager {
         else return editor.document.uri;
     }
 
-    private canOpenNewPreview(resource: vscode.Uri): boolean {
+    private canOpenNewPreview(resource: vscode.Uri, args?: string[]): boolean {
         // Make sure path to openscad.exe is valid
         if (!Preview.isValidScadPath) {
             console.error("Path to openscad.exe is invalid");   // DEBUG
@@ -260,14 +259,14 @@ export class PreviewManager {
         }
 
         // Make sure we don't surpass max previews allowed
-        else if (this.previewStore.size >= this.previewStore.maxPreviews && this.previewStore.maxPreviews > 0) {
+        if (this.previewStore.size >= this.previewStore.maxPreviews && this.previewStore.maxPreviews > 0) {
             console.error("Max number of OpenSCAD previews already open."); // DEBUG
             vscode.window.showErrorMessage("Max number of OpenSCAD previews already open.");
             return false;
         }
         
         // Make sure file is not already open
-        else if (this.previewStore.get(resource) !== undefined) {
+        else if (this.previewStore.get(resource, PreviewStore.getPreviewType(args)) !== undefined) {
             console.log(`File is already open: "${resource.fsPath}"`);
             vscode.window.showInformationMessage(`${path.basename(resource.fsPath)} is already open: "${resource.fsPath}"`);
             return false;

@@ -49,7 +49,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
     // Create new preview (if not one with same uri) and then add it
     public createAndAdd(uri: vscode.Uri, args?: string[]) {
-        const previewType = args?.some(item => ['-o', '--o'].includes(item)) ? 'output' : 'view';
+        const previewType = PreviewStore.getPreviewType(args);
 
         // Check there's not an existing preview of same type (can view and export same file)
         if (this.get(uri, previewType) === undefined) {
@@ -123,6 +123,11 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
             return p;
         });
+    }
+
+    // Returns the preview type based on the arguments supplied
+    public static getPreviewType(args?: string[]) {
+        return args?.some(item => ['-o', '--o'].includes(item)) ? 'output' : 'view';
     }
 
     // Returns size (length) of PreviewStore
