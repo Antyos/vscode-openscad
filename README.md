@@ -11,8 +11,8 @@ This extension builds upon the "scad" extension by `Erik Benson` and later expan
 This extension features:
 
 - Syntax highlighting for
-  - Built-in OpenSCAD and user modules/functions
-  - Includes customizer syntax support for Drop down boxes, Sliders, and Tabs
+    - Built-in OpenSCAD and user modules/functions
+    - Includes customizer syntax support for Drop down boxes, Sliders, and Tabs
 - Snippets
 - Built-in access to the OpenSCAD cheatsheet
 
@@ -64,16 +64,16 @@ Until previewing is built into this extension, you can use Code Runner by formul
 
 - Add OpenSCAD logo for `.scad` file extensions once that becomes a feature in VSCode. See [Issue: 14662](https://github.com/microsoft/vscode/issues/14662).
 - Add to syntax highlighting
-  - _Support for modifier characters (* ! # %)_
-  - _Parameters in functions should be highlighted in contents as well_
+    - _Support for modifier characters (* ! # %)_
+    - _Parameters in functions should be highlighted in contents as well_
 - Add "Preview with OpenSCAD" button (Opens and previes the file in OpenSCAD)
-  - Add option for custom OpenSCAD installation director
-  - Contributes menu to preview any .scad file
-  - _Extension auto-installs its own copy of OpenSCAD_
+    - Add option for custom OpenSCAD installation director
+    - Contributes menu to preview any .scad file
+    - _Extension auto-installs its own copy of OpenSCAD_
 - Add snippets for common things in the OpenSCAD cheat sheet
 - _Add peek/jump definition for symbols_
 - _Have VSCode recognize function parameters in IntelliSense_
-- _Block comment new lines keep '*' at the beginning of the line_
+- _Block comment new lines keep '*' at the beginning of the line (comment continuation patterns)_
 - _Create shortcut to open `.scad` files with VSCode by default but has OpenSCAD icon_
 
 > _Note: Italicized items on the to-do list are more challenging and I do not know when (if ever) I will get to them._
