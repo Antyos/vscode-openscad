@@ -2,13 +2,45 @@
 
 ## [Unreleased]
 
-### Added 'Preview'
+### Added
 
-- `scad.preview` command launches an instance of OpenSCAD to preview a `.scad` file
-- `scad.kill` and `scad.killAll` commands kill selected or all open previews
+- Commands
+  - `Preview in OpenSCAD` (`scad.preview`) launches an instance of OpenSCAD to preview a `.scad` file
+    - Preview command is available in context menu for all `.scad` files
+    - Preview button in editor/title is shown for all `.scad` files
+  - `Kill OpenSCAD Previews` (`scad.kill`) kills a single open instance of OpenSCAD
+    - Only available when there are open previews
+    - Opens a Quick-Pick box to select one of the open previews to kill (or choose `Kill All` to kill them all)
+  - `Kill All OpenSCAD Previews` (`scad.killAll`) kills all open previews
+    - Only available when there are open previews
+  - `scad.autoKill` functions as `Kill All` if one preview open, otherwise functions as `Kill`
+    - Only accesible through button on editor/title bar
+  - `Export Model` (`scad.export`) exports model to a selected file type
+    - Opens quick-pick box to select file type
+  - `Export Model` (`scad.exportByConfig`) exports model based on config: `openscad.preferredFileExtension`
+  - `Export Model to STL` (`scad.exportToStl`) exports model to `stl`
+- Menu buttons (in editor/title)
+  - `Preview` - Runs `scad.preview`
+  - `Kill` - Runs `scad.autoKill`
+  - `Export` - Runs `scad.exportByConfig`. If `alt` is held, runs `scad.export`
 - Configurations
   - `openscad.launchPath` specifies the location of the `openscad.exe` executable
-  - `openscad.maxInstances` limits the max number of preview windows open at one time
+  - `openscad.maxInstances` limits the max number of preview windows open at one time. Set 0 for no limit
+  - `openscad.showKillMessage` show message when a preview is killed
+  - `openscad.preferredExportFileExtension` Preferred file extension to use when exporting using the 'Export' button in the editor title bar. Set to `none` to select the file extension each time.
+  - `openscad.interface.showPreviewIconInEditorTitleMenu` show `Preview in OpenSCAD` button in editor title menu (right side of tabs)
+  - `openscad.interface.showKillIconInEditorTitleMenu` show `Kill OpenSCAD Previews` button in editor title menu (right side of tabs
+  - `openscad.interface.showExportIconInEditorTitleMenu` show `Export` button in editor title menu (right side of tabs)
+  - `openscad.interface.showCommandsInEditorTitleContextMenu` show commands in editor title (tab) context menu
+  - `openscad.interface.showCommandsInExplorerContextMenu` Show commands in explorer context menu
+  - `openscad.interface.showPreviewInContextMenus` Show `Preview in OpenSCAD` command in context menus
+  - `openscad.interface.showExportInContextMenus` Show `Export Model` command in context menus
+  - `openscad.interface.showExportToStlInContextMenus` Show `Export to STL` command in context menus
+- TODO
+  - Add export variables like in [tasks.json](https://code.visualstudio.com/docs/editor/variables-reference) for options below
+  - Launch file with args (get user input for args)
+  - Export file name format (in config)
+    - Consider adding export map for each format
 
 ## [0.1.0] - (2020-03-17)
 
