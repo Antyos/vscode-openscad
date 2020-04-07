@@ -16,12 +16,12 @@ export class Cheatsheet
     public static readonly csCommandId = 'scad.cheatsheet';     // Command id for opening the cheatsheet
     public static readonly viewType = 'cheatsheet';             // Internal reference to cheatsheet panel
 
-    public static currentPanel: Cheatsheet | undefined;         // Webview Panel
-    public static csStatusBarItem: vscode.StatusBarItem;        // Cheatsheet status bar item 
+    public static currentPanel: Cheatsheet | undefined;                 // Webview Panel
+    private static csStatusBarItem: vscode.StatusBarItem | undefined;   // Cheatsheet status bar item 
 
     private readonly _panel: vscode.WebviewPanel;               // Webview panels
     private readonly _extensionPath: string;                    // Extension path
-    private static config: ScadConfig = {};               // Extension config
+    private static config: ScadConfig = {};                     // Extension config
     // private isScadDocument: boolean;                         // Is current document openSCAD
 
     
@@ -95,10 +95,14 @@ export class Cheatsheet
         }
     }
 
-    // Initializes the status bar
-    public static initStatusBar() {
-        Cheatsheet.csStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-        Cheatsheet.csStatusBarItem.command = Cheatsheet.csCommandId;
+    // Initializes the status bar (if not yet) and return the status bar
+    public static getStatusBarItem() {
+        if (!Cheatsheet.csStatusBarItem) {
+            Cheatsheet.csStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+            Cheatsheet.csStatusBarItem.command = Cheatsheet.csCommandId;
+        }
+        
+        return Cheatsheet.csStatusBarItem;
     }
 
     // Dispose of status bar
@@ -134,14 +138,14 @@ export class Cheatsheet
         }
 
         // Show or hide `Open Cheatsheet` button 
-        if (showCsStatusBarItem)
-        {
-            Cheatsheet.csStatusBarItem.text = 'Open Cheatsheet';
-            Cheatsheet.csStatusBarItem.show();
-        }
-        else
-        {
-            Cheatsheet.csStatusBarItem.hide();
+        if (Cheatsheet.csStatusBarItem) {
+            if (showCsStatusBarItem) {
+                Cheatsheet.csStatusBarItem.text = 'Open Cheatsheet';
+                Cheatsheet.csStatusBarItem.show();
+            }
+            else {
+                Cheatsheet.csStatusBarItem.hide();
+            }
         }
     }
 

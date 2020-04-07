@@ -10,9 +10,6 @@ export function activate(context: vscode.ExtensionContext) {
     // Create 'Open SCAD cheatsheet' command
     const openCheatsheet = vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel(context.extensionPath));
     
-    // Initialize cheatsheet status bar item
-    Cheatsheet.initStatusBar();
-
     // Create preview commands
     const preview = vscode.commands.registerCommand(PreviewManager.commandId.preview, (mainUri, allUris) => previewManager.openFile(mainUri,allUris));
     const exportTo = vscode.commands.registerCommand('scad.exportByType', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris));
@@ -24,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register commands
     context.subscriptions.push(openCheatsheet);
-    context.subscriptions.push(Cheatsheet.csStatusBarItem);
+    context.subscriptions.push(Cheatsheet.getStatusBarItem());
     context.subscriptions.push(preview);
     context.subscriptions.push(exportByConfig);
     context.subscriptions.push(exportTo);
