@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Create preview commands
     const preview = vscode.commands.registerCommand(PreviewManager.commandId.preview, (mainUri, allUris) => previewManager.openFile(mainUri,allUris));
-    const exportTo = vscode.commands.registerCommand('scad.export', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris));
+    const exportTo = vscode.commands.registerCommand('scad.exportByType', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris));
     const exportByConfig = vscode.commands.registerCommand('scad.exportByConfig', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto'));
     const exportToStl = vscode.commands.registerCommand('scad.exportToStl', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'stl'));
     const kill = vscode.commands.registerCommand(PreviewManager.commandId.kill, () => previewManager.kill());
