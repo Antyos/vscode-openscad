@@ -338,14 +338,14 @@
     },
     "devDependencies": {
         "@types/node": "^9.4.6",
-        "@types/vscode": "^1.40.0",
+        "@types/vscode": "^1.44.0",
         "js-yaml": "^3.13.1",
         "tslint": "^5.16.0",
         "typescript": "^3.5.1",
-        "vsce": "^1.73.0"
+        "vsce": "^1.75.0"
     },
     "dependencies": {
-        "command-exists": "^1.2.8",
+        "command-exists": "^1.2.9",
         "ste-signals": "^1.6.11"
     }
 }
