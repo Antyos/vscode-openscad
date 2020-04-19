@@ -7,34 +7,42 @@ const previewManager = new PreviewManager();
 
 // Called when extension is activated
 export function activate(context: vscode.ExtensionContext) {
-    // Create 'Open SCAD cheatsheet' command
-    const openCheatsheet = vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel(context.extensionPath));
-    
-    // Create preview commands
-    const preview = vscode.commands.registerCommand(PreviewManager.commandId.preview, (mainUri, allUris) => previewManager.openFile(mainUri,allUris));
-    const exportTo = vscode.commands.registerCommand('scad.exportByType', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris));
-    const exportByConfig = vscode.commands.registerCommand('scad.exportByConfig', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto'));
-    const exportToStl = vscode.commands.registerCommand('scad.exportToStl', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'stl'));
-    const kill = vscode.commands.registerCommand(PreviewManager.commandId.kill, () => previewManager.kill());
-    const autoKill = vscode.commands.registerCommand('scad.autoKill', () => previewManager.kill(true));
-    const killAll = vscode.commands.registerCommand(PreviewManager.commandId.killAll, () => previewManager.killAll());
-
     // Register commands
-    context.subscriptions.push(openCheatsheet);
-    context.subscriptions.push(Cheatsheet.getStatusBarItem());
-    context.subscriptions.push(preview);
-    context.subscriptions.push(exportByConfig);
-    context.subscriptions.push(exportTo);
-    context.subscriptions.push(exportToStl);
-    context.subscriptions.push(kill);
-    context.subscriptions.push(autoKill);
-    context.subscriptions.push(killAll);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel(context.extensionPath))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('scad.preview', (mainUri, allUris) => previewManager.openFile(mainUri,allUris))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('scad.exportByType', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('scad.exportByConfig', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto'))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('scad.exportToStl', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'stl'))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('scad.kill', () => previewManager.kill())
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('scad.autoKill', () => previewManager.kill(true))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('scad.killAll', () => previewManager.killAll())
+    );
     
+    // Register status bar item
+    context.subscriptions.push(
+        Cheatsheet.getStatusBarItem()
+    );
+
     // Register listeners to make sure cheatsheet items are up-to-date
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(onDidChangeConfiguration));
     onDidChangeConfiguration();
-    
+
     // Update status bar item once at start
     Cheatsheet.updateStatusBar();
 

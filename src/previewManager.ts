@@ -50,13 +50,6 @@ const pathByPlatform = {
 
 // Launcher class to handle launching instance of scad 
 export class PreviewManager {
-    // Command IDs
-    public static readonly commandId = {
-        preview: 'scad.preview',
-        killAll: 'scad.killAll',
-        kill: 'scad.kill'
-    }
-
     private previewStore = new PreviewStore();
     private config: ScadConfig = {};
 
