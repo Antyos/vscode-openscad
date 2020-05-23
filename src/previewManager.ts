@@ -1,3 +1,9 @@
+/*---------------------------------------------------------------------------------------------
+ * Preview Manager
+ * 
+ * Class for adding / removing OpenSCAD previews to a previewStore
+ *--------------------------------------------------------------------------------------------*/
+
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as os from 'os';

@@ -1,3 +1,9 @@
+/*---------------------------------------------------------------------------------------------
+ * Preview Store
+ * 
+ * Class to manage a Set of previews
+ *--------------------------------------------------------------------------------------------*/
+
 import * as vscode from 'vscode';
 import { basename } from 'path';
 import { Preview, PreviewType }  from './preview';

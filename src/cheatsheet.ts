@@ -1,3 +1,9 @@
+/*---------------------------------------------------------------------------------------------
+ * Cheatsheet
+ * 
+ * Generates a webview panel containing the OpenSCAD cheatsheet
+ *--------------------------------------------------------------------------------------------*/
+
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';

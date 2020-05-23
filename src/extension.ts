@@ -1,3 +1,9 @@
+/*---------------------------------------------------------------------------------------------
+ * Extension
+ * 
+ * Main file for activating extension
+ *--------------------------------------------------------------------------------------------*/
+
 import * as vscode from 'vscode';
 import { Cheatsheet } from './cheatsheet';
 import { PreviewManager } from './previewManager';
@@ -37,6 +43,9 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         Cheatsheet.getStatusBarItem()
     );
+
+    console.log('Activating:');
+    console.log(vscode.workspace.getConfiguration('openscad').get('test'));
 
     // Register listeners to make sure cheatsheet items are up-to-date
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));

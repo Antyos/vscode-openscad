@@ -1,3 +1,9 @@
+/*---------------------------------------------------------------------------------------------
+ * Preview
+ * 
+ * Stores a single instance of OpenSCAD
+ *--------------------------------------------------------------------------------------------*/
+
 import * as vscode from 'vscode';
 import * as child from 'child_process';
 import * as fs from 'fs';
