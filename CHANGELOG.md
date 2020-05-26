@@ -15,9 +15,11 @@
         - Only available when there are open previews
     - (Hidden) `scad.autoKill` functions as `Kill All` if one preview is open, otherwise functions as `Kill`
         - Only accesible through button on editor/title bar
-    - `Export Model to File Type` (`scad.exportByType`) exports model to a selected file type
+    - `Export Model to Selected File Type` (`scad.exportByType`) exports model to a selected file type
         - Only available in context menu and command palette for `.scad` files
         - Opens quick-pick box to select file type
+    - `Export Model with Save Dialogue` (`scad.exportWithSaveDialogue`) exports model using a save dialogue
+        - Only available in context menu and command palette for `.scad` files
         - Replaces `scad.exportByConfig` in context menus when holding alt
     - `Export Model` (`scad.exportByConfig`) exports model based on config: `openscad.preferredFileExtension`
         - Only available in context menu and command palette for `.scad` files
@@ -31,7 +33,8 @@
     - `openscad.launchPath`: Overrides default path to `openscad` executable.
     - `openscad.maxInstances`: Limits the max number of preview windows open at one time. Set 0 for no limit.
     - `openscad.showKillMessage`: Show message when a preview is killed.
-    - `openscad.preferredExportFileExtension`: Preferred file extension to use when exporting using the 'Export' button in the editor title bar. Set to `none` to select the file extension each time.
+    - `openscad.export.preferredExportFileExtension`: Preferred file extension to use when exporting using the 'Export' button in the editor title bar. Set to `none` to select the file extension each time.
+    - `openscad.export.alwaysPromptFilenameOnExport`: Setting to true will always open a save dialogue when exporting
     - `openscad.interface.showPreviewIconInEditorTitleMenu`: Shows `Preview in OpenSCAD` button in editor title menu (right side of tabs).
     - `openscad.interface.showKillIconInEditorTitleMenu`: Shows `Kill OpenSCAD Previews` button in editor title menu (right side of tabs).
     - `openscad.interface.showExportIconInEditorTitleMenu`: Shows `Export Model` button in editor title menu (right side of tabs).
@@ -41,7 +44,11 @@
     - `openscad.interface.showExportInContextMenus`: Shows `Export Model` command in context menus.
     - `openscad.interface.showExportToStlInContextMenus`: Shows `Export to STL` command in context menus.
 - TODO
+    - Add unicode/hex escape characters in strings
+    - Change openToSide config option
     - Add export variables like in [tasks.json](https://code.visualstudio.com/docs/editor/variables-reference) for options below
+        - Include ${var:x} in export names
+        - Add "export" line in .scad file to override export filename settings on per-file basis
     - Launch file with args (get user input for args)
     - Export file name format (in config)
         - Consider adding export map for each format

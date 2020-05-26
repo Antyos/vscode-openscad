@@ -27,6 +27,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('scad.exportByConfig', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto'))
     );
     context.subscriptions.push(
+        vscode.commands.registerCommand('scad.exportWithSaveDialogue', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto', true))
+    );
+    context.subscriptions.push(
         vscode.commands.registerCommand('scad.exportToStl', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'stl'))
     );
     context.subscriptions.push(

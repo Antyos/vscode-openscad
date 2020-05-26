@@ -10,6 +10,7 @@ import * as os from 'os';
 import { ScadConfig } from './config';
 import { Preview }  from './preview';
 import { PreviewStore } from './previewStore';
+import { fileNameNoExt } from './variableResolver';
 
 // PreviewItems used for `scad.kill` quick pick menu
 class PreviewItem implements vscode.QuickPickItem {
@@ -42,11 +43,6 @@ const mNoPreviews = new MessageItem('No open previews');
 export type TExportFileExt = 'stl'|'off'|'amf'|'3mf'|'csg'|'dxf'|'svg'|'png'|'echo'|'ast'|'term'|'nef3'|'nefdbg';
 export const ExportFileExt:TExportFileExt[] = 
                             ['stl','off','amf','3mf','csg','dxf','svg','png','echo','ast','term','nef3','nefdbg'];
-
-// Returns file name without extension
-function fileNameNoExt(uri: vscode.Uri) {
-    return path.basename(uri.fsPath, path.extname(uri.fsPath))
-}
 
 const pathByPlatform = {
     Linux: 'openscad',
@@ -88,10 +84,10 @@ export class PreviewManager {
     }
 
     // Export file
-    public async exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: TExportFileExt|'auto') {
+    public async exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: TExportFileExt|'auto', useSaveDialogue: boolean = false) {
         let exportExt: TExportFileExt | undefined;  // File extension for export
         
-        // If file extension is not supplied, prompt user
+        // If file extension is not provided, prompt user
         if (!fileExt || (fileExt === 'auto' && this.config.preferredExportFileExtension === 'none')) {
             // Show quick pick menu to prompt user for file extension
             const pick = await vscode.window.showQuickPick(ExportFileExt, {placeHolder: 'Select file extension for export'});
@@ -107,12 +103,14 @@ export class PreviewManager {
         else if (fileExt === 'auto') {
             exportExt = <TExportFileExt>this.config.preferredExportFileExtension;
         }
+        // File extension is provided
         else exportExt = fileExt;
         
 
         // Iterate through uris 
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach( async (uri) => {
             let resource: vscode.Uri;
+            let filePath: string;
             let args: string[] = [];
             
             // If uri not given, try opening activeTextEditor
@@ -123,9 +121,28 @@ export class PreviewManager {
             }
             // Uri is given, set `resource`
             else resource = uri;
+            
+            // Prompt for filename
+            if (useSaveDialogue || this.config.alwaysPromptFilenameOnExport) {
+                // Get Uri from save dialogue prompt
+                const newUri = await this.promptForExport(resource, exportExt);
 
-            args.push('-o');
-            args.push(`${path.dirname(resource.fsPath)}/${fileNameNoExt(resource)}.${exportExt}`);
+                // If valid, set filePath. Otherwise, return
+                if (newUri) {
+                    filePath = newUri.fsPath;
+                }
+                else return;
+            }
+            // Use config for auto generation of filename
+            else {
+                const fileName = `${fileNameNoExt(resource)}.${exportExt}`;     // Filename for export
+                filePath = path.join(path.dirname(resource.fsPath), fileName);  // Full file path
+            }
+
+            // Set arguments
+            args.push('-o');        // Set for output / export
+            args.push(filePath);    // Filename for export
+            // args.push(`${path.dirname(resource.fsPath)}\\${fileNameNoExt(resource)}.${exportExt}`);  // Filename for export
 
             // Check if a new preview can be opened
             if (!this.canOpenNewPreview(resource, args)) return;
@@ -208,7 +225,8 @@ export class PreviewManager {
         this.config.openscadPath = config.get<string>('launchPath');
         this.config.maxInstances = config.get<number>('maxInstances');
         this.config.showKillMessage = config.get<boolean>('showKillMessage');
-        this.config.preferredExportFileExtension = config.get<string>('preferredExportFileExtension');
+        this.config.preferredExportFileExtension = config.get<string>('export.preferredExportFileExtension');
+        this.config.alwaysPromptFilenameOnExport = config.get<boolean>('export.alwaysPromptFilenameOnExport');
 
         // Only update openscad path if the path value changes
         if (this.config.lastOpenscadPath !== this.config.openscadPath) {
@@ -228,7 +246,7 @@ export class PreviewManager {
     }
 
     // Gets the uri of the active editor
-    private async getActiveEditorUri() {
+    private async getActiveEditorUri(): Promise<vscode.Uri | undefined> {
         const editor = vscode.window.activeTextEditor;
         if (!editor) return undefined;
 
@@ -249,6 +267,39 @@ export class PreviewManager {
         else return editor.document.uri;
     }
 
+    // Prompts user for export name and location
+    private async promptForExport(resource: vscode.Uri, exportExt: TExportFileExt = "stl"): Promise<vscode.Uri | undefined> {
+        // Replace the `.scad` file extrension with the preferred type (or default to stl)
+        const fileName = `${fileNameNoExt(resource)}.${exportExt}`;             // Filename for export
+        const filePath = path.join(path.dirname(resource.fsPath), fileName);    // Full file path
+        let resourceNewExt = vscode.Uri.file(filePath);                         // Resource URI with new file extension
+
+        // Open save dialogue
+        const savedUri = await vscode.window.showSaveDialog({
+            defaultUri: resourceNewExt,
+            filters: {
+                "STL Files": ["stl"],
+                "OFF Files": ["off"],
+                "AMF Files": ["amf"],
+                "3MF Files": ["3mf"],
+                "CSG Files": ["csg"],
+                "DXF Files": ["dxf"],
+                "Scalable Vector Graphics": ["svg"],
+                "Portable Network Graphic": ["png"],
+                "Echo file output": ["echo"],
+                "AST Files": ["ast"],
+                "TERM Files": ["term"],
+                "NEF3 Files": ["nef3"],
+                "NEFDBG Files": ["nefdbg"]
+
+            }
+        })
+
+        // Return Uri
+        return savedUri;
+    }
+
+    // Returns if the current URI with arguments (output Y/N) can be opened
     private canOpenNewPreview(resource: vscode.Uri, args?: string[]): boolean {
         // Make sure path to openscad.exe is valid
         if (!Preview.isValidScadPath) {
