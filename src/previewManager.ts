@@ -10,6 +10,7 @@ import * as os from 'os';
 import { ScadConfig } from './config';
 import { Preview }  from './preview';
 import { PreviewStore } from './previewStore';
+import { TExportFileExt, ExportFileExt, ExportExtForSave } from './exportFileExt';
 import { fileNameNoExt } from './variableResolver';
 
 // PreviewItems used for `scad.kill` quick pick menu
@@ -38,11 +39,6 @@ class MessageItem implements vscode.QuickPickItem {
 
 const mKillAll = new MessageItem('Kill All');
 const mNoPreviews = new MessageItem('No open previews');
-
-// Avaiable file extensions for export
-export type TExportFileExt = 'stl'|'off'|'amf'|'3mf'|'csg'|'dxf'|'svg'|'png'|'echo'|'ast'|'term'|'nef3'|'nefdbg';
-export const ExportFileExt:TExportFileExt[] = 
-                            ['stl','off','amf','3mf','csg','dxf','svg','png','echo','ast','term','nef3','nefdbg'];
 
 const pathByPlatform = {
     Linux: 'openscad',
@@ -277,22 +273,7 @@ export class PreviewManager {
         // Open save dialogue
         const savedUri = await vscode.window.showSaveDialog({
             defaultUri: resourceNewExt,
-            filters: {
-                "STL Files": ["stl"],
-                "OFF Files": ["off"],
-                "AMF Files": ["amf"],
-                "3MF Files": ["3mf"],
-                "CSG Files": ["csg"],
-                "DXF Files": ["dxf"],
-                "Scalable Vector Graphics": ["svg"],
-                "Portable Network Graphic": ["png"],
-                "Echo file output": ["echo"],
-                "AST Files": ["ast"],
-                "TERM Files": ["term"],
-                "NEF3 Files": ["nef3"],
-                "NEFDBG Files": ["nefdbg"]
-
-            }
+            filters: ExportExtForSave
         })
 
         // Return Uri
