@@ -11,17 +11,17 @@ export const ExportFileExt:TExportFileExt[] =
 
 // File types used in save dialogue
 export const ExportExtForSave = {
-    "STL Files": ["stl"],
-    "OFF Files": ["off"],
-    "AMF Files": ["amf"],
-    "3MF Files": ["3mf"],
-    "CSG Files": ["csg"],
-    "DXF Files": ["dxf"],
-    "Scalable Vector Graphics": ["svg"],
-    "Portable Network Graphic": ["png"],
+    "STL": ["stl"],
+    "OFF": ["off"],
+    "AMF": ["amf"],
+    "3MF": ["3mf"],
+    "CSG": ["csg"],
+    "DXF": ["dxf"],
+    "SVG": ["svg"],
+    "PNG": ["png"],
     "Echo file output": ["echo"],
-    "AST Files": ["ast"],
-    "TERM Files": ["term"],
-    "NEF3 Files": ["nef3"],
-    "NEFDBG Files": ["nefdbg"] 
+    "AST": ["ast"],
+    "TERM": ["term"],
+    "NEF3": ["nef3"],
+    "NEFDBG": ["nefdbg"] 
 }
