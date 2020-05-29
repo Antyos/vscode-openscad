@@ -266,13 +266,19 @@
                 },
                 "openscad.export.exportFormat": {
                     "type": "string",
-                    "default": "${fileBasenameNoExtension}.${exportExtension}",
-                    "markdownDescription": "The default format to name exported files"
+                    "default": "${fileBasenameNoExtension}_${#}.${exportExtension}",
+                    "markdownDescription": "The default format pattern to name exported files"
                 },
                 "openscad.export.alwaysPromptFilenameOnExport": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "markdownDescription": "Always open a save dialogue to choose file name and location when exporting"
+                },
+                "openscad.export.maxVersionNumber": {
+                    "type": "number",
+                    "default": 1000,
+                    "minimum": 1,
+                    "markdownDescription": "The largest version number for a file when exporting"
                 },
                 "openscad.interface.showPreviewIconInEditorTitleMenu": {
                     "type": "boolean",

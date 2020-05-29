@@ -11,7 +11,7 @@ import { ScadConfig } from './config';
 import { Preview }  from './preview';
 import { PreviewStore } from './previewStore';
 import { TExportFileExt, ExportFileExt, ExportExtForSave } from './exportFileExt';
-import { fileNameNoExt } from './variableResolver';
+import { fileBasenameNoExt, VariableResolver } from './variableResolver';
 
 // PreviewItems used for `scad.kill` quick pick menu
 class PreviewItem implements vscode.QuickPickItem {
@@ -50,6 +50,7 @@ const pathByPlatform = {
 export class PreviewManager {
     private previewStore = new PreviewStore();
     private config: ScadConfig = {};
+    private variableResolver = new VariableResolver(this.config)
 
     // public activate() {}
 
@@ -81,19 +82,15 @@ export class PreviewManager {
 
     // Export file
     public async exportFile(mainUri?: vscode.Uri, allUris?: vscode.Uri[], fileExt?: TExportFileExt|'auto', useSaveDialogue: boolean = false) {
-        let exportExt: TExportFileExt | undefined;  // File extension for export
+        let exportExt: TExportFileExt;  // File extension for export
         
         // If file extension is not provided, prompt user
         if (!fileExt || (fileExt === 'auto' && this.config.preferredExportFileExtension === 'none')) {
             // Show quick pick menu to prompt user for file extension
             const pick = await vscode.window.showQuickPick(ExportFileExt, {placeHolder: 'Select file extension for export'});
 
-            if (pick) exportExt = <TExportFileExt>pick;   // If user selected a file, cast and set fileExt
-            if (!fileExt || !exportExt) {                             // Still no file extension, return
-                // console.error("Export failed. No specified file type.");
-                // vscode.window.showErrorMessage("Export failed. No specified file type.")
-                return;
-            }    
+            if (pick) exportExt = <TExportFileExt>pick; // If user selected a file, cast and set exportExt
+            else return;                                // Still no file extension, return    
         }
         // Get file extension from config
         else if (fileExt === 'auto') {
@@ -118,27 +115,26 @@ export class PreviewManager {
             // Uri is given, set `resource`
             else resource = uri;
             
-            // Prompt for filename
+            // Open save dialogue
             if (useSaveDialogue || this.config.alwaysPromptFilenameOnExport) {
                 // Get Uri from save dialogue prompt
                 const newUri = await this.promptForExport(resource, exportExt);
 
                 // If valid, set filePath. Otherwise, return
-                if (newUri) {
-                    filePath = newUri.fsPath;
-                }
+                if (newUri) filePath = newUri.fsPath;
                 else return;
             }
             // Use config for auto generation of filename
             else {
-                const fileName = `${fileNameNoExt(resource)}.${exportExt}`;     // Filename for export
-                filePath = path.join(path.dirname(resource.fsPath), fileName);  // Full file path
+                // Filename for export
+                const fileName = this.variableResolver.resolveString(this.config.exportFormat, resource, exportExt); 
+                // Set full file path; Make sure fileName is not already an absolute path
+                filePath = (path.isAbsolute(fileName) ? fileName : path.join(path.dirname(resource.fsPath), fileName));
             }
 
             // Set arguments
             args.push('-o');        // Set for output / export
             args.push(filePath);    // Filename for export
-            // args.push(`${path.dirname(resource.fsPath)}\\${fileNameNoExt(resource)}.${exportExt}`);  // Filename for export
 
             // Check if a new preview can be opened
             if (!this.canOpenNewPreview(resource, args)) return;
@@ -218,11 +214,13 @@ export class PreviewManager {
     // Run when change configuration event
     public onDidChangeConfiguration(config: vscode.WorkspaceConfiguration) {
         // Update configuration
-        this.config.openscadPath = config.get<string>('launchPath');
-        this.config.maxInstances = config.get<number>('maxInstances');
+        this.config.openscadPath    = config.get<string>('launchPath');
+        this.config.maxInstances    = config.get<number>('maxInstances');
         this.config.showKillMessage = config.get<boolean>('showKillMessage');
-        this.config.preferredExportFileExtension = config.get<string>('export.preferredExportFileExtension');
-        this.config.alwaysPromptFilenameOnExport = config.get<boolean>('export.alwaysPromptFilenameOnExport');
+        this.config.preferredExportFileExtension    = config.get<string>('export.preferredExportFileExtension');
+        this.config.exportFormat                    = config.get<string>('export.exportFormat');
+        this.config.maxVersionNumber                = config.get<number>('export.maxVersionNumber');
+        this.config.alwaysPromptFilenameOnExport    = config.get<boolean>('export.alwaysPromptFilenameOnExport');
 
         // Only update openscad path if the path value changes
         if (this.config.lastOpenscadPath !== this.config.openscadPath) {
@@ -266,7 +264,7 @@ export class PreviewManager {
     // Prompts user for export name and location
     private async promptForExport(resource: vscode.Uri, exportExt: TExportFileExt = "stl"): Promise<vscode.Uri | undefined> {
         // Replace the `.scad` file extrension with the preferred type (or default to stl)
-        const fileName = `${fileNameNoExt(resource)}.${exportExt}`;             // Filename for export
+        const fileName = `${fileBasenameNoExt(resource)}.${exportExt}`;         // Filename for export
         const filePath = path.join(path.dirname(resource.fsPath), fileName);    // Full file path
         let resourceNewExt = vscode.Uri.file(filePath);                         // Resource URI with new file extension
 
@@ -274,7 +272,7 @@ export class PreviewManager {
         const savedUri = await vscode.window.showSaveDialog({
             defaultUri: resourceNewExt,
             filters: ExportExtForSave
-        })
+        });
 
         // Return Uri
         return savedUri;
