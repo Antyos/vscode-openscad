@@ -47,9 +47,6 @@ export function activate(context: vscode.ExtensionContext) {
         Cheatsheet.getStatusBarItem()
     );
 
-    console.log('Activating:');
-    console.log(vscode.workspace.getConfiguration('openscad').get('test'));
-
     // Register listeners to make sure cheatsheet items are up-to-date
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(onDidChangeConfiguration));
