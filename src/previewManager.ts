@@ -127,7 +127,7 @@ export class PreviewManager {
             // Use config for auto generation of filename
             else {
                 // Filename for export
-                const fileName = this.variableResolver.resolveString(this.config.exportFormat, resource, exportExt); 
+                const fileName = await this.variableResolver.resolveString(this.config.exportFormat, resource, exportExt); 
                 // Set full file path; Make sure fileName is not already an absolute path
                 filePath = (path.isAbsolute(fileName) ? fileName : path.join(path.dirname(resource.fsPath), fileName));
             }

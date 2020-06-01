@@ -10,8 +10,11 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { existsSync } from 'fs';
+import { platform } from "os";
+import { existsSync, readdir, mkdirSync } from 'fs';
 import { ScadConfig } from './config';
+
+import escapeStringRegexp = require("escape-string-regexp");
 
 // Returns file name without extension
 export function fileBasenameNoExt(uri: vscode.Uri): string {
@@ -26,14 +29,16 @@ export class VariableResolver {
     private static readonly VERSION_FORMAT = /\${#}/g;
 
     private readonly defaultPattern = "${fileBasenameNoExtension}.${exportExtension}";   // Default naming pattern
+    private readonly isWindows: boolean;
     private _config: ScadConfig;
 
     constructor(config: ScadConfig) {
         this._config = config
+        this.isWindows = platform() === 'win32';
     }
-
+    
     // Resolve variables in string given a file URI
-    public resolveString(pattern: string = this.defaultPattern, resource: vscode.Uri, exportExt?: string): string {
+    public async resolveString(pattern: string = this.defaultPattern, resource: vscode.Uri, exportExt?: string): Promise<string> {
         // console.log(`resolveString pattern: ${pattern}`); // DEBUG
 
         // Replace all variable pattern matches '${VAR_NAME}'
@@ -44,7 +49,7 @@ export class VariableResolver {
         });
 
         // Get dynamic version number
-        const version = this.getVersionNumber(replaced, resource)
+        const version = await this.getVersionNumber(replaced, resource)
 
         console.log(`Version number: ${version}`);
 
@@ -54,8 +59,7 @@ export class VariableResolver {
             case -1:    // No version number
                 return replaced;
             case -2:    // Reached max version number\
-                // NOTE: Not a good way of doing this, but better algorithm should fix this
-                vscode.window.showErrorMessage(`Reached max version number for '${replaced}' Try checking \`openscad.export.maxVersionNumber\` config setting.`)
+                vscode.window.showErrorMessage(`Could not read files in directory specified for export`)
                 return replaced;
             default:    // Substitute version number
                 return replaced.replace(VariableResolver.VERSION_FORMAT, String(version));
@@ -75,26 +79,55 @@ export class VariableResolver {
         }
     }
 
-    // TODO: Improve algorithm
     // Evaluate version number in format '${#}'
-    private getVersionNumber(pattern: string, resource: vscode.Uri): number {
-        let version: number;
-        let filePath: string;
+    private async getVersionNumber(pattern: string, resource: vscode.Uri): Promise<number> {
+        // let version: number;
+        // let filePath: string;
         
         // No version number in string: return -1
         if (!pattern.match(VariableResolver.VERSION_FORMAT)) return -1;
         
+        // Replace the number placeholder with a regex number capture pattern
+        const patternRegex = new RegExp(escapeStringRegexp(path.basename(pattern)).replace("\\$\\{#\\}", "([1-9][0-9]*)"));
+
         // Get full file path
-        filePath = (path.isAbsolute(pattern) ? pattern : path.join(path.dirname(resource.fsPath), pattern));
+        // filePath = (path.isAbsolute(pattern) ? pattern : path.join(path.dirname(resource.fsPath), pattern));
 
-        // Resolve dynamic version number
-        for (version = 1; version <= (this._config.maxVersionNumber || 1000); version++) {
-            // Substitute the version number. Return the version number if it doesn't already exist
-            if (!existsSync(filePath.replace(VariableResolver.VERSION_FORMAT, String(version)))) 
-                return version;
-        }
+        // Get file directory
+        let fileDir = (path.isAbsolute(pattern) ? path.dirname(pattern) :       // Already absolute path
+            path.dirname(path.join(path.dirname(resource.fsPath), pattern)));   // Get path of resource ('pattern' may contain a directory)
 
-        // Reached max version number, return -2
-        return -2;
+        // Make export directory if it doesn't exist
+        if (!existsSync(fileDir)) mkdirSync(fileDir);
+
+        // Read all files in directory
+        const versionNum: number = await new Promise((resolve, reject) => {
+            readdir(fileDir, (err, files) => {
+                // Error; Return -2 (dir read error)
+                if (err) {
+                    console.error(err);
+                    reject(-2);          // File read error
+                }
+                
+                // Get all the files that match the pattern (with different version numbers)
+                const lastVersion = files.reduce((maxVer: number, file: string) => {
+                    // Get pattern matches of file
+                    let matched = patternRegex.exec(file);
+                    // If there's a match, return whichever version is greater
+                    return (matched ? Math.max(maxVer, Number(matched[1])) : maxVer);
+                }, 0);
+                
+                // console.log(`Last version: ${lastVersion}`); // DEBUG
+
+                resolve(lastVersion);
+            })
+        });
+
+        console.log(`Version num: ${versionNum}`);   // DEBUG
+
+        if (versionNum < 0) return versionNum;      // Error; return as-is
+        else                return versionNum + 1;  // Return next version
+
+        // Consider adding case for MAX_SAFE_NUMBER (despite it's unlikeliness)
     }
 }
