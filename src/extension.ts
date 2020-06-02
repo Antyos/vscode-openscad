@@ -18,28 +18,28 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel(context.extensionPath))
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('scad.preview', (mainUri, allUris) => previewManager.openFile(mainUri,allUris))
+        vscode.commands.registerCommand('openscad.preview', (mainUri, allUris) => previewManager.openFile(mainUri,allUris))
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('scad.exportByType', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris))
+        vscode.commands.registerCommand('openscad.exportByType', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris))
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('scad.exportByConfig', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto'))
+        vscode.commands.registerCommand('openscad.exportByConfig', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto'))
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('scad.exportWithSaveDialogue', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto', true))
+        vscode.commands.registerCommand('openscad.exportWithSaveDialogue', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto', true))
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('scad.exportToStl', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'stl'))
+        vscode.commands.registerCommand('openscad.exportToStl', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'stl'))
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('scad.kill', () => previewManager.kill())
+        vscode.commands.registerCommand('openscad.kill', () => previewManager.kill())
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('scad.autoKill', () => previewManager.kill(true))
+        vscode.commands.registerCommand('openscad.autoKill', () => previewManager.kill(true))
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('scad.killAll', () => previewManager.killAll())
+        vscode.commands.registerCommand('openscad.killAll', () => previewManager.killAll())
     );
     
     // Register status bar item

@@ -19,7 +19,7 @@ const colorScheme = {
 // Only one instance of cheatsheet panel so basically everything is delcared `static`
 export class Cheatsheet
 {
-    public static readonly csCommandId = 'scad.cheatsheet';     // Command id for opening the cheatsheet
+    public static readonly csCommandId = 'openscad.cheatsheet'; // Command id for opening the cheatsheet
     public static readonly viewType = 'cheatsheet';             // Internal reference to cheatsheet panel
 
     public static currentPanel: Cheatsheet | undefined;                 // Webview Panel
