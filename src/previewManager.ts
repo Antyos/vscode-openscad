@@ -219,7 +219,6 @@ export class PreviewManager {
         this.config.showKillMessage = config.get<boolean>('showKillMessage');
         this.config.preferredExportFileExtension    = config.get<string>('export.preferredExportFileExtension');
         this.config.exportFormat                    = config.get<string>('export.exportFormat');
-        this.config.maxVersionNumber                = config.get<number>('export.maxVersionNumber');
         this.config.alwaysPromptFilenameOnExport    = config.get<boolean>('export.alwaysPromptFilenameOnExport');
 
         // Only update openscad path if the path value changes
