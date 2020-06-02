@@ -6,11 +6,16 @@
 
 import * as vscode from 'vscode';
 import * as child from 'child_process';
-import * as fs from 'fs';
+import { type } from 'os';
 import { SignalDispatcher } from 'ste-signals';
-import { PreviewStore } from './previewStore';
 
 var commandExists = require('command-exists');
+
+const pathByPlatform = {
+    Linux: 'openscad',
+    Darwin: '/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD',
+    Windows_NT: 'C:\\Program Files\\Openscad\\openscad.exe'
+}
 
 export type PreviewType = 'view'|'output';
 
@@ -99,18 +104,21 @@ export class Preview {
         return new Preview(resource, previewType, args);
         
     }
-
-    public get previewType() { return this._previewType; }
-
+    
     // Used to set the path to `openscad.exe` on the system. Necessary to open children
-    // TODO: Config is override. Autodetects path by OS otherwise
-    public static set scadPath(scadPath: string) {
-        Preview._scadPath = scadPath;
+    public static setScadPath(scadPath?: string) {
+        // Set OpenSCAD path if specified; otherwise use system default
+        Preview._scadPath = scadPath ? scadPath : pathByPlatform[type() as keyof typeof pathByPlatform];
+        
         console.log(`Path: '${this._scadPath}'`);   // DEBUG
+        
+        // Verify 'openscad' command is valid
         this._isValidScadPath = false;  // Set to false until can test if the command exists
         commandExists(Preview._scadPath, (err: boolean) => { this._isValidScadPath = !err });
     }
-
+    
+    public get previewType() { return this._previewType; }
+    
     public static get scadPath(): string { return Preview._scadPath; }
     public static get isValidScadPath() : boolean { return this._isValidScadPath; }
 }

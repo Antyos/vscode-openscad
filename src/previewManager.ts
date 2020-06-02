@@ -40,12 +40,6 @@ class MessageItem implements vscode.QuickPickItem {
 const mKillAll = new MessageItem('Kill All');
 const mNoPreviews = new MessageItem('No open previews');
 
-const pathByPlatform = {
-    Linux: 'openscad',
-    Darwin: '/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD',
-    Windows_NT: 'C:\\Program Files\\Openscad\\openscad.exe'
-}
-
 // Launcher class to handle launching instance of scad 
 export class PreviewManager {
     private previewStore = new PreviewStore();
@@ -223,15 +217,8 @@ export class PreviewManager {
 
         // Only update openscad path if the path value changes
         if (this.config.lastOpenscadPath !== this.config.openscadPath) {
-            this.config.lastOpenscadPath = this.config.openscadPath;
-            // Set the path for Previews
-            if (this.config.openscadPath) {
-                Preview.scadPath = this.config.openscadPath;
-            }
-            // Use OS default paths if one is not supplied
-            else {
-                Preview.scadPath = pathByPlatform[os.type() as keyof typeof pathByPlatform];
-            }
+            this.config.lastOpenscadPath = this.config.openscadPath;    // Set last path
+            Preview.setScadPath(this.config.openscadPath);              // Update path
         }
 
         // Set the max previews
