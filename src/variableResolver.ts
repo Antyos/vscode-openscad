@@ -31,12 +31,12 @@ export class VariableResolver {
     private readonly variables: string[] = ["workspaceFolder", "workspaceFolderBasename", "file", "relativeFile", "relativeFileDirname", "fileBasename", "fileBasenameNoExtension", "fileDirname", "fileExtname", "exportExtension", "#", "noMatch"];
 
     private readonly defaultPattern = "${fileBasenameNoExtension}.${exportExtension}";   // Default naming pattern
-    // private readonly isWindows: boolean;
+    private readonly isWindows: boolean;
     // private _config: ScadConfig;
 
     constructor() {
         // this._config = config
-        // this.isWindows = platform() === 'win32';
+        this.isWindows = platform() === 'win32';
     }
     
     // Resolve variables in string given a file URI
@@ -115,7 +115,8 @@ export class VariableResolver {
         if (!pattern.match(VariableResolver.VERSION_FORMAT)) return -1;
         
         // Replace the number placeholder with a regex number capture pattern
-        const patternRegex = new RegExp(escapeStringRegexp(path.basename(pattern)).replace("\\$\\{#\\}", "([1-9][0-9]*)"));
+        // Regexp is case insensitive if OS is Windows
+        const patternAsRegexp = new RegExp(escapeStringRegexp(path.basename(pattern)).replace("\\$\\{#\\}", "([1-9][0-9]*)"), (this.isWindows ? "i" : ""));
 
         // Get file directory
         let fileDir = (path.isAbsolute(pattern) ? path.dirname(pattern) :       // Already absolute path
@@ -136,7 +137,7 @@ export class VariableResolver {
                 // Get all the files that match the pattern (with different version numbers)
                 const lastVersion = files.reduce((maxVer: number, file: string) => {
                     // Get pattern matches of file
-                    let matched = patternRegex.exec(file);
+                    let matched = patternAsRegexp.exec(file);
                     // If there's a match, return whichever version is greater
                     return (matched ? Math.max(maxVer, Number(matched[1])) : maxVer);
                 }, 0);
