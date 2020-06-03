@@ -346,9 +346,17 @@
                     ]
                 },
                 "openscad.cheatsheet.openToSide": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Opens OpenSCAD cheatsheet in another column."
+                    "type": "string",
+                    "enum": [
+                        "beside",
+                        "currentGroup"
+                    ],
+                    "default": "beside",
+                    "description": "Controls which column OpenSCAD cheatsheet is opened.",
+                    "enumDescriptions": [
+                        "Open cheatsheet in column beside current one",
+                        "Open cheatsheet in current column/group"
+                    ]
                 }
             }
         }

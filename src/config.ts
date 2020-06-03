@@ -17,5 +17,5 @@ export interface ScadConfig
     displayInStatusBar?: string;
     colorScheme?: string;
     lastColorScheme?: string;
-    openToSide?: boolean;
+    openToSide?: string;
 }

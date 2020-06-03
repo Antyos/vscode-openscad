@@ -38,7 +38,7 @@ export class Cheatsheet
         // Determine which column to show cheatsheet in
         // If not active editor, check config to open in current window to to the side
         let column = vscode.window.activeTextEditor
-            ? (Cheatsheet.config.openToSide ? vscode.ViewColumn.Beside : vscode.window.activeTextEditor.viewColumn)
+            ? (Cheatsheet.config.openToSide === "beside" ? vscode.ViewColumn.Beside : vscode.window.activeTextEditor.viewColumn)
             : undefined;
 
 
@@ -166,7 +166,7 @@ export class Cheatsheet
         // Load the configuration changes
         Cheatsheet.config.displayInStatusBar = config.get<string>('cheatsheet.displayInStatusBar', 'openDoc');
         Cheatsheet.config.colorScheme = config.get<string>('cheatsheet.colorScheme', 'auto');
-        Cheatsheet.config.openToSide = config.get<boolean>('cheatsheet.openToSide', true);
+        Cheatsheet.config.openToSide = config.get<string>('cheatsheet.openToSide', 'beside');
 
         // Update the status bar
         this.updateStatusBar();

@@ -45,7 +45,6 @@
     - `openscad.interface.showExportToStlInContextMenus` - Shows **Export to STL** command in context menus.
 - TODO
     - Add unicode/hex escape characters in strings
-    - Change openToSide config option
     - Include ${var:x} in export format
     - Add "export" line in .scad file to override export filename settings on per-file basis
     - Add export map for each file format
@@ -54,6 +53,7 @@
 ### Changed
 
 - `scad.cheatsheet` command is now `openscad.cheatsheet` for consistancy with configurations
+- `openscad.cheatsheet.openToSide` configuration is an enumerated string instead of a boolean for improved clarity. Options now include `beside` (was `true`) and `currentGroup` (was `false`)
 
 ## [0.1.0] - (2020-03-17)
 
