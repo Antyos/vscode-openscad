@@ -28,6 +28,8 @@ export class VariableResolver {
     // private static readonly VARIABLE_REGEXP_SINGLE = /\$\{(.*?)\}/; // Unused
     private static readonly VERSION_FORMAT = /\${#}/g;
 
+    private readonly variables: string[] = ["workspaceFolder", "workspaceFolderBasename", "file", "relativeFile", "relativeFileDirname", "fileBasename", "fileBasenameNoExtension", "fileDirname", "fileExtname", "exportExtension", "#", "noMatch"];
+
     private readonly defaultPattern = "${fileBasenameNoExtension}.${exportExtension}";   // Default naming pattern
     private readonly isWindows: boolean;
     private _config: ScadConfig;
@@ -66,11 +68,39 @@ export class VariableResolver {
         }
     }
 
+    // Tests all variables 
+    public testVars(resource: vscode.Uri) {
+        console.log("Testing evaluateSingleVariable()...");
+
+        this.variables.forEach( (variable) => {
+            console.log(`${variable} : ${this.evaluateSingleVariable("${" + variable + "}", variable, resource, "test")}`);
+        });
+    }
+
     // Evaluate a single variable in format '${VAR_NAME}'
+    // See https://code.visualstudio.com/docs/editor/variables-reference
     private evaluateSingleVariable(match: string, variable: string, resource: vscode.Uri, exportExt: string = "scad"): string {
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(resource)!.uri.fsPath;
+        
         switch (variable) {
+            case "workspaceFolder":
+                return workspaceFolder || match;
+            case "workspaceFolderBasename":
+                return path.basename(workspaceFolder) || match;
+            case "file":
+                return resource.fsPath;
+            case "relativeFile":
+                return path.relative(workspaceFolder, resource.fsPath);
+            case "relativeFileDirname":
+                return path.basename(path.dirname(resource.fsPath));
+            case "fileBasename":
+                return path.basename(resource.fsPath);
             case "fileBasenameNoExtension":
                 return fileBasenameNoExt(resource);
+            case "fileDirname":
+                return path.dirname(resource.fsPath);
+            case "fileExtname":
+                return path.extname(resource.fsPath);
             case "exportExtension":
                 if (exportExt)  return exportExt;
             case "#":
@@ -81,17 +111,11 @@ export class VariableResolver {
 
     // Evaluate version number in format '${#}'
     private async getVersionNumber(pattern: string, resource: vscode.Uri): Promise<number> {
-        // let version: number;
-        // let filePath: string;
-        
         // No version number in string: return -1
         if (!pattern.match(VariableResolver.VERSION_FORMAT)) return -1;
         
         // Replace the number placeholder with a regex number capture pattern
         const patternRegex = new RegExp(escapeStringRegexp(path.basename(pattern)).replace("\\$\\{#\\}", "([1-9][0-9]*)"));
-
-        // Get full file path
-        // filePath = (path.isAbsolute(pattern) ? pattern : path.join(path.dirname(resource.fsPath), pattern));
 
         // Get file directory
         let fileDir = (path.isAbsolute(pattern) ? path.dirname(pattern) :       // Already absolute path

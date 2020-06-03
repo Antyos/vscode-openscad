@@ -6,7 +6,6 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as os from 'os';
 import { ScadConfig } from './config';
 import { Preview }  from './preview';
 import { PreviewStore } from './previewStore';
@@ -125,6 +124,8 @@ export class PreviewManager {
                 // Set full file path; Make sure fileName is not already an absolute path
                 filePath = (path.isAbsolute(fileName) ? fileName : path.join(path.dirname(resource.fsPath), fileName));
             }
+
+            // this.variableResolver.testVars(resource);   // TESTING / DEBUG
 
             // Set arguments
             args.push('-o');        // Set for output / export

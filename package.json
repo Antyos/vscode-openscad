@@ -267,7 +267,7 @@
                 "openscad.export.exportFormat": {
                     "type": "string",
                     "default": "${fileBasenameNoExtension}_${#}.${exportExtension}",
-                    "markdownDescription": "The default format pattern to name exported files"
+                    "markdownDescription": "The default format pattern to name exported files. Based on variables used in `tasks.json`. For a full list of variables, see the wiki page [here](https://github.com/Antyos/vscode-openscad/wiki/Auto-Exporting). Commonly used variables include:\n- `${workspaceFolder}` - The path of the folder open in VS Code\n- `${fileBasenameNoExtension}` - The current opened file's basename with no file extension\n- `${exportExtension}` - The file extension used in the export\n- `${#}` - Auto versioning placeholder. Starts at '1' and increments each time you export a file. Prevents accidental overrides."
                 },
                 "openscad.export.alwaysPromptFilenameOnExport": {
                     "type": "boolean",
