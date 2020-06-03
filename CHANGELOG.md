@@ -43,12 +43,8 @@
     - `openscad.interface.showPreviewInContextMenus` - Shows **Preview in OpenSCAD** command in context menus.
     - `openscad.interface.showExportInContextMenus` - Shows **Export Model** command in context menus.
     - `openscad.interface.showExportToStlInContextMenus` - Shows **Export to STL** command in context menus.
-- TODO
-    - Add unicode/hex escape characters in strings
-    - Include ${var:x} in export format
-    - Add "export" line in .scad file to override export filename settings on per-file basis
-    - Add export map for each file format
-    - Launch file with args (get user input for args)
+- Grammar
+    - Added unicode/hex escape codes in strings. See: <https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Text>, for details on escape codes in strings.
 
 ### Changed
 
