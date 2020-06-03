@@ -116,6 +116,7 @@
                 },
                 {
                     "command": "openscad.autoKill",
+                    "alt": "openscad.kill",
                     "when": "editorLangId == scad && config.openscad.interface.showKillIconInEditorTitleMenu",
                     "group": "navigation@-1.3"
                 },
