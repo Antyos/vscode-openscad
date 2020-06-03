@@ -43,7 +43,7 @@ const mNoPreviews = new MessageItem('No open previews');
 export class PreviewManager {
     private previewStore = new PreviewStore();
     private config: ScadConfig = {};
-    private variableResolver = new VariableResolver(this.config)
+    private variableResolver = new VariableResolver();
 
     // public activate() {}
 

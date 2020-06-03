@@ -31,12 +31,12 @@ export class VariableResolver {
     private readonly variables: string[] = ["workspaceFolder", "workspaceFolderBasename", "file", "relativeFile", "relativeFileDirname", "fileBasename", "fileBasenameNoExtension", "fileDirname", "fileExtname", "exportExtension", "#", "noMatch"];
 
     private readonly defaultPattern = "${fileBasenameNoExtension}.${exportExtension}";   // Default naming pattern
-    private readonly isWindows: boolean;
-    private _config: ScadConfig;
+    // private readonly isWindows: boolean;
+    // private _config: ScadConfig;
 
-    constructor(config: ScadConfig) {
-        this._config = config
-        this.isWindows = platform() === 'win32';
+    constructor() {
+        // this._config = config
+        // this.isWindows = platform() === 'win32';
     }
     
     // Resolve variables in string given a file URI
