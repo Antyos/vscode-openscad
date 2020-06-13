@@ -38,8 +38,8 @@
     - `openscad.interface.showPreviewIconInEditorTitleMenu` - Shows **Preview in OpenSCAD** button in editor title menu (right side of tabs).
     - `openscad.interface.showKillIconInEditorTitleMenu` - Shows **Kill OpenSCAD Previews** button in editor title menu (right side of tabs).
     - `openscad.interface.showExportIconInEditorTitleMenu` - Shows **Export Model** button in editor title menu (right side of tabs).
-    - `openscad.interface.showCommandsInEditorTitleContextMenu` - Shows commands in editor title (tab) context menu.
-    - `openscad.interface.showCommandsInExplorerContextMenu` - Shows commands in explorer context menu.
+    - `openscad.interface.showCommandsInEditorTitleContextMenu` - Shows preview and export commands in editor title (tab) context menu.
+    - `openscad.interface.showCommandsInExplorerContextMenu` - Shows preview and export commands in explorer context menu.
     - `openscad.interface.showPreviewInContextMenus` - Shows **Preview in OpenSCAD** command in context menus.
     - `openscad.interface.showExportInContextMenus` - Shows **Export Model** command in context menus.
     - `openscad.interface.showExportToStlInContextMenus` - Shows **Export to STL** command in context menus.
