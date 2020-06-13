@@ -19,3 +19,6 @@ export interface ScadConfig
     lastColorScheme?: string;
     openToSide?: string;
 }
+
+// DEBUG variable. Set to false when compiling for release to disable all console logging
+export const DEBUG = true;

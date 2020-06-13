@@ -7,7 +7,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ScadConfig } from './config';
+import { ScadConfig, DEBUG } from './config';
 
 // Cheatsheet color schemes. Located in [extensionPath]/media/
 const colorScheme = {
@@ -227,7 +227,7 @@ export class Cheatsheet
         
         // Get style sheet URI
         const styleUri = vscode.Uri.file(path.join(this._extensionPath, 'media', styleSrc)).with({ scheme: 'vscode-resource' });
-        // console.log("Style" + styleUri); // DEBUG
+        // if (DEBUG) console.log("Style" + styleUri); // DEBUG
 
         // Replace `{{styleSrc}}` with the vscode URI for the desired `.css` file
         htmlContent = htmlContent.replace('{{styleSrc}}', styleUri.toString());

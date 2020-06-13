@@ -8,6 +8,7 @@ import * as vscode from 'vscode';
 import * as child from 'child_process';
 import { type } from 'os';
 import { SignalDispatcher } from 'ste-signals';
+import { DEBUG } from './config';
 
 var commandExists = require('command-exists');
 
@@ -38,24 +39,24 @@ export class Preview {
 
         const commandArgs: string[] = (args) ? args.concat(this._fileUri.fsPath) : [this._fileUri.fsPath];
 
-        console.log(`commangArgs: ${commandArgs}`); // DEBUG
+        if (DEBUG) console.log(`commangArgs: ${commandArgs}`); // DEBUG
 
         // New process
         this._process = child.spawn(Preview._scadPath, commandArgs);
 
         // Set exit conditions or something like that
         this._process.stdout.on('data', (data) => {
-            console.log(data.toString());
+            if (DEBUG) console.log(data.toString());
         });
           
         this._process.stderr.on('data', (data) => {
-            console.error(data.toString());
+            if (DEBUG) console.error(data.toString());
             vscode.window.showErrorMessage(`Error: ${data.toString()}`);
         });
         
         // Run on child exit
         this._process.on('exit', (code) => {
-            console.log(`OpenSCAD exited with code ${code}`);
+            if (DEBUG) console.log(`OpenSCAD exited with code ${code}`);
             this._isRunning = false;
             this._onKilled.dispatch();  // Dispatch 'onKilled' event
         });
@@ -92,7 +93,7 @@ export class Preview {
         // Error checking
         // Make sure scad path is defined
         if (!Preview._isValidScadPath) {
-            console.error("OpenSCAD path is undefined in config");
+            if (DEBUG) console.error("OpenSCAD path is undefined in config");
             vscode.window.showErrorMessage("OpenSCAD path does not exist.");
             return undefined;
         }
@@ -110,7 +111,7 @@ export class Preview {
         // Set OpenSCAD path if specified; otherwise use system default
         Preview._scadPath = scadPath ? scadPath : pathByPlatform[type() as keyof typeof pathByPlatform];
         
-        console.log(`Path: '${Preview._scadPath}'`);   // DEBUG
+        if (DEBUG) console.log(`Path: '${Preview._scadPath}'`);   // DEBUG
         
         // Verify 'openscad' command is valid
         Preview._isValidScadPath = false;  // Set to false until can test if the command exists

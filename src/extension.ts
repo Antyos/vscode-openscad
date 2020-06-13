@@ -7,6 +7,7 @@
 import * as vscode from 'vscode';
 import { Cheatsheet } from './cheatsheet';
 import { PreviewManager } from './previewManager';
+import { DEBUG } from './config';
 
 // New launch object
 const previewManager = new PreviewManager();
@@ -60,7 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
         // Make sure we register a serializer in action event
         vscode.window.registerWebviewPanelSerializer(Cheatsheet.viewType, {
             async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
-                console.log(`Got state: ${state}`);
+                if (DEBUG) console.log(`Got state: ${state}`);
                 Cheatsheet.revive(webviewPanel, context.extensionPath);
             }
         });

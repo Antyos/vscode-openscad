@@ -12,7 +12,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { platform } from "os";
 import { existsSync, readdir, mkdirSync } from 'fs';
-import { ScadConfig } from './config';
+import { ScadConfig, DEBUG } from './config';
 
 import escapeStringRegexp = require("escape-string-regexp");
 
@@ -41,7 +41,7 @@ export class VariableResolver {
     
     // Resolve variables in string given a file URI
     public async resolveString(pattern: string = this.defaultPattern, resource: vscode.Uri, exportExt?: string): Promise<string> {
-        // console.log(`resolveString pattern: ${pattern}`); // DEBUG
+        // if (DEBUG) console.log(`resolveString pattern: ${pattern}`); // DEBUG
 
         // Replace all variable pattern matches '${VAR_NAME}'
         const replaced = pattern.replace(VariableResolver.VARIABLE_REGEXP, (match: string, variable: string) => {
@@ -53,7 +53,7 @@ export class VariableResolver {
         // Get dynamic version number
         const version = await this.getVersionNumber(replaced, resource)
 
-        console.log(`Version number: ${version}`);
+        if (DEBUG) console.log(`Version number: ${version}`);
 
         // Cases for version number
         switch (version)
@@ -70,10 +70,10 @@ export class VariableResolver {
 
     // Tests all variables 
     public testVars(resource: vscode.Uri) {
-        console.log("Testing evaluateSingleVariable()...");
+        if (DEBUG) console.log("Testing evaluateSingleVariable()...");
 
         this.variables.forEach( (variable) => {
-            console.log(`${variable} : ${this.evaluateSingleVariable("${" + variable + "}", variable, resource, "test")}`);
+            if (DEBUG) console.log(`${variable} : ${this.evaluateSingleVariable("${" + variable + "}", variable, resource, "test")}`);
         });
     }
 
@@ -130,7 +130,7 @@ export class VariableResolver {
             readdir(fileDir, (err, files) => {
                 // Error; Return -2 (dir read error)
                 if (err) {
-                    console.error(err);
+                    if (DEBUG) console.error(err);
                     reject(-2);          // File read error
                 }
                 
@@ -142,13 +142,13 @@ export class VariableResolver {
                     return (matched ? Math.max(maxVer, Number(matched[1])) : maxVer);
                 }, 0);
                 
-                // console.log(`Last version: ${lastVersion}`); // DEBUG
+                // if (DEBUG) console.log(`Last version: ${lastVersion}`); // DEBUG
 
                 resolve(lastVersion);
             })
         });
 
-        console.log(`Version num: ${versionNum}`);   // DEBUG
+        if (DEBUG) console.log(`Version num: ${versionNum}`);   // DEBUG
 
         if (versionNum < 0) return versionNum;      // Error; return as-is
         else                return versionNum + 1;  // Return next version

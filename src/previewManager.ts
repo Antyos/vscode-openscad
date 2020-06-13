@@ -6,7 +6,7 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { ScadConfig } from './config';
+import { ScadConfig, DEBUG } from './config';
 import { Preview }  from './preview';
 import { PreviewStore } from './previewStore';
 import { TExportFileExt, ExportFileExt, ExportExtForSave } from './exportFileExt';
@@ -52,7 +52,7 @@ export class PreviewManager {
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach( async (uri) => {
             let resource: vscode.Uri;
 
-            // console.log(`openFile: { main: ${mainUri}, all: ${allUris}, args: ${args}}`);   // DEBUG
+            // if (DEBUG) console.log(`openFile: { main: ${mainUri}, all: ${allUris}, args: ${args}}`);   // DEBUG
 
             // If uri not given, try opening activeTextEditor
             if (!(uri instanceof vscode.Uri)) { 
@@ -66,7 +66,7 @@ export class PreviewManager {
             // Check if a new preview can be opened
             if (!this.canOpenNewPreview(resource, args)) return;
             
-            console.log(`uri: ${resource}`);    // DEBUG
+            if (DEBUG) console.log(`uri: ${resource}`);    // DEBUG
 
             // Create and add new OpenSCAD preview to PreviewStore
             this.previewStore.createAndAdd(resource, args);
@@ -134,7 +134,7 @@ export class PreviewManager {
             // Check if a new preview can be opened
             if (!this.canOpenNewPreview(resource, args)) return;
             
-            console.log(`uri: ${resource}`); // DEBUG
+            if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
 
             this.previewStore.createAndAdd(resource, args);
         });
@@ -191,7 +191,7 @@ export class PreviewManager {
     public killAll() {
         // Check that there are open previews
         if (this.previewStore.size <= 0) {
-            console.error("No open previews");
+            if (DEBUG) console.error("No open previews");
             vscode.window.showInformationMessage("No open previews.");
             return;
         }
@@ -269,21 +269,21 @@ export class PreviewManager {
     private canOpenNewPreview(resource: vscode.Uri, args?: string[]): boolean {
         // Make sure path to openscad.exe is valid
         if (!Preview.isValidScadPath) {
-            console.error("Path to openscad command is invalid");   // DEBUG
+            if (DEBUG) console.error("Path to openscad command is invalid");   // DEBUG
             vscode.window.showErrorMessage("Cannot find 'openscad' command. Make sure OpenSCAD is installed. You may need to specify the installation path under \`Settings > OpenSCAD > Launch Path\`");
             return false;
         }
 
         // Make sure we don't surpass max previews allowed
         if (this.previewStore.size >= this.previewStore.maxPreviews && this.previewStore.maxPreviews > 0) {
-            console.error("Max number of OpenSCAD previews already open."); // DEBUG
+            if (DEBUG) console.error("Max number of OpenSCAD previews already open."); // DEBUG
             vscode.window.showErrorMessage("Max number of OpenSCAD previews already open. Try increasing the max instances in the config.");
             return false;
         }
         
         // Make sure file is not already open
         else if (this.previewStore.get(resource, PreviewStore.getPreviewType(args)) !== undefined) {
-            console.log(`File is already open: "${resource.fsPath}"`);
+            if (DEBUG) console.log(`File is already open: "${resource.fsPath}"`);
             vscode.window.showInformationMessage(`${path.basename(resource.fsPath)} is already open: "${resource.fsPath}"`);
             return false;
         }
