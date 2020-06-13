@@ -18,7 +18,7 @@ import escapeStringRegexp = require("escape-string-regexp");
 
 // Returns file name without extension
 export function fileBasenameNoExt(uri: vscode.Uri): string {
-    return path.basename(uri.fsPath, path.extname(uri.fsPath))
+    return path.basename(uri.fsPath, path.extname(uri.fsPath));
 }
 
 // Resolves variables in '${VAR_NAME}' format within a string
@@ -51,17 +51,16 @@ export class VariableResolver {
         });
 
         // Get dynamic version number
-        const version = await this.getVersionNumber(replaced, resource)
+        const version = await this.getVersionNumber(replaced, resource);
 
         if (DEBUG) console.log(`Version number: ${version}`);
 
         // Cases for version number
-        switch (version)
-        {
+        switch (version) {
             case -1:    // No version number
                 return replaced;
             case -2:    // Reached max version number\
-                vscode.window.showErrorMessage(`Could not read files in directory specified for export`)
+                vscode.window.showErrorMessage(`Could not read files in directory specified for export`);
                 return replaced;
             default:    // Substitute version number
                 return replaced.replace(VariableResolver.VERSION_FORMAT, String(version));
