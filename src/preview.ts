@@ -23,7 +23,7 @@ export type PreviewType = 'view'|'output';
 export class Preview {
     // Paths
     private static _scadPath: string;
-    private static _isValidScadPath: boolean;
+    private static _isValidScadPath: boolean = false;
     private readonly _fileUri: vscode.Uri;
     private readonly _process: child.ChildProcess;
     private readonly _previewType: PreviewType;
@@ -55,7 +55,7 @@ export class Preview {
         
         // Run on child exit
         this._process.on('exit', (code) => {
-            console.log(`Child exited with code ${code}`);
+            console.log(`OpenSCAD exited with code ${code}`);
             this._isRunning = false;
             this._onKilled.dispatch();  // Dispatch 'onKilled' event
         });
@@ -91,12 +91,12 @@ export class Preview {
     public static create(resource: vscode.Uri, previewType?: PreviewType, args?: string[]): Preview | undefined {
         // Error checking
         // Make sure scad path is defined
-        if (!Preview._scadPath) {
+        if (!Preview._isValidScadPath) {
             console.error("OpenSCAD path is undefined in config");
             vscode.window.showErrorMessage("OpenSCAD path does not exist.");
             return undefined;
         }
-        
+       
         // If previewType is undefined, automatically assign it based on arguemnts
         if(!previewType) previewType = args?.some(item => ['-o', '--o'].includes(item)) ? 'output' : 'view';
 
@@ -110,15 +110,15 @@ export class Preview {
         // Set OpenSCAD path if specified; otherwise use system default
         Preview._scadPath = scadPath ? scadPath : pathByPlatform[type() as keyof typeof pathByPlatform];
         
-        console.log(`Path: '${this._scadPath}'`);   // DEBUG
+        console.log(`Path: '${Preview._scadPath}'`);   // DEBUG
         
         // Verify 'openscad' command is valid
-        this._isValidScadPath = false;  // Set to false until can test if the command exists
-        commandExists(Preview._scadPath, (err: boolean) => { this._isValidScadPath = !err });
+        Preview._isValidScadPath = false;  // Set to false until can test if the command exists
+        commandExists(Preview._scadPath, (err: null, exists: boolean) => { Preview._isValidScadPath = exists; });
     }
     
     public get previewType() { return this._previewType; }
     
     public static get scadPath(): string { return Preview._scadPath; }
-    public static get isValidScadPath() : boolean { return this._isValidScadPath; }
+    public static get isValidScadPath() : boolean { return Preview._isValidScadPath; }
 }

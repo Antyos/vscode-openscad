@@ -269,15 +269,15 @@ export class PreviewManager {
     private canOpenNewPreview(resource: vscode.Uri, args?: string[]): boolean {
         // Make sure path to openscad.exe is valid
         if (!Preview.isValidScadPath) {
-            console.error("Path to openscad.exe is invalid");   // DEBUG
-            vscode.window.showErrorMessage("Path to openscad.exe is invalid.");
+            console.error("Path to openscad command is invalid");   // DEBUG
+            vscode.window.showErrorMessage("Cannot find 'openscad' command. Make sure OpenSCAD is installed. You may need to specify the installation path under \`Settings > OpenSCAD > Launch Path\`");
             return false;
         }
 
         // Make sure we don't surpass max previews allowed
         if (this.previewStore.size >= this.previewStore.maxPreviews && this.previewStore.maxPreviews > 0) {
             console.error("Max number of OpenSCAD previews already open."); // DEBUG
-            vscode.window.showErrorMessage("Max number of OpenSCAD previews already open.");
+            vscode.window.showErrorMessage("Max number of OpenSCAD previews already open. Try increasing the max instances in the config.");
             return false;
         }
         
