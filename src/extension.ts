@@ -31,9 +31,6 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('openscad.exportWithSaveDialogue', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'auto', true))
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('openscad.exportToStl', (mainUri, allUris) => previewManager.exportFile(mainUri, allUris, 'stl'))
-    );
-    context.subscriptions.push(
         vscode.commands.registerCommand('openscad.kill', () => previewManager.kill())
     );
     context.subscriptions.push(

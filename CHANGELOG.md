@@ -15,16 +15,14 @@
         - Only available when there are open previews
     - (Hidden) `openscad.autoKill` functions as **Kill All** if one preview is open, otherwise functions as **Kill**
         - Only accesible through button on editor/title bar
-    - **Export Model to Selected File Type** (`openscad.exportByType`) exports model to a selected file type
+    - **Export Model** (`openscad.exportByConfig`) exports model based on config: `openscad.export.preferredFileExtension`
         - Only available in context menu and command palette for `.scad` files
+    - **Export Model (Select File Type)** (`openscad.exportByType`) exports model to a selected file type
+        - Only available in command palette for `.scad` files
         - Opens quick-pick box to select file type
     - **Export Model with Save Dialogue** (`openscad.exportWithSaveDialogue`) exports model using a save dialogue
         - Only available in context menu and command palette for `.scad` files
         - Replaces `openscad.exportByConfig` in context menus when holding alt
-    - **Export Model** (`openscad.exportByConfig`) exports model based on config: `openscad.export.preferredFileExtension`
-        - Only available in context menu and command palette for `.scad` files
-    - **Export Model to STL** (`openscad.exportToStl`) exports model to `.stl`
-        - Only available in context menu and command palette for `.scad` files
 - Menu buttons (in editor/title for `scad` files)
     - **Preview** - Runs `openscad.preview`
     - **Kill** - Runs `openscad.autoKill`. If `alt` is held, runs `openscad.kill`
@@ -42,7 +40,6 @@
     - `openscad.interface.showCommandsInExplorerContextMenu` - Shows preview and export commands in explorer context menu.
     - `openscad.interface.showPreviewInContextMenus` - Shows **Preview in OpenSCAD** command in context menus.
     - `openscad.interface.showExportInContextMenus` - Shows **Export Model** command in context menus.
-    - `openscad.interface.showExportToStlInContextMenus` - Shows **Export to STL** command in context menus.
 - Grammar
     - Added unicode/hex escape codes in strings. See: <https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Text>, for details on escape codes in strings.
 

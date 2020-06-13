@@ -30,7 +30,6 @@
         "onCommand:openscad.killAll",
         "onCommand:openscad.exportByType",
         "onCommand:openscad.exportByConfig",
-        "onCommand:openscad.exportToStl",
         "onCommand:openscad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
@@ -76,7 +75,7 @@
             },
             {
                 "command": "openscad.exportByType",
-                "title": "Export Model to Selected File Type",
+                "title": "Export Model (Select File Type)",
                 "category": "OpenSCAD",
                 "icon": {
                     "light": "./media/icons/export-light.svg",
@@ -100,11 +99,6 @@
                     "light": "./media/icons/export-light.svg",
                     "dark": "./media/icons/export-dark.svg"
                 }
-            },
-            {
-                "command": "openscad.exportToStl",
-                "title": "Export to STL",
-                "category": "OpenSCAD"
             }
         ],
         "menus": {
@@ -138,11 +132,6 @@
                     "alt": "openscad.exportWithSaveDialogue",
                     "when": "resourceLangId == scad && config.openscad.interface.showExportInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
                     "group": "navigation@1"
-                },
-                {
-                    "command": "openscad.exportToStl",
-                    "when": "resourceLangId == scad && config.openscad.interface.showExportToStlInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
-                    "group": "navigation@1"
                 }
             ],
             "explorer/context": [
@@ -156,11 +145,6 @@
                     "alt": "openscad.exportWithSaveDialogue",
                     "when": "resourceLangId == scad && config.openscad.interface.showExportInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
                     "group": "navigation@-1.1"
-                },
-                {
-                    "command": "openscad.exportToStl",
-                    "when": "resourceLangId == scad && config.openscad.interface.showExportToStlInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
-                    "group": "navigation@-1.2"
                 }
             ],
             "commandPalette": [
@@ -190,10 +174,6 @@
                 },
                 {
                     "command": "openscad.exportByConfig",
-                    "when": "never"
-                },
-                {
-                    "command": "openscad.exportToStl",
                     "when": "editorLangId == scad || resourceLangId == scad"
                 }
             ]
@@ -231,7 +211,7 @@
                 "openscad.launchPath": {
                     "type": "string",
                     "default": "",
-                    "markdownDescription": "Path to `openscad` executable. Use \"`openscad`\" (no quotes) if openscad is in the path. Overides defaults below:\n- Windows: `C:\\Program Files\\Openscad\\openscad.exe`\n  - _Note:_ Must specify path to `openscad.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)",
+                    "markdownDescription": "Path to `openscad` executable. Use \"`openscad`\" (no quotes) if openscad is in the path. If left blank, it will use the default path for your system:\n- Windows: `C:\\Program Files\\Openscad\\openscad.exe`\n  - _Note:_ Must specify path to `openscad.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)",
                     "scope": "machine-overridable"
                 },
                 "openscad.maxInstances": {
@@ -272,23 +252,23 @@
                 },
                 "openscad.export.alwaysPromptFilenameOnExport": {
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "markdownDescription": "Always open a save dialogue to choose file name and location when exporting"
                 },
                 "openscad.interface.showPreviewIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show `Preview in OpenSCAD` button in editor title menu (right side of tabs)."
+                    "markdownDescription": "Show **Preview in OpenSCAD** button in editor title menu (right side of tabs)."
                 },
                 "openscad.interface.showKillIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show `Kill OpenSCAD Previews` button in editor title menu (right side of tabs)."
+                    "markdownDescription": "Show **Kill OpenSCAD Previews** button in editor title menu (right side of tabs)."
                 },
                 "openscad.interface.showExportIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show `Export` button in editor title menu (right side of tabs)."
+                    "markdownDescription": "Show **Export** button in editor title menu (right side of tabs)."
                 },
                 "openscad.interface.showCommandsInEditorTitleContextMenu": {
                     "type": "boolean",
@@ -303,17 +283,12 @@
                 "openscad.interface.showPreviewInContextMenus": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show `Preview in OpenSCAD` command in context menus."
+                    "markdownDescription": "Show **Preview in OpenSCAD** command in context menus."
                 },
                 "openscad.interface.showExportInContextMenus": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show `Export Model` command in context menus."
-                },
-                "openscad.interface.showExportToStlInContextMenus": {
-                    "type": "boolean",
-                    "default": true,
-                    "markdownDescription": "Show `Export to STL` command in context menus."
+                    "markdownDescription": "Show **Export Model** command in context menus."
                 },
                 "openscad.cheatsheet.displayInStatusBar": {
                     "type": "string",
