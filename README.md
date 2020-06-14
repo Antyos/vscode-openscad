@@ -91,7 +91,6 @@ For more information, see: [Using an external Editor with OpenSCAD](https://en.w
     - Add "export" line in .scad file to override export filename settings on per-file basis
     - Add configurable export map for each file format
     - Launch file with args (get user input for args)
-    - Fix console displaying all output as an error
 - Add snippets for common things in the OpenSCAD cheat sheet
 - _Add peek/jump definition for symbols_
 - _Have VSCode recognize function parameters in IntelliSense_

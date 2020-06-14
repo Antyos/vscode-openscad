@@ -42,23 +42,28 @@ export class Preview {
         if (DEBUG) console.log(`commangArgs: ${commandArgs}`); // DEBUG
 
         // New process
-        this._process = child.spawn(Preview._scadPath, commandArgs);
+        this._process = child.execFile(Preview._scadPath, commandArgs, (error, stdout, stderr) => {
+            // If there's an error
+            if (error) {
+                // console.error(`exec error: ${error}`);
+                if (DEBUG) console.error(`stderr: ${stderr}`);  // DEBUG
+                vscode.window.showErrorMessage(stderr);         // Display error message
+            }
+            // No error
+            else {
+                // For some reason, OpenSCAD seems to use stderr for all console output...
+                // If there is no error, assume stderr should be treated as stdout
+                // For more info. see: https://github.com/openscad/openscad/issues/3358
+                const message = stdout || stderr;
+                if (DEBUG) console.log(`stdout: ${message}`);   // DEBUG
 
-        // Set exit conditions or something like that
-        this._process.stdout.on('data', (data) => {
-            if (DEBUG) console.log(data.toString());
-        });
-          
-        this._process.stderr.on('data', (data) => {
-            if (DEBUG) console.error(data.toString());
-            vscode.window.showErrorMessage(`Error: ${data.toString()}`);
-        });
-        
-        // Run on child exit
-        this._process.on('exit', (code) => {
-            if (DEBUG) console.log(`OpenSCAD exited with code ${code}`);
+                vscode.window.showInformationMessage(message);  // Display info
+            }
+            
+            // if (DEBUG) console.log(`real stdout: ${stdout}`);    // DEBUG
+
             this._isRunning = false;
-            this._onKilled.dispatch();  // Dispatch 'onKilled' event
+            this._onKilled.dispatch();  // Dispatch 'onKilled' event              
         });
 
         // Child process is now running
