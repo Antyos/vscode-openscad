@@ -32,7 +32,9 @@
     - `openscad.maxInstances` - Limits the max number of preview windows open at one time. Set 0 for no limit.
     - `openscad.showKillMessage` - Show message when a preview is killed.
     - `openscad.export.preferredExportFileExtension` - Preferred file extension to use when exporting using the 'Export' button in the editor title bar. Set to `none` to select the file extension each time.
-    - `openscad.export.alwaysPromptFilenameOnExport` - Setting to true will always open a save dialogue when exporting
+    - `openscad.export.autoNamingFormat` - A configurable string that dynamically names exported files.
+    - `openscad.export.useAutoNamingExport` - Setting to true will replace the standard behavior of **Export Model** to automatically export files according to the name specified in openscad.export.autoNamingFormat` instead of opening a save dialogue.
+    - `openscad.export.useAutoNamingInSaveDialogues` - The default name of to-be exported files in save dialouges will be generated according to the config of `openscad.export.autoNamingFormat` instead of using the original filename.
     - `openscad.interface.showPreviewIconInEditorTitleMenu` - Shows **Preview in OpenSCAD** button in editor title menu (right side of tabs).
     - `openscad.interface.showKillIconInEditorTitleMenu` - Shows **Kill OpenSCAD Previews** button in editor title menu (right side of tabs).
     - `openscad.interface.showExportIconInEditorTitleMenu` - Shows **Export Model** button in editor title menu (right side of tabs).

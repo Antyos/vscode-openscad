@@ -109,9 +109,11 @@ export class PreviewManager {
             else resource = uri;
             
             // Open save dialogue
-            if (useSaveDialogue || this.config.alwaysPromptFilenameOnExport) {
+            if (useSaveDialogue || !this.config.useAutoNamingExport) {
+                // Pattern for URI used in save dialogue
+                const pattern = this.config.useAutoNamingInSaveDialogues ? this.config.autoNamingFormat : this.variableResolver.defaultPattern;
                 // Get Uri from save dialogue prompt
-                const newUri = await this.promptForExport(resource, exportExt);
+                const newUri = await this.promptForExport(resource, exportExt, pattern);
 
                 // If valid, set filePath. Otherwise, return
                 if (newUri) filePath = newUri.fsPath;
@@ -120,7 +122,7 @@ export class PreviewManager {
             // Use config for auto generation of filename
             else {
                 // Filename for export
-                const fileName = await this.variableResolver.resolveString(this.config.exportFormat, resource, exportExt); 
+                const fileName = await this.variableResolver.resolveString(this.config.autoNamingFormat, resource, exportExt); 
                 // Set full file path; Make sure fileName is not already an absolute path
                 filePath = (path.isAbsolute(fileName) ? fileName : path.join(path.dirname(resource.fsPath), fileName));
             }
@@ -213,8 +215,9 @@ export class PreviewManager {
         this.config.maxInstances    = config.get<number>('maxInstances');
         this.config.showKillMessage = config.get<boolean>('showKillMessage');
         this.config.preferredExportFileExtension    = config.get<string>('export.preferredExportFileExtension');
-        this.config.exportFormat                    = config.get<string>('export.exportFormat');
-        this.config.alwaysPromptFilenameOnExport    = config.get<boolean>('export.alwaysPromptFilenameOnExport');
+        this.config.autoNamingFormat                = config.get<string>('export.autoNamingFormat');
+        this.config.useAutoNamingExport          = config.get<boolean>('export.useAutoNamingExport');
+        this.config.useAutoNamingInSaveDialogues    = config.get<boolean>('export.useAutoNamingInSaveDialogues');
 
         // Only update openscad path if the path value changes
         if (this.config.lastOpenscadPath !== this.config.openscadPath) {
@@ -249,11 +252,13 @@ export class PreviewManager {
     }
 
     // Prompts user for export name and location
-    private async promptForExport(resource: vscode.Uri, exportExt: TExportFileExt = "stl"): Promise<vscode.Uri | undefined> {
+    private async promptForExport(resource: vscode.Uri, exportExt: TExportFileExt = "stl", pattern: string = this.variableResolver.defaultPattern): Promise<vscode.Uri | undefined> {
         // Replace the `.scad` file extrension with the preferred type (or default to stl)
-        const fileName = `${fileBasenameNoExt(resource)}.${exportExt}`;         // Filename for export
-        const filePath = path.join(path.dirname(resource.fsPath), fileName);    // Full file path
-        let resourceNewExt = vscode.Uri.file(filePath);                         // Resource URI with new file extension
+        const fileName = await this.variableResolver.resolveString(pattern, resource, exportExt);                       // Filename for export
+        const filePath = path.isAbsolute(fileName) ? fileName : path.join(path.dirname(resource.fsPath), fileName);     // Full file path
+        let resourceNewExt = vscode.Uri.file(filePath);                                                                 // Resource URI with new file extension
+        
+        if (DEBUG) { console.log(`Opening Save Dialogue to: ${filePath}`); }
 
         // Open save dialogue
         const savedUri = await vscode.window.showSaveDialog({

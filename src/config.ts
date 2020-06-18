@@ -12,8 +12,9 @@ export interface ScadConfig
     maxInstances?: number;
     showKillMessage?: boolean;
     preferredExportFileExtension?: string;
-    exportFormat?: string;
-    alwaysPromptFilenameOnExport?: boolean;
+    autoNamingFormat?: string;
+    useAutoNamingExport?: boolean;
+    useAutoNamingInSaveDialogues?: boolean;
     displayInStatusBar?: string;
     colorScheme?: string;
     lastColorScheme?: string;

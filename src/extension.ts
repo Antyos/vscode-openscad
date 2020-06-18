@@ -14,6 +14,8 @@ const previewManager = new PreviewManager();
 
 // Called when extension is activated
 export function activate(context: vscode.ExtensionContext) {
+    console.log("Activating openscad extension");
+
     // Register commands
     context.subscriptions.push(
         vscode.commands.registerCommand(Cheatsheet.csCommandId, () => Cheatsheet.createOrShowPanel(context.extensionPath))

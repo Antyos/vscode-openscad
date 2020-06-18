@@ -28,19 +28,19 @@ export class VariableResolver {
     // private static readonly VARIABLE_REGEXP_SINGLE = /\$\{(.*?)\}/; // Unused
     private static readonly VERSION_FORMAT = /\${#}/g;
 
-    private readonly variables: string[] = ["workspaceFolder", "workspaceFolderBasename", "file", "relativeFile", "relativeFileDirname", "fileBasename", "fileBasenameNoExtension", "fileDirname", "fileExtname", "exportExtension", "#", "noMatch"];
+    private readonly _variables: string[] = ["workspaceFolder", "workspaceFolderBasename", "file", "relativeFile", "relativeFileDirname", "fileBasename", "fileBasenameNoExtension", "fileDirname", "fileExtname", "exportExtension", "#", "noMatch"];
 
-    private readonly defaultPattern = "${fileBasenameNoExtension}.${exportExtension}";   // Default naming pattern
-    private readonly isWindows: boolean;
+    private readonly _defaultPattern = "${fileBasenameNoExtension}.${exportExtension}";   // Default naming pattern
+    private readonly _isWindows: boolean;
     // private _config: ScadConfig;
 
     constructor() {
         // this._config = config
-        this.isWindows = platform() === 'win32';
+        this._isWindows = platform() === 'win32';
     }
     
     // Resolve variables in string given a file URI
-    public async resolveString(pattern: string = this.defaultPattern, resource: vscode.Uri, exportExt?: string): Promise<string> {
+    public async resolveString(pattern: string = this._defaultPattern, resource: vscode.Uri, exportExt?: string): Promise<string> {
         // if (DEBUG) console.log(`resolveString pattern: ${pattern}`); // DEBUG
 
         // Replace all variable pattern matches '${VAR_NAME}'
@@ -71,7 +71,7 @@ export class VariableResolver {
     public testVars(resource: vscode.Uri) {
         if (DEBUG) console.log("Testing evaluateSingleVariable()...");
 
-        this.variables.forEach( (variable) => {
+        this._variables.forEach( (variable) => {
             if (DEBUG) console.log(`${variable} : ${this.evaluateSingleVariable("${" + variable + "}", variable, resource, "test")}`);
         });
     }
@@ -115,7 +115,7 @@ export class VariableResolver {
         
         // Replace the number placeholder with a regex number capture pattern
         // Regexp is case insensitive if OS is Windows
-        const patternAsRegexp = new RegExp(escapeStringRegexp(path.basename(pattern)).replace("\\$\\{#\\}", "([1-9][0-9]*)"), (this.isWindows ? "i" : ""));
+        const patternAsRegexp = new RegExp(escapeStringRegexp(path.basename(pattern)).replace("\\$\\{#\\}", "([1-9][0-9]*)"), (this._isWindows ? "i" : ""));
 
         // Get file directory
         let fileDir = (path.isAbsolute(pattern) ? path.dirname(pattern) :       // Already absolute path
@@ -147,11 +147,15 @@ export class VariableResolver {
             })
         });
 
-        if (DEBUG) console.log(`Version num: ${versionNum}`);   // DEBUG
+        // if (DEBUG) console.log(`Version num: ${versionNum}`);   // DEBUG
 
         if (versionNum < 0) return versionNum;      // Error; return as-is
         else                return versionNum + 1;  // Return next version
 
         // Consider adding case for MAX_SAFE_NUMBER (despite it's unlikeliness)
+    }
+
+    public get defaultPattern(): string {
+        return this._defaultPattern;
     }
 }
