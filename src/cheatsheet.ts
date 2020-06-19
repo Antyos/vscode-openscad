@@ -1,6 +1,13 @@
+/*---------------------------------------------------------------------------------------------
+ * Cheatsheet
+ * 
+ * Generates a webview panel containing the OpenSCAD cheatsheet
+ *--------------------------------------------------------------------------------------------*/
+
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import { ScadConfig, DEBUG } from './config';
 
 // Cheatsheet color schemes. Located in [extensionPath]/media/
 const colorScheme = {
@@ -8,28 +15,19 @@ const colorScheme = {
     auto: 'cheatsheet-auto.css'
 }
 
-// Cheatsheet config values
-interface CheatsheetConfig
-{
-    displayInStatusBar?: string;
-    colorScheme?: string;
-    lastColorScheme?: string;
-    openToSide?: boolean;
-}
-
 // Class for Cheatsheet webview and commands
 // Only one instance of cheatsheet panel so basically everything is delcared `static`
 export class Cheatsheet
 {
-    public static readonly csCommandId = 'scad.cheatsheet';     // Command id for opening the cheatsheet
+    public static readonly csCommandId = 'openscad.cheatsheet'; // Command id for opening the cheatsheet
     public static readonly viewType = 'cheatsheet';             // Internal reference to cheatsheet panel
 
-    public static currentPanel: Cheatsheet | undefined;         // Webview Panel
-    public static csStatusBarItem: vscode.StatusBarItem;        // Cheatsheet status bar item 
+    public static currentPanel: Cheatsheet | undefined;                 // Webview Panel
+    private static csStatusBarItem: vscode.StatusBarItem | undefined;   // Cheatsheet status bar item 
 
     private readonly _panel: vscode.WebviewPanel;               // Webview panels
     private readonly _extensionPath: string;                    // Extension path
-    private static config: CheatsheetConfig = {};               // Extension config
+    private static config: ScadConfig = {};                     // Extension config
     // private isScadDocument: boolean;                         // Is current document openSCAD
 
     
@@ -40,7 +38,7 @@ export class Cheatsheet
         // Determine which column to show cheatsheet in
         // If not active editor, check config to open in current window to to the side
         let column = vscode.window.activeTextEditor
-            ? (Cheatsheet.config.openToSide ? vscode.ViewColumn.Beside : vscode.window.activeTextEditor.viewColumn)
+            ? (Cheatsheet.config.openToSide === "beside" ? vscode.ViewColumn.Beside : vscode.window.activeTextEditor.viewColumn)
             : undefined;
 
 
@@ -103,10 +101,14 @@ export class Cheatsheet
         }
     }
 
-    // Initializes the status bar
-    public static initStatusBar() {
-        Cheatsheet.csStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-        Cheatsheet.csStatusBarItem.command = Cheatsheet.csCommandId;
+    // Initializes the status bar (if not yet) and return the status bar
+    public static getStatusBarItem() {
+        if (!Cheatsheet.csStatusBarItem) {
+            Cheatsheet.csStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+            Cheatsheet.csStatusBarItem.command = Cheatsheet.csCommandId;
+        }
+        
+        return Cheatsheet.csStatusBarItem;
     }
 
     // Dispose of status bar
@@ -142,14 +144,14 @@ export class Cheatsheet
         }
 
         // Show or hide `Open Cheatsheet` button 
-        if (showCsStatusBarItem)
-        {
-            Cheatsheet.csStatusBarItem.text = 'Open Cheatsheet';
-            Cheatsheet.csStatusBarItem.show();
-        }
-        else
-        {
-            Cheatsheet.csStatusBarItem.hide();
+        if (Cheatsheet.csStatusBarItem) {
+            if (showCsStatusBarItem) {
+                Cheatsheet.csStatusBarItem.text = 'Open Cheatsheet';
+                Cheatsheet.csStatusBarItem.show();
+            }
+            else {
+                Cheatsheet.csStatusBarItem.hide();
+            }
         }
     }
 
@@ -164,7 +166,7 @@ export class Cheatsheet
         // Load the configuration changes
         Cheatsheet.config.displayInStatusBar = config.get<string>('cheatsheet.displayInStatusBar', 'openDoc');
         Cheatsheet.config.colorScheme = config.get<string>('cheatsheet.colorScheme', 'auto');
-        Cheatsheet.config.openToSide = config.get<boolean>('cheatsheet.openToSide', true);
+        Cheatsheet.config.openToSide = config.get<string>('cheatsheet.openToSide', 'beside');
 
         // Update the status bar
         this.updateStatusBar();
@@ -225,7 +227,7 @@ export class Cheatsheet
         
         // Get style sheet URI
         const styleUri = vscode.Uri.file(path.join(this._extensionPath, 'media', styleSrc)).with({ scheme: 'vscode-resource' });
-        // console.log("Style" + styleUri); // DEBUG
+        // if (DEBUG) console.log("Style" + styleUri); // DEBUG
 
         // Replace `{{styleSrc}}` with the vscode URI for the desired `.css` file
         htmlContent = htmlContent.replace('{{styleSrc}}', styleUri.toString());

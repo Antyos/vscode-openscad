@@ -1,1 +1,0 @@
-npx js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json

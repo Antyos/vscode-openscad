@@ -1,13 +1,13 @@
 .vscode/**
 .vscode-test/**
 .gitignore
-test/**
-src/**
 out/*.js.map
+media/icons/source/**
+scad-icon-theme.json
+src/**
 syntaxes/references/**
 syntaxes/scad.yaml-tmLanguage
+test/**
 tsconfig.json
 tslint.json
 vsc-extension-quickstart.md
-scad-icon-theme.json
-makescad.bat
