@@ -22,4 +22,4 @@ export interface ScadConfig
 }
 
 // DEBUG variable. Set to false when compiling for release to disable all console logging
-export const DEBUG = true;
+export const DEBUG = false;

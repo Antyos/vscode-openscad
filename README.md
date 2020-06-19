@@ -10,7 +10,7 @@ This extension builds upon the "scad" extension by `Erik Benson` and later expan
 
 This extension features:
 
-- Syntax highlighting for
+- Syntax highlighting for:
     - Built-in OpenSCAD and user modules/functions
     - Includes customizer syntax support for Drop down boxes, Sliders, and Tabs
 - Preview and Export buttons to Preview/Export files with a single click

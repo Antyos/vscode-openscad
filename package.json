@@ -2,16 +2,20 @@
     "name": "openscad",
     "displayName": "OpenSCAD",
     "description": "OpenSCAD highlighting, snippets, and more for VSCode!",
-    "version": "0.2.1",
+    "version": "1.0.0",
     "publisher": "Antyos",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
     "engines": {
-        "vscode": "^1.40.0"
+        "vscode": "^1.44.0"
     },
     "categories": [
         "Programming Languages",
         "Snippets"
+    ],
+    "keywords": [
+        "openscad",
+        "scad"
     ],
     "homepage": "https://github.com/Antyos/vscode-openscad/blob/master/README.md",
     "bugs": {
@@ -30,6 +34,7 @@
         "onCommand:openscad.killAll",
         "onCommand:openscad.exportByType",
         "onCommand:openscad.exportByConfig",
+        "onCommand:openscad.exportWithSaveDialogue",
         "onCommand:openscad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
