@@ -1,5 +1,14 @@
-node_modules
-test
-references
+# Generated code
+node_modules/
+out/
+
+# Workspace settings
+.vscode/*
+!.vscode/launch-template.json
+
+# Personal reference files
+test/
+references/
+
+# Extension releases
 openscad-*.vsix
-out
