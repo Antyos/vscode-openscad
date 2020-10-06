@@ -94,8 +94,8 @@ patterns:
   match: '\.(?![0-9])'
 
 - include: '#brace_block'
-- include: '#paren_block'
 - include: '#bracket_block'
+- include: '#paren_block'
   
 - name: keyword.operator.assignment.scad
   match: '=(?!=)'
@@ -226,17 +226,6 @@ repository:
     patterns:
     - include: $self
 
-  paren_block:
-    name: meta.block.parens.scad 
-    begin: '\('
-    end: '\)'
-    beginCaptures:
-      '0': {name: punctuation.section.parens.begin.bracket.round.scad}
-    endCaptures:
-      '0': {name: punctuation.section.parens.end.bracket.round.scad}
-    patterns:
-    - include: $self
-
   bracket_block:
     name: meta.block.scad 
     begin: '\['
@@ -252,10 +241,6 @@ repository:
   #   match: '(\[.*\])'
   #   captures: 
   #     '1': {name: keyword.other.customizer.scad}
-
-  let_keyword:
-    name: keyword.control.scad
-    match: '\b(let)\b'
 
   function_builtin:
     patterns:
@@ -309,7 +294,22 @@ repository:
     endCaptures:
       '1': {name: punctuation.separator.parameters.scad}
     patterns:
-    - include: $self  
+    - include: $self 
+
+  let_keyword:
+    name: keyword.control.scad
+    match: '\b(let)\b' 
+
+  paren_block:
+    name: meta.block.parens.scad 
+    begin: '\('
+    end: '\)'
+    beginCaptures:
+      '0': {name: punctuation.section.parens.begin.bracket.round.scad}
+    endCaptures:
+      '0': {name: punctuation.section.parens.end.bracket.round.scad}
+    patterns:
+    - include: $self
 
 scopeName: source.scad
 uuid: ED71CA06-521E-4D30-B9C0-480808749662
