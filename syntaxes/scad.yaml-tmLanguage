@@ -28,10 +28,10 @@ patterns:
 # - include: '#customizer_comment'
 # WIP: Single line comment with customizer syntax
 # Can match: [10], [10:20], [-10:0.2:10], [foo, bar, baz], [10:S, 20:M, 30:L], [S:Small, M:Medium, L:Large]
-# TODO: Must include varriable definition on the same line
 - name: comment.line.double-slash.scad
   match: |-
     (?x)
+      (?<=\S\s*)
       (\/\/\s*)
       (
         \[(?:
