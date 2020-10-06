@@ -28,6 +28,7 @@ patterns:
 # - include: '#customizer_comment'
 # WIP: Single line comment with customizer syntax
 # Can match: [10], [10:20], [-10:0.2:10], [foo, bar, baz], [10:S, 20:M, 30:L], [S:Small, M:Medium, L:Large]
+# TODO: Must include varriable definition on the same line
 - name: comment.line.double-slash.scad
   match: |-
     (?x)
@@ -81,7 +82,7 @@ patterns:
 # Customizer injection into comments
 # - injectionSelector: 'comment.line.double-slash'
 
-
+- include: '#include'
 
 - name: invalid.deprecated
   match: \b(assign|child|import_dxf|import_stl)\b
@@ -279,6 +280,15 @@ repository:
     - name: support.function.extrude.scad
       match: \b(linear_extrude|rotate_extrude)\b
 
+  include:
+    # include|use <file.scad>
+    match: \b(((?:include|use)))\s*((<)[^>]*(>?))
+    captures:
+      '1': { name: keyword.control.$2.scad }
+      '3': { name: string.quoted.other.lt-gt.include.scad }
+      '4': { name: punctuation.definition.string.begin.scad }
+      '5': { name: punctuation.definition.string.begin.scad }
+
   keyword_control:
     patterns:
     # - include: '#let_keyword'
@@ -287,7 +297,7 @@ repository:
     - name: keyword.control.conditional.scad
       match: \b(if|else)\b
     - name: keyword.control.import.scad
-      match: \b(include|use|import|dxf_dim|dxf_cross|surface)\b
+      match: \b(import|dxf_dim|dxf_cross|surface)\b
 
   keyword_arguments:
     comment: Incorporated from PythonImproved grammar

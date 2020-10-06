@@ -117,6 +117,9 @@
       ]
     },
     {
+      "include": "#include"
+    },
+    {
       "name": "invalid.deprecated",
       "match": "\\b(assign|child|import_dxf|import_stl)\\b"
     },
@@ -441,6 +444,23 @@
         }
       ]
     },
+    "include": {
+      "match": "\\b(((?:include|use)))\\s*((<)[^>]*(>?))",
+      "captures": {
+        "1": {
+          "name": "keyword.control.$2.scad"
+        },
+        "3": {
+          "name": "string.quoted.other.lt-gt.include.scad"
+        },
+        "4": {
+          "name": "punctuation.definition.string.begin.scad"
+        },
+        "5": {
+          "name": "punctuation.definition.string.begin.scad"
+        }
+      }
+    },
     "keyword_control": {
       "patterns": [
         {
@@ -453,7 +473,7 @@
         },
         {
           "name": "keyword.control.import.scad",
-          "match": "\\b(include|use|import|dxf_dim|dxf_cross|surface)\\b"
+          "match": "\\b(import|dxf_dim|dxf_cross|surface)\\b"
         }
       ]
     },
