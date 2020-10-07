@@ -19,18 +19,34 @@
     },
     {
       "name": "comment.block.scad",
-      "match": "(/\\*)\\s*((?:\\[[\\s\\w]*\\]\\s*)+)\\s*(\\*/)",
+      "match": "((?:/\\*)(?:\\*)?(?!\\/))(.*?)(\\*/)",
       "captures": {
         "1": {
-          "name": "punctuation.definition.comment.scad"
+          "name": "punctuation.definition.comment.begin.scad"
         },
         "2": {
+          "patterns": [
+            {
+              "begin": "\\[",
+              "end": "\\]",
           "name": "keyword.other.customizer.scad"
+            }
+          ]
         },
         "3": {
-          "name": "punctuation.definition.comment.scad"
+          "name": "punctuation.definition.comment.end.scad"
         }
       }
+    },
+    {
+      "name": "comment.block.documentation.scad",
+      "begin": "/\\*\\*(?!/)",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.comment.scad"
+        }
+      },
+      "end": "\\*/"
     },
     {
       "name": "comment.block.scad",
