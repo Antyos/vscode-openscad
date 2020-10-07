@@ -16,29 +16,8 @@ patterns:
         end: '\]'
         name: keyword.other.customizer.scad
     '3': {name: punctuation.definition.comment.end.scad}
-    
-- name: comment.block.documentation.scad
-  begin: /\*\*(?!/)
-  captures:
-    '0': {name: punctuation.definition.comment.scad}
-  end: \*/
 
-# Customizer section header
-- name: comment.block.scad
-  match: (/\*)\s*((?:\[[\s\w]*\]\s*)+)\s*(\*/)
-  captures:
-    '1': {name: punctuation.definition.comment.scad}
-    '2': {name: keyword.other.customizer.scad}
-    '3': {name: punctuation.definition.comment.scad}
-
-- name: comment.block.scad
-  begin: /\*
-  captures:
-    '0': {name: punctuation.definition.comment.scad}
-  end: \*/
-
-# - include: '#customizer_comment'
-# WIP: Single line comment with customizer syntax
+# Single line comment with customizer syntax
 # Can match: [10], [10:20], [-10:0.2:10], [foo, bar, baz], [10:S, 20:M, 30:L], [S:Small, M:Medium, L:Large]
 - name: comment.line.double-slash.scad
   match: |-
@@ -57,18 +36,25 @@ patterns:
     '1': {name: punctuation.definition.comment.scad}
     '2': {name: keyword.other.customizer.scad}
 
+# Comments
+- name: comment.block.documentation.scad
+  begin: /\*\*(?!/)
+  captures:
+    '0': {name: punctuation.definition.comment.scad}
+  end: \*/
+
+- name: comment.block.scad
+  begin: /\*
+  captures:
+    '0': {name: punctuation.definition.comment.scad}
+  end: \*/
+
 - name: comment.line.double-slash.scad
   match: (//).*$\n?
   captures:
     '1': {name: punctuation.definition.comment.scad}
 
-- name: string.quoted.double.scad
-  begin: '"'
-  end: '"'
-  patterns:
-  - name: constant.character.escape.scad
-    match: \\(x[0-7]?[0-9A-Fa-f]|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{6}|.)
-
+# Strings
 - name: invalid.string.quoted.single.scad
   begin: ''''
   beginCaptures:
@@ -91,9 +77,7 @@ patterns:
   - name: constant.character.escape.scad
     match: \\(x[0-7]?[0-9A-Fa-f]|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{6}|.)
 
-# Customizer injection into comments
-# - injectionSelector: 'comment.line.double-slash'
-
+# Include and use
 - include: '#include'
 
 - name: invalid.deprecated
@@ -105,10 +89,12 @@ patterns:
 - name: meta.dot.scad
   match: '\.(?![0-9])'
 
+# Blocks of {}, [], ()
 - include: '#brace_block'
 - include: '#bracket_block'
 - include: '#paren_block'
   
+# Operators
 - name: keyword.operator.assignment.scad
   match: '=(?!=)'
 - name: keyword.operator.arithmetic.scad
@@ -122,27 +108,18 @@ patterns:
 - name: keyword.operator.other.scad
   match: '#|%|!' # Add '*' for disable?
 
+# Special variables
 - name: variable.language.scad
   match: '\$(children|fn|fa|fs|t|preview|vpt|vpr|vpd|parent_modules)\b'
-  
-- name: constant.language.boolean.true.scad
-  match: '\btrue\b'
 
-- name: constant.language.boolean.false.scad
-  match: '\bfalse\b'
-
-- name: constant.language.undef.scad
-  match: '\bundef\b'
-
-- name: constant.language.pi.scad
-  match: '\bPI\b'
-
+# Constants
+- include: '#constants'
 - include: '#keyword_control'
 
 #################################################################
 # Incorporated from PythonImproved grammar
 
-# Number definitions taken from PythonImproved
+# Numbers
 - comment: Ummm... why do we have three of these? This is one...
   name: constant.numeric.float.scad
   match: \b(?i:(\d+\.\d*(e[\-\+]?\d+)?))(?=[^[:alpha:]_])
@@ -163,6 +140,7 @@ patterns:
   begin: \b(((?:module|function)))\s+(?=[[:alpha:]_][[:alnum:]_]*)\s*(?=\()
   beginCaptures:
     '1': {name: storage.type.$2.scad}
+    # Add invalid name
   end: (?<=\))
   endCaptures:
     '1': {name: punctuation.definition.parameters.begin.scad}
@@ -247,12 +225,18 @@ repository:
       '0': {name: punctuation.section.block.end.bracket.square.scad}
     patterns:
     - include: $self
-  
-  # customizer_comment:
-  #   match: '(\[.*\])'
-  #   captures: 
-  #     '1': {name: keyword.other.customizer.scad}
 
+  constants:
+    patterns:
+    - name: constant.language.boolean.true.scad
+      match: '\btrue\b'
+    - name: constant.language.boolean.false.scad
+      match: '\bfalse\b'
+    - name: constant.language.undef.scad
+      match: '\bundef\b'
+    - name: constant.language.pi.scad
+      match: '\bPI\b'
+  
   function_builtin:
     patterns:
     - name: support.function.scad

@@ -8,16 +8,6 @@
   "name": "OpenSCAD",
   "patterns": [
     {
-      "name": "comment.block.documentation.scad",
-      "begin": "/\\*\\*(?!/)",
-      "captures": {
-        "0": {
-          "name": "punctuation.definition.comment.scad"
-        }
-      },
-      "end": "\\*/"
-    },
-    {
       "name": "comment.block.scad",
       "match": "((?:/\\*)(?:\\*)?(?!\\/))(.*?)(\\*/)",
       "captures": {
@@ -29,12 +19,24 @@
             {
               "begin": "\\[",
               "end": "\\]",
-          "name": "keyword.other.customizer.scad"
+              "name": "keyword.other.customizer.scad"
             }
           ]
         },
         "3": {
           "name": "punctuation.definition.comment.end.scad"
+        }
+      }
+    },
+    {
+      "name": "comment.line.double-slash.scad",
+      "match": "(?x)\n  (?<=\\S\\s*)\n  (\\/\\/\\s*)\n  (\n    \\[(?:\n        (?:-?\\d+(?:.\\d)*)(?:\\s*:\\s*-?\\d+(?:.\\d)*){0,2} |\n        (?:(?:[^:,]+:)?[^:,]+,)*(?:(?:[^:,]+:)?[^:,]+)\n      )\n    \\]\n  )\n  [ \\t]*$\\n?",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.scad"
+        },
+        "2": {
+          "name": "keyword.other.customizer.scad"
         }
       }
     },
@@ -60,35 +62,12 @@
     },
     {
       "name": "comment.line.double-slash.scad",
-      "match": "(?x)\n  (?<=\\S\\s*)\n  (\\/\\/\\s*)\n  (\n    \\[(?:\n        (?:-?\\d+(?:.\\d)*)(?:\\s*:\\s*-?\\d+(?:.\\d)*){0,2} |\n        (?:(?:[^:,]+:)?[^:,]+,)*(?:(?:[^:,]+:)?[^:,]+)\n      )\n    \\]\n  )\n  [ \\t]*$\\n?",
-      "captures": {
-        "1": {
-          "name": "punctuation.definition.comment.scad"
-        },
-        "2": {
-          "name": "keyword.other.customizer.scad"
-        }
-      }
-    },
-    {
-      "name": "comment.line.double-slash.scad",
       "match": "(//).*$\\n?",
       "captures": {
         "1": {
           "name": "punctuation.definition.comment.scad"
         }
       }
-    },
-    {
-      "name": "string.quoted.double.scad",
-      "begin": "\"",
-      "end": "\"",
-      "patterns": [
-        {
-          "name": "constant.character.escape.scad",
-          "match": "\\\\(x[0-7]?[0-9A-Fa-f]|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{6}|.)"
-        }
-      ]
     },
     {
       "name": "invalid.string.quoted.single.scad",
@@ -189,20 +168,7 @@
       "match": "\\$(children|fn|fa|fs|t|preview|vpt|vpr|vpd|parent_modules)\\b"
     },
     {
-      "name": "constant.language.boolean.true.scad",
-      "match": "\\btrue\\b"
-    },
-    {
-      "name": "constant.language.boolean.false.scad",
-      "match": "\\bfalse\\b"
-    },
-    {
-      "name": "constant.language.undef.scad",
-      "match": "\\bundef\\b"
-    },
-    {
-      "name": "constant.language.pi.scad",
-      "match": "\\bPI\\b"
+      "include": "#constants"
     },
     {
       "include": "#keyword_control"
@@ -211,6 +177,20 @@
       "comment": "Ummm... why do we have three of these? This is one...",
       "name": "constant.numeric.float.scad",
       "match": "\\b(?i:(\\d+\\.\\d*(e[\\-\\+]?\\d+)?))(?=[^[:alpha:]_])"
+    },
+    {
+      "comment": "This is two...",
+      "name": "constant.numeric.float.scad",
+      "match": "(?<=[^[:alnum:]_])(?i:(\\.\\d+(e[\\-\\+]?\\d+)?))"
+    },
+    {
+      "comment": "And this is three...",
+      "name": "constant.numeric.float.scad",
+      "match": "\\b(?i:(\\d+e[\\-\\+]?\\d+))"
+    },
+    {
+      "name": "constant.numeric.integer.decimal.scad",
+      "match": "\\b([1-9]+[0-9]*|0)"
     },
     {
       "name": "meta.function.scad",
@@ -373,6 +353,26 @@
       "patterns": [
         {
           "include": "$self"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.true.scad",
+          "match": "\\btrue\\b"
+        },
+        {
+          "name": "constant.language.boolean.false.scad",
+          "match": "\\bfalse\\b"
+        },
+        {
+          "name": "constant.language.undef.scad",
+          "match": "\\bundef\\b"
+        },
+        {
+          "name": "constant.language.pi.scad",
+          "match": "\\bPI\\b"
         }
       ]
     },
