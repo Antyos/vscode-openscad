@@ -213,34 +213,17 @@
       "match": "\\b(?i:(\\d+\\.\\d*(e[\\-\\+]?\\d+)?))(?=[^[:alpha:]_])"
     },
     {
-      "comment": "This is two...",
-      "name": "constant.numeric.float.scad",
-      "match": "(?<=[^[:alnum:]_])(?i:(\\.\\d+(e[\\-\\+]?\\d+)?))"
-    },
-    {
-      "comment": "And this is three...",
-      "name": "constant.numeric.float.scad",
-      "match": "\\b(?i:(\\d+e[\\-\\+]?\\d+))"
-    },
-    {
-      "name": "constant.numeric.integer.decimal.scad",
-      "match": "\\b([1-9]+[0-9]*|0)"
-    },
-    {
       "name": "meta.function.scad",
-      "begin": "\\s*(module|function)\\s+(?=[[:alpha:]_][[:alnum:]_]*)",
+      "begin": "\\b(((?:module|function)))\\s+(?=[[:alpha:]_][[:alnum:]_]*)\\s*(?=\\()",
       "beginCaptures": {
         "1": {
-          "name": "storage.type.function.scad"
+          "name": "storage.type.$2.scad"
         }
       },
       "end": "(?<=\\))",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.parameters.begin.scad"
-        },
-        "2": {
-          "name": "invalid.illegal.missing-parameters.scad"
         }
       },
       "patterns": [
@@ -279,13 +262,10 @@
           ]
         },
         {
-          "begin": "(\\))\\s*(\\->)",
+          "begin": "(\\))",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.parameters.end.scad"
-            },
-            "2": {
-              "name": "punctuation.separator.annotation.result.scad"
             }
           },
           "end": "(?<=\\))",
@@ -298,8 +278,12 @@
       ]
     },
     {
-      "name": "storage.type.function",
-      "match": "\\b(module|function)\\b"
+      "match": "\\b((module|function))\\b",
+      "captures": {
+        "1": {
+          "name": "storage.type.$2.scad"
+        }
+      }
     },
     {
       "name": "meta.function-call.scad",

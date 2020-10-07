@@ -160,13 +160,12 @@ patterns:
 
 # Function definition
 - name: meta.function.scad
-  begin: \s*(module|function)\s+(?=[[:alpha:]_][[:alnum:]_]*)
+  begin: \b(((?:module|function)))\s+(?=[[:alpha:]_][[:alnum:]_]*)\s*(?=\()
   beginCaptures:
-    '1': {name: storage.type.function.scad}
+    '1': {name: storage.type.$2.scad}
   end: (?<=\))
   endCaptures:
     '1': {name: punctuation.definition.parameters.begin.scad}
-    '2': {name: invalid.illegal.missing-parameters.scad}
   patterns:
   - contentName: entity.name.function.scad
     begin: (?=[[:alpha:]_][[:alnum:]_]*)
@@ -187,17 +186,17 @@ patterns:
         '1': {name: variable.parameter.function.language.scad}
         '2': {name: punctuation.separator.parameters.scad}
         '3': {name: punctuation.separator.parameters.scad}
-  - begin: (\))\s*(\->)
+  - begin: (\))
     beginCaptures:
       '1': {name: punctuation.definition.parameters.end.scad}
-      '2': {name: punctuation.separator.annotation.result.scad}
     end: (?<=\))
     patterns:
     - include: $self
 
 # After main function decleration to catch stray module / funciton
-- name: storage.type.function
-  match: '\b(module|function)\b'
+- match: '\b((module|function))\b'
+  captures: 
+    '1': { name: storage.type.$2.scad }
 
 # Function call (does not start with 'module' or 'function' but may have a dot separator)
 - name: meta.function-call.scad
