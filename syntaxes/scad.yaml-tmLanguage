@@ -148,7 +148,8 @@ patterns:
   - contentName: entity.name.function.scad
     begin: (?=[[:alpha:]_][[:alnum:]_]*)
     end: (?![[:alnum:]_])
-    # patterns:
+    patterns:
+    - include: '#illegal_names'
     # - include: '#entity_name_function'
   - contentName: meta.function.parameters.scad
     begin: (\()
@@ -158,6 +159,7 @@ patterns:
     patterns:
     # - include: '#annotated_arguments'
     - include: '#keyword_arguments'
+    - include: '#illegal_names'
     # - include: '#comments'
     - match: \b(?:([[:alpha:]_][[:alnum:]_]*))\s*(?:(,)|(?=[\n\)]))
       captures:
@@ -268,6 +270,15 @@ repository:
       '3': { name: string.quoted.other.lt-gt.include.scad }
       '4': { name: punctuation.definition.string.begin.scad }
       '5': { name: punctuation.definition.string.begin.scad }
+
+  illegal_names:
+    name: invalid.illegal.name.scad
+    match: |-
+      (?x)
+      \b (
+        true | false | module | function | include | use | undef |
+        for | intersection_for | if | else | let)
+      \b
 
   keyword_control:
     patterns:

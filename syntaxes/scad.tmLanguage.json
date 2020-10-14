@@ -210,7 +210,12 @@
         {
           "contentName": "entity.name.function.scad",
           "begin": "(?=[[:alpha:]_][[:alnum:]_]*)",
-          "end": "(?![[:alnum:]_])"
+          "end": "(?![[:alnum:]_])",
+          "patterns": [
+            {
+              "include": "#illegal_names"
+            }
+          ]
         },
         {
           "contentName": "meta.function.parameters.scad",
@@ -224,6 +229,9 @@
           "patterns": [
             {
               "include": "#keyword_arguments"
+            },
+            {
+              "include": "#illegal_names"
             },
             {
               "match": "\\b(?:([[:alpha:]_][[:alnum:]_]*))\\s*(?:(,)|(?=[\\n\\)]))",
@@ -436,6 +444,10 @@
           "name": "punctuation.definition.string.begin.scad"
         }
       }
+    },
+    "illegal_names": {
+      "name": "invalid.illegal.name.scad",
+      "match": "(?x)\n\\b (\n  true | false | module | function | include | use | undef |\n  for | intersection_for | if | else | let)\n\\b"
     },
     "keyword_control": {
       "patterns": [
