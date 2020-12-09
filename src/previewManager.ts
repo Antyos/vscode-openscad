@@ -274,8 +274,8 @@ export class PreviewManager {
     private canOpenNewPreview(resource: vscode.Uri, args?: string[]): boolean {
         // Make sure path to openscad.exe is valid
         if (!Preview.isValidScadPath) {
-            if (DEBUG) console.error("Path to openscad command is invalid");   // DEBUG
-            vscode.window.showErrorMessage("Cannot find 'openscad' command. Make sure OpenSCAD is installed. You may need to specify the installation path under \`Settings > OpenSCAD > Launch Path\`");
+            if (DEBUG) console.error(`Path to openscad command is invalid: "${Preview.scadPath}"`);   // DEBUG
+            vscode.window.showErrorMessage(`Cannot find the command: "${Preview.scadPath}". Make sure OpenSCAD is installed. You may need to specify the installation path under \`Settings > OpenSCAD > Launch Path\``);
             return false;
         }
 

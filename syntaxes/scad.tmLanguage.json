@@ -8,6 +8,39 @@
   "name": "OpenSCAD",
   "patterns": [
     {
+      "name": "comment.block.scad",
+      "match": "((?:/\\*)(?:\\*)?(?!\\/))(.*?)(\\*/)",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.begin.scad"
+        },
+        "2": {
+          "patterns": [
+            {
+              "begin": "\\[",
+              "end": "\\]",
+              "name": "keyword.other.customizer.scad"
+            }
+          ]
+        },
+        "3": {
+          "name": "punctuation.definition.comment.end.scad"
+        }
+      }
+    },
+    {
+      "name": "comment.line.double-slash.scad",
+      "match": "(?x)\n  (?<=\\S\\s*)\n  (\\/\\/\\s*)\n  (\n    \\[(?:\n        (?:-?\\d+(?:.\\d)*)(?:\\s*:\\s*-?\\d+(?:.\\d)*){0,2} |\n        (?:(?:[^:,]+:)?[^:,]+,)*(?:(?:[^:,]+:)?[^:,]+)\n      )\n    \\]\n  )\n  [ \\t]*$\\n?",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.scad"
+        },
+        "2": {
+          "name": "keyword.other.customizer.scad"
+        }
+      }
+    },
+    {
       "name": "comment.block.documentation.scad",
       "begin": "/\\*\\*(?!/)",
       "captures": {
@@ -16,21 +49,6 @@
         }
       },
       "end": "\\*/"
-    },
-    {
-      "name": "comment.block.scad",
-      "match": "(/\\*)\\s*((?:\\[[\\s\\w]*\\]\\s*)+)\\s*(\\*/)",
-      "captures": {
-        "1": {
-          "name": "punctuation.definition.comment.scad"
-        },
-        "2": {
-          "name": "keyword.other.customizer.scad"
-        },
-        "3": {
-          "name": "punctuation.definition.comment.scad"
-        }
-      }
     },
     {
       "name": "comment.block.scad",
@@ -44,35 +62,12 @@
     },
     {
       "name": "comment.line.double-slash.scad",
-      "match": "(?x)\n  (\\/\\/\\s*)\n  (\n    \\[(?:\n        (?:-?\\d+(?:.\\d)*)(?:\\s*:\\s*-?\\d+(?:.\\d)*){0,2} |\n        (?:(?:[^:,]+:)?[^:,]+,)*(?:(?:[^:,]+:)?[^:,]+)\n      )\n    \\]\n  )\n  [ \\t]*$\\n?",
-      "captures": {
-        "1": {
-          "name": "punctuation.definition.comment.scad"
-        },
-        "2": {
-          "name": "keyword.other.customizer.scad"
-        }
-      }
-    },
-    {
-      "name": "comment.line.double-slash.scad",
       "match": "(//).*$\\n?",
       "captures": {
         "1": {
           "name": "punctuation.definition.comment.scad"
         }
       }
-    },
-    {
-      "name": "string.quoted.double.scad",
-      "begin": "\"",
-      "end": "\"",
-      "patterns": [
-        {
-          "name": "constant.character.escape.scad",
-          "match": "\\\\(x[0-7]?[0-9A-Fa-f]|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{6}|.)"
-        }
-      ]
     },
     {
       "name": "invalid.string.quoted.single.scad",
@@ -117,6 +112,9 @@
       ]
     },
     {
+      "include": "#include"
+    },
+    {
       "name": "invalid.deprecated",
       "match": "\\b(assign|child|import_dxf|import_stl)\\b"
     },
@@ -136,10 +134,10 @@
       "include": "#brace_block"
     },
     {
-      "include": "#paren_block"
+      "include": "#bracket_block"
     },
     {
-      "include": "#bracket_block"
+      "include": "#paren_block"
     },
     {
       "name": "keyword.operator.assignment.scad",
@@ -170,20 +168,7 @@
       "match": "\\$(children|fn|fa|fs|t|preview|vpt|vpr|vpd|parent_modules)\\b"
     },
     {
-      "name": "constant.language.boolean.true.scad",
-      "match": "\\btrue\\b"
-    },
-    {
-      "name": "constant.language.boolean.false.scad",
-      "match": "\\bfalse\\b"
-    },
-    {
-      "name": "constant.language.undef.scad",
-      "match": "\\bundef\\b"
-    },
-    {
-      "name": "constant.language.pi.scad",
-      "match": "\\bPI\\b"
+      "include": "#constants"
     },
     {
       "include": "#keyword_control"
@@ -209,26 +194,28 @@
     },
     {
       "name": "meta.function.scad",
-      "begin": "\\s*(module|function)\\s+(?=[[:alpha:]_][[:alnum:]_]*)",
+      "begin": "\\b(((?:module|function)))\\s+(?=[[:alpha:]_][[:alnum:]_]*)\\s*(?=\\()",
       "beginCaptures": {
         "1": {
-          "name": "storage.type.function.scad"
+          "name": "storage.type.$2.scad"
         }
       },
       "end": "(?<=\\))",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.parameters.begin.scad"
-        },
-        "2": {
-          "name": "invalid.illegal.missing-parameters.scad"
         }
       },
       "patterns": [
         {
           "contentName": "entity.name.function.scad",
           "begin": "(?=[[:alpha:]_][[:alnum:]_]*)",
-          "end": "(?![[:alnum:]_])"
+          "end": "(?![[:alnum:]_])",
+          "patterns": [
+            {
+              "include": "#illegal_names"
+            }
+          ]
         },
         {
           "contentName": "meta.function.parameters.scad",
@@ -242,6 +229,9 @@
           "patterns": [
             {
               "include": "#keyword_arguments"
+            },
+            {
+              "include": "#illegal_names"
             },
             {
               "match": "\\b(?:([[:alpha:]_][[:alnum:]_]*))\\s*(?:(,)|(?=[\\n\\)]))",
@@ -260,13 +250,10 @@
           ]
         },
         {
-          "begin": "(\\))\\s*(\\->)",
+          "begin": "(\\))",
           "beginCaptures": {
             "1": {
               "name": "punctuation.definition.parameters.end.scad"
-            },
-            "2": {
-              "name": "punctuation.separator.annotation.result.scad"
             }
           },
           "end": "(?<=\\))",
@@ -279,8 +266,12 @@
       ]
     },
     {
-      "name": "storage.type.function",
-      "match": "\\b(module|function)\\b"
+      "match": "\\b((module|function))\\b",
+      "captures": {
+        "1": {
+          "name": "storage.type.$2.scad"
+        }
+      }
     },
     {
       "name": "meta.function-call.scad",
@@ -353,26 +344,6 @@
         }
       ]
     },
-    "paren_block": {
-      "name": "meta.block.parens.scad",
-      "begin": "\\(",
-      "end": "\\)",
-      "beginCaptures": {
-        "0": {
-          "name": "punctuation.section.parens.begin.bracket.round.scad"
-        }
-      },
-      "endCaptures": {
-        "0": {
-          "name": "punctuation.section.parens.end.bracket.round.scad"
-        }
-      },
-      "patterns": [
-        {
-          "include": "$self"
-        }
-      ]
-    },
     "bracket_block": {
       "name": "meta.block.scad",
       "begin": "\\[",
@@ -393,9 +364,25 @@
         }
       ]
     },
-    "let_keyword": {
-      "name": "keyword.control.scad",
-      "match": "\\b(let)\\b"
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.true.scad",
+          "match": "\\btrue\\b"
+        },
+        {
+          "name": "constant.language.boolean.false.scad",
+          "match": "\\bfalse\\b"
+        },
+        {
+          "name": "constant.language.undef.scad",
+          "match": "\\bundef\\b"
+        },
+        {
+          "name": "constant.language.pi.scad",
+          "match": "\\bPI\\b"
+        }
+      ]
     },
     "function_builtin": {
       "patterns": [
@@ -441,6 +428,27 @@
         }
       ]
     },
+    "include": {
+      "match": "\\b(((?:include|use)))\\s*((<)[^>]*(>?))",
+      "captures": {
+        "1": {
+          "name": "keyword.control.$2.scad"
+        },
+        "3": {
+          "name": "string.quoted.other.lt-gt.include.scad"
+        },
+        "4": {
+          "name": "punctuation.definition.string.begin.scad"
+        },
+        "5": {
+          "name": "punctuation.definition.string.begin.scad"
+        }
+      }
+    },
+    "illegal_names": {
+      "name": "invalid.illegal.name.scad",
+      "match": "(?x)\n\\b (\n  true | false | module | function | include | use | undef |\n  for | intersection_for | if | else | let)\n\\b"
+    },
     "keyword_control": {
       "patterns": [
         {
@@ -453,7 +461,7 @@
         },
         {
           "name": "keyword.control.import.scad",
-          "match": "\\b(include|use|import|dxf_dim|dxf_cross|surface)\\b"
+          "match": "\\b(import|dxf_dim|dxf_cross|surface)\\b"
         }
       ]
     },
@@ -472,6 +480,30 @@
       "endCaptures": {
         "1": {
           "name": "punctuation.separator.parameters.scad"
+        }
+      },
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "let_keyword": {
+      "name": "keyword.control.scad",
+      "match": "\\b(let)\\b"
+    },
+    "paren_block": {
+      "name": "meta.block.parens.scad",
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.begin.bracket.round.scad"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.end.bracket.round.scad"
         }
       },
       "patterns": [

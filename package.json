@@ -2,7 +2,7 @@
     "name": "openscad",
     "displayName": "OpenSCAD",
     "description": "OpenSCAD highlighting, snippets, and more for VSCode!",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "publisher": "Antyos",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
@@ -216,15 +216,13 @@
                 "openscad.launchPath": {
                     "type": "string",
                     "default": "",
-                    "markdownDescription": "Path to `openscad` executable. Use \"`openscad`\" (no quotes) if openscad is in the path. If left blank, it will use the default path for your system:\n- Windows: `C:\\Program Files\\Openscad\\openscad.exe`\n  - _Note:_ Must specify path to `openscad.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)",
-                    "description": "Overide default path to 'openscad'",
+                    "markdownDescription": "Command to launch `openscad`. Either the path to the openscad executable, or just \"`openscad`\" (no quotes) if the executable is in the path. If left blank, it will use the default path for your system noted below:\n- Windows: `C:\\Program Files\\Openscad\\openscad.exe`\n  - _Note:_ Must specify path to `openscad.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)",
                     "scope": "machine-overridable"
                 },
                 "openscad.maxInstances": {
                     "type": "number",
                     "default": 0,
-                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit. Instances include any open previews and any active exports.\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more.",
-                    "description": "Maximum number of OpenSCAD instances. Set to '0' for no limit."
+                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit. Instances include any open previews and any active exports.\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
                 },
                 "openscad.showKillMessage": {
                     "type": "boolean",
@@ -250,44 +248,37 @@
                         "nefdbg"
                     ],
                     "default": "stl",
-                    "markdownDescription": "Preferred file extension to use when exporting using the **Export Model** button in the editor title bar. Set to `none` to select the file extension each time.",
-                    "description": "Preferred file extension use when exporting using 'Export Model'"
+                    "markdownDescription": "Preferred file extension to use when exporting using the **Export Model** button in the editor title bar. Set to `none` to select the file extension each time."
                 },
                 "openscad.export.autoNamingFormat": {
                     "type": "string",
                     "default": "${fileBasenameNoExtension}.${exportExtension}",
-                    "markdownDescription": "The default format pattern to name exported files. Based on variables used in `tasks.json`. For a full list of variables, see the wiki page [here](https://github.com/Antyos/vscode-openscad/wiki/Auto-Exporting). Commonly used variables include:\n- `${workspaceFolder}` - The path of the folder open in VS Code\n- `${fileBasenameNoExtension}` - The current opened file's basename with no file extension\n- `${exportExtension}` - The file extension used in the export\n- `${#}` - Auto versioning placeholder. Starts at '1' and increments each time you export a file. Prevents accidental overrides.\n\nNote: If the path is not specified absolutely, the extension assumes it starts in the location of the `.scad` file being exported.",
-                    "description": "The default format pattern to name exported files. Based on variables used in `tasks.json`."
+                    "markdownDescription": "The default format pattern to name exported files. Based on variables used in `tasks.json`. For a full list of variables, see the wiki page [here](https://github.com/Antyos/vscode-openscad/wiki/Auto-Exporting). Commonly used variables include:\n- `${workspaceFolder}` - The path of the folder open in VS Code\n- `${fileBasenameNoExtension}` - The current opened file's basename with no file extension\n- `${exportExtension}` - The file extension used in the export\n- `${#}` - Auto versioning placeholder. Starts at '1' and increments each time you export a file. Prevents accidental overrides.\n\nNote: If the path is not specified absolutely, the extension assumes it starts in the location of the `.scad` file being exported."
                 },
                 "openscad.export.useAutoNamingExport": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "When enabled, the standard action of **Export Model** will automatically choose a name based on the configuration `openscad.export.autoNamingFormat` and export without a save dialogue.\n\nNote that when this option is enabled, the save dialogue can still be opened by `alt + clicking` the **Export Model** button. Also, the save dialogue can always be accessed by running **Export Model with Save Dialogue** through the command palette.",
-                    "description": "When enabled, the standard action of 'Export Model' will automatically choose a name based on the configuration `openscad.export.autoNamingFormat` and export without a save dialogue."
+                    "markdownDescription": "When enabled, the standard action of **Export Model** will automatically choose a name based on the configuration `openscad.export.autoNamingFormat` and export without a save dialogue.\n\nNote that when this option is enabled, the save dialogue can still be opened by `alt + clicking` the **Export Model** button. Also, the save dialogue can always be accessed by running **Export Model with Save Dialogue** through the command palette."
                 },
                 "openscad.export.useAutoNamingInSaveDialogues": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "The default name of to-be exported files in save dialouges will be generated according to the config of `openscad.export.autoNamingFormat` instead of using the original filename.",
-                    "description": "The default name of to-be exported files in save dialouges will be generated according to the config of `openscad.export.autoNamingFormat` instead of using the original filename."
+                    "markdownDescription": "The default name of to-be exported files in save dialouges will be generated according to the config of `openscad.export.autoNamingFormat` instead of using the original filename."
                 },
                 "openscad.interface.showPreviewIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show **Preview in OpenSCAD** button in editor title menu (right side of tabs).",
-                    "description": "Show 'Preview in OpenSCAD' button in editor title menu (right side of tabs)."
+                    "markdownDescription": "Show **Preview in OpenSCAD** button in editor title menu (right side of tabs)."
                 },
                 "openscad.interface.showKillIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show **Kill OpenSCAD Previews** button in editor title menu (right side of tabs).",
-                    "description": "Show 'Kill OpenSCAD Previews' button in editor title menu (right side of tabs)."
+                    "markdownDescription": "Show **Kill OpenSCAD Previews** button in editor title menu (right side of tabs)."
                 },
                 "openscad.interface.showExportIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show **Export** button in editor title menu (right side of tabs).",
-                    "description": "Show 'Export' button in editor title menu (right side of tabs)."
+                    "markdownDescription": "Show **Export** button in editor title menu (right side of tabs)."
                 },
                 "openscad.interface.showCommandsInEditorTitleContextMenu": {
                     "type": "boolean",
@@ -302,14 +293,12 @@
                 "openscad.interface.showPreviewInContextMenus": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show **Preview in OpenSCAD** command in context menus.",
-                    "description": "Show 'Preview in OpenSCAD' command in context menus."
+                    "markdownDescription": "Show **Preview in OpenSCAD** command in context menus."
                 },
                 "openscad.interface.showExportInContextMenus": {
                     "type": "boolean",
                     "default": true,
-                    "markdownDescription": "Show **Export Model** command in context menus.",
-                    "description": "Show 'Export Model' command in context menus."
+                    "markdownDescription": "Show **Export Model** command in context menus."
                 },
                 "openscad.cheatsheet.displayInStatusBar": {
                     "type": "string",

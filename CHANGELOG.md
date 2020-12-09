@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Included path to openscad command in error message for invalid openscad command
+- Configurations with markdownDescription were showing a less descriptive, plaintext description now show the full description
+- Syntax highlighting (See issue #5)
+    - Improved highlighting of `include` and `use` statements
+    - Highlighting of non-alpha characters used within a customizer section header
+      or any character outside the `[]` does not prevent the `[]` from being highlighted
+    - Inline customizer syntax for defining possible values do not highlight when preceded by only spaces
+
 ## [1.0.1] - (2020-07-19)
 
 ### Fixed

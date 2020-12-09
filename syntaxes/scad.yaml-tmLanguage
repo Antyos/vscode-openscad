@@ -5,32 +5,24 @@ foldingStopMarker: \*\*/|^\s*\}
 keyEquivalent: ^~S
 name: OpenSCAD
 patterns:
-- name: comment.block.documentation.scad
-  begin: /\*\*(?!/)
-  captures:
-    '0': {name: punctuation.definition.comment.scad}
-  end: \*/
-
-# Customizer section header
+# Customizer section header (single line block comment)
 - name: comment.block.scad
-  match: (/\*)\s*((?:\[[\s\w]*\]\s*)+)\s*(\*/)
+  match: ((?:/\*)(?:\*)?(?!\/))(.*?)(\*/)
   captures:
-    '1': {name: punctuation.definition.comment.scad}
-    '2': {name: keyword.other.customizer.scad}
-    '3': {name: punctuation.definition.comment.scad}
+    '1': {name: punctuation.definition.comment.begin.scad}
+    '2': 
+      patterns:
+      - begin: '\['
+        end: '\]'
+        name: keyword.other.customizer.scad
+    '3': {name: punctuation.definition.comment.end.scad}
 
-- name: comment.block.scad
-  begin: /\*
-  captures:
-    '0': {name: punctuation.definition.comment.scad}
-  end: \*/
-
-# - include: '#customizer_comment'
-# WIP: Single line comment with customizer syntax
+# Single line comment with customizer syntax
 # Can match: [10], [10:20], [-10:0.2:10], [foo, bar, baz], [10:S, 20:M, 30:L], [S:Small, M:Medium, L:Large]
 - name: comment.line.double-slash.scad
   match: |-
     (?x)
+      (?<=\S\s*)
       (\/\/\s*)
       (
         \[(?:
@@ -44,18 +36,25 @@ patterns:
     '1': {name: punctuation.definition.comment.scad}
     '2': {name: keyword.other.customizer.scad}
 
+# Comments
+- name: comment.block.documentation.scad
+  begin: /\*\*(?!/)
+  captures:
+    '0': {name: punctuation.definition.comment.scad}
+  end: \*/
+
+- name: comment.block.scad
+  begin: /\*
+  captures:
+    '0': {name: punctuation.definition.comment.scad}
+  end: \*/
+
 - name: comment.line.double-slash.scad
   match: (//).*$\n?
   captures:
     '1': {name: punctuation.definition.comment.scad}
 
-- name: string.quoted.double.scad
-  begin: '"'
-  end: '"'
-  patterns:
-  - name: constant.character.escape.scad
-    match: \\(x[0-7]?[0-9A-Fa-f]|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{6}|.)
-
+# Strings
 - name: invalid.string.quoted.single.scad
   begin: ''''
   beginCaptures:
@@ -78,10 +77,8 @@ patterns:
   - name: constant.character.escape.scad
     match: \\(x[0-7]?[0-9A-Fa-f]|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{6}|.)
 
-# Customizer injection into comments
-# - injectionSelector: 'comment.line.double-slash'
-
-
+# Include and use
+- include: '#include'
 
 - name: invalid.deprecated
   match: \b(assign|child|import_dxf|import_stl)\b
@@ -92,10 +89,12 @@ patterns:
 - name: meta.dot.scad
   match: '\.(?![0-9])'
 
+# Blocks of {}, [], ()
 - include: '#brace_block'
-- include: '#paren_block'
 - include: '#bracket_block'
+- include: '#paren_block'
   
+# Operators
 - name: keyword.operator.assignment.scad
   match: '=(?!=)'
 - name: keyword.operator.arithmetic.scad
@@ -109,27 +108,18 @@ patterns:
 - name: keyword.operator.other.scad
   match: '#|%|!' # Add '*' for disable?
 
+# Special variables
 - name: variable.language.scad
   match: '\$(children|fn|fa|fs|t|preview|vpt|vpr|vpd|parent_modules)\b'
-  
-- name: constant.language.boolean.true.scad
-  match: '\btrue\b'
 
-- name: constant.language.boolean.false.scad
-  match: '\bfalse\b'
-
-- name: constant.language.undef.scad
-  match: '\bundef\b'
-
-- name: constant.language.pi.scad
-  match: '\bPI\b'
-
+# Constants
+- include: '#constants'
 - include: '#keyword_control'
 
 #################################################################
 # Incorporated from PythonImproved grammar
 
-# Number definitions taken from PythonImproved
+# Numbers
 - comment: Ummm... why do we have three of these? This is one...
   name: constant.numeric.float.scad
   match: \b(?i:(\d+\.\d*(e[\-\+]?\d+)?))(?=[^[:alpha:]_])
@@ -147,18 +137,19 @@ patterns:
 
 # Function definition
 - name: meta.function.scad
-  begin: \s*(module|function)\s+(?=[[:alpha:]_][[:alnum:]_]*)
+  begin: \b(((?:module|function)))\s+(?=[[:alpha:]_][[:alnum:]_]*)\s*(?=\()
   beginCaptures:
-    '1': {name: storage.type.function.scad}
+    '1': {name: storage.type.$2.scad}
+    # Add invalid name
   end: (?<=\))
   endCaptures:
     '1': {name: punctuation.definition.parameters.begin.scad}
-    '2': {name: invalid.illegal.missing-parameters.scad}
   patterns:
   - contentName: entity.name.function.scad
     begin: (?=[[:alpha:]_][[:alnum:]_]*)
     end: (?![[:alnum:]_])
-    # patterns:
+    patterns:
+    - include: '#illegal_names'
     # - include: '#entity_name_function'
   - contentName: meta.function.parameters.scad
     begin: (\()
@@ -168,23 +159,24 @@ patterns:
     patterns:
     # - include: '#annotated_arguments'
     - include: '#keyword_arguments'
+    - include: '#illegal_names'
     # - include: '#comments'
     - match: \b(?:([[:alpha:]_][[:alnum:]_]*))\s*(?:(,)|(?=[\n\)]))
       captures:
         '1': {name: variable.parameter.function.language.scad}
         '2': {name: punctuation.separator.parameters.scad}
         '3': {name: punctuation.separator.parameters.scad}
-  - begin: (\))\s*(\->)
+  - begin: (\))
     beginCaptures:
       '1': {name: punctuation.definition.parameters.end.scad}
-      '2': {name: punctuation.separator.annotation.result.scad}
     end: (?<=\))
     patterns:
     - include: $self
 
 # After main function decleration to catch stray module / funciton
-- name: storage.type.function
-  match: '\b(module|function)\b'
+- match: '\b((module|function))\b'
+  captures: 
+    '1': { name: storage.type.$2.scad }
 
 # Function call (does not start with 'module' or 'function' but may have a dot separator)
 - name: meta.function-call.scad
@@ -225,17 +217,6 @@ repository:
     patterns:
     - include: $self
 
-  paren_block:
-    name: meta.block.parens.scad 
-    begin: '\('
-    end: '\)'
-    beginCaptures:
-      '0': {name: punctuation.section.parens.begin.bracket.round.scad}
-    endCaptures:
-      '0': {name: punctuation.section.parens.end.bracket.round.scad}
-    patterns:
-    - include: $self
-
   bracket_block:
     name: meta.block.scad 
     begin: '\['
@@ -246,16 +227,18 @@ repository:
       '0': {name: punctuation.section.block.end.bracket.square.scad}
     patterns:
     - include: $self
+
+  constants:
+    patterns:
+    - name: constant.language.boolean.true.scad
+      match: '\btrue\b'
+    - name: constant.language.boolean.false.scad
+      match: '\bfalse\b'
+    - name: constant.language.undef.scad
+      match: '\bundef\b'
+    - name: constant.language.pi.scad
+      match: '\bPI\b'
   
-  # customizer_comment:
-  #   match: '(\[.*\])'
-  #   captures: 
-  #     '1': {name: keyword.other.customizer.scad}
-
-  let_keyword:
-    name: keyword.control.scad
-    match: '\b(let)\b'
-
   function_builtin:
     patterns:
     - name: support.function.scad
@@ -279,6 +262,24 @@ repository:
     - name: support.function.extrude.scad
       match: \b(linear_extrude|rotate_extrude)\b
 
+  include:
+    # include|use <file.scad>
+    match: \b(((?:include|use)))\s*((<)[^>]*(>?))
+    captures:
+      '1': { name: keyword.control.$2.scad }
+      '3': { name: string.quoted.other.lt-gt.include.scad }
+      '4': { name: punctuation.definition.string.begin.scad }
+      '5': { name: punctuation.definition.string.begin.scad }
+
+  illegal_names:
+    name: invalid.illegal.name.scad
+    match: |-
+      (?x)
+      \b (
+        true | false | module | function | include | use | undef |
+        for | intersection_for | if | else | let)
+      \b
+
   keyword_control:
     patterns:
     # - include: '#let_keyword'
@@ -287,7 +288,7 @@ repository:
     - name: keyword.control.conditional.scad
       match: \b(if|else)\b
     - name: keyword.control.import.scad
-      match: \b(include|use|import|dxf_dim|dxf_cross|surface)\b
+      match: \b(import|dxf_dim|dxf_cross|surface)\b
 
   keyword_arguments:
     comment: Incorporated from PythonImproved grammar
@@ -299,7 +300,22 @@ repository:
     endCaptures:
       '1': {name: punctuation.separator.parameters.scad}
     patterns:
-    - include: $self  
+    - include: $self 
+
+  let_keyword:
+    name: keyword.control.scad
+    match: '\b(let)\b' 
+
+  paren_block:
+    name: meta.block.parens.scad 
+    begin: '\('
+    end: '\)'
+    beginCaptures:
+      '0': {name: punctuation.section.parens.begin.bracket.round.scad}
+    endCaptures:
+      '0': {name: punctuation.section.parens.end.bracket.round.scad}
+    patterns:
+    - include: $self
 
 scopeName: source.scad
 uuid: ED71CA06-521E-4D30-B9C0-480808749662
