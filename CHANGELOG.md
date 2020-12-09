@@ -4,9 +4,9 @@
 
 ### Fixed
 
-- Updated cheatsheet
+- Updated cheatsheet (PR: #8)
 - Included path to openscad command in error message for invalid openscad command
-- Configurations with markdownDescription were showing a less descriptive, plaintext description now show the full description
+- Configurations with markdownDescription were showing a less descriptive, plaintext description now shows the full description
 - Syntax highlighting (See issue #5)
     - Improved highlighting of `include` and `use` statements
     - Highlighting of non-alpha characters used within a customizer section header
