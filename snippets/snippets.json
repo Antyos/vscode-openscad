@@ -29,6 +29,12 @@
 		"description": "cylinder",
 		"scope": "source.scad"
 	},
+	"dif": {
+		"prefix": "dif",
+		"body": "difference() {\r\n\t${0}\r\n}",
+		"description": "difference",
+		"scope": "source.scad"
+	},
 	"echo": {
 		"prefix": "echo",
 		"body": "echo(str(\"${1:Variable = }\", ${2:x}));",
