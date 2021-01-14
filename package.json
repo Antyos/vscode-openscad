@@ -349,7 +349,7 @@
             {
                 "command": "openscad.preview",
                 "key": "f5",
-                "when": "resourceExtname == .scad"
+                "when": "resourceLangId == scad"
             }
         ]
     },
