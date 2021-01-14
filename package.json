@@ -344,7 +344,14 @@
                     ]
                 }
             }
-        }
+        },
+        "keybindings": [
+            {
+                "command": "openscad.preview",
+                "key": "f5",
+                "when": "resourceLangId == scad"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
