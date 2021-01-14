@@ -78,21 +78,20 @@ For more information, see: [Using an external Editor with OpenSCAD](https://en.w
 
 ## To-Do
 
-- Add OpenSCAD logo for `.scad` file extensions once that becomes a feature in VSCode. See [issue #14662](https://github.com/microsoft/vscode/issues/14662).
+- Add OpenSCAD logo for `.scad` file extensions once that becomes a feature in VSCode. See [microsoft/vscode#14662](https://github.com/microsoft/vscode/issues/14662).
 - Add to syntax highlighting
-    - _Support for modifier characters (* ! # %)_
-    - _Parameters in functions should be highlighted in contents as well_
-- _Extension auto-installs its own copy of OpenSCAD_
-- Auto-Export
+- Auto-naming export
     - Include ${var:x} in export format
     - Add "export" line in .scad file to override export filename settings on per-file basis
     - Add configurable export map for each file format
     - Launch file with args (get user input for args)
 - Add snippets for common things in the OpenSCAD cheat sheet
-- _Add peek/jump definition for symbols_
-- _Have VSCode recognize function parameters in IntelliSense_
-- _Block comment new lines keep '*' at the beginning of the line (comment continuation patterns)_
+- Create language server
+    - _Parameters in functions should be highlighted in contents as well_
+    - _Block comment new lines keep '*' at the beginning of the line (comment continuation patterns)_
+    - _Recognize modifier characters (* ! # %)_
 - _Create shortcut to open `.scad` files with VSCode by default but has OpenSCAD icon_
+- _Extension auto-installs its own copy of OpenSCAD_
 
 > _Note: Italicized items on the to-do list are more challenging and I do not know when (if ever) I will get to them._
 
