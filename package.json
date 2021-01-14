@@ -354,10 +354,10 @@
         "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json"
     },
     "devDependencies": {
-        "@types/node": "^9.4.6",
+        "@types/node": "^14.14.20",
         "@types/vscode": "^1.44.0",
+        "eslint": "^7.17.0",
         "js-yaml": "^3.13.1",
-        "tslint": "^5.16.0",
         "typescript": "^3.5.1",
         "vsce": "^1.75.0"
     },
