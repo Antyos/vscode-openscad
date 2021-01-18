@@ -12,7 +12,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { platform } from 'os';
 import { existsSync, readdir, mkdirSync } from 'fs';
-import { ScadConfig, DEBUG } from './config';
+import { DEBUG } from './config';
 
 import escapeStringRegexp = require('escape-string-regexp');
 

@@ -7,7 +7,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ScadConfig, DEBUG } from './config';
+import { ScadConfig } from './config';
 
 // Cheatsheet color schemes. Located in [extensionPath]/media/
 const colorScheme = {
