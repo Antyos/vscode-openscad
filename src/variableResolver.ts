@@ -100,7 +100,7 @@ export class VariableResolver {
     }
 
     // Tests all variables
-    public testVars(resource: vscode.Uri) {
+    public testVars(resource: vscode.Uri): void {
         if (DEBUG) console.log('Testing evaluateSingleVariable()...');
 
         this._variables.forEach((variable) => {
@@ -124,18 +124,18 @@ export class VariableResolver {
         resource: vscode.Uri,
         exportExt = 'scad'
     ): string {
-        const workspaceFolder = vscode.workspace.getWorkspaceFolder(resource)!
-            .uri.fsPath;
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(resource)
+            ?.uri.fsPath;
 
         switch (variable) {
             case 'workspaceFolder':
                 return workspaceFolder || match;
             case 'workspaceFolderBasename':
-                return path.basename(workspaceFolder) || match;
+                return path.basename(workspaceFolder || '') || match;
             case 'file':
                 return resource.fsPath;
             case 'relativeFile':
-                return path.relative(workspaceFolder, resource.fsPath);
+                return path.relative(workspaceFolder || '', resource.fsPath);
             case 'relativeFileDirname':
                 return path.basename(path.dirname(resource.fsPath));
             case 'fileBasename':
@@ -148,6 +148,7 @@ export class VariableResolver {
                 return path.extname(resource.fsPath);
             case 'exportExtension':
                 if (exportExt) return exportExt;
+                else return match;
             case '#':
             default:
                 return match;
