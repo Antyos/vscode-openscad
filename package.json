@@ -350,6 +350,11 @@
                 "command": "openscad.preview",
                 "key": "f5",
                 "when": "resourceLangId == scad"
+            },
+            {
+                "command": "openscad.exportByConfig",
+                "key": "f6",
+                "when": "resourceLangId == scad"
             }
         ]
     },
