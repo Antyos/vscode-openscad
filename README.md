@@ -101,7 +101,7 @@ See the changelog [here](https://github.com/Antyos/vscode-openscad/blob/master/C
 
 ## Contributing
 
-I made this extension because I like OpenSCAD and there wasn't any language support in VS Code I liked. I will try and keep this extension up to date in the future, but I make no promises.
+I made this extension because I like OpenSCAD and there wasn't any language support in VS Code I liked. I currently maintain this extension as a side project, so I can't promise when I will get to adding new features. With that being said, please feel free to submit a pull request!
 
 If you would like to contribute, here's what you can do:
 
