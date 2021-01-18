@@ -32,7 +32,7 @@ export class Cheatsheet {
     private _disposables: vscode.Disposable[] = [];
 
     // Create or show cheatsheet panel
-    public static createOrShowPanel(extensionPath: string) {
+    public static createOrShowPanel(extensionPath: string): void {
         // Determine which column to show cheatsheet in
         // If not active editor, check config to open in current window to to the side
         const column = vscode.window.activeTextEditor
@@ -65,7 +65,10 @@ export class Cheatsheet {
     }
 
     // Recreate panel in case vscode restarts
-    public static revive(panel: vscode.WebviewPanel, extensionPath: string) {
+    public static revive(
+        panel: vscode.WebviewPanel,
+        extensionPath: string
+    ): void {
         Cheatsheet.currentPanel = new Cheatsheet(panel, extensionPath);
     }
 
@@ -83,7 +86,7 @@ export class Cheatsheet {
     }
 
     // Dispose of panel and clean up resources
-    public dispose() {
+    public dispose(): void {
         Cheatsheet.currentPanel = undefined;
 
         // Clean up resources
@@ -98,7 +101,7 @@ export class Cheatsheet {
     }
 
     // Initializes the status bar (if not yet) and return the status bar
-    public static getStatusBarItem() {
+    public static getStatusBarItem(): vscode.StatusBarItem {
         if (!Cheatsheet.csStatusBarItem) {
             Cheatsheet.csStatusBarItem = vscode.window.createStatusBarItem(
                 vscode.StatusBarAlignment.Left
@@ -110,7 +113,7 @@ export class Cheatsheet {
     }
 
     // Dispose of status bar
-    public static disposeStatusBar() {
+    public static disposeStatusBar(): void {
         if (!Cheatsheet.csStatusBarItem) {
             return;
         }
@@ -119,7 +122,7 @@ export class Cheatsheet {
     }
 
     // Show or hide status bar item (OpenSCAD Cheatsheet)
-    public static updateStatusBar() {
+    public static updateStatusBar(): void {
         let showCsStatusBarItem = false; // Show cheatsheet status bar item or not
 
         // Determine to show cheatsheet status bar icon based on extension config
@@ -155,7 +158,7 @@ export class Cheatsheet {
     }
 
     // Run on change active text editor
-    public static onDidChangeActiveTextEditor() {
+    public static onDidChangeActiveTextEditor(): void {
         // Update to the "Open Cheatsheet" status bar icon
         Cheatsheet.updateStatusBar();
     }
@@ -163,7 +166,7 @@ export class Cheatsheet {
     // Run when configurations are changed
     public static onDidChangeConfiguration(
         config: vscode.WorkspaceConfiguration
-    ) {
+    ): void {
         // Load the configuration changes
         Cheatsheet.config.displayInStatusBar = config.get<string>(
             'cheatsheet.displayInStatusBar',
@@ -193,7 +196,7 @@ export class Cheatsheet {
     }
 
     // Updates webview html content
-    public updateWebviewContent() {
+    public updateWebviewContent(): void {
         // If config.colorScheme isn't defined, use colorScheme 'auto'
         const colorScheme: string =
             Cheatsheet.config.colorScheme !== undefined
@@ -208,7 +211,7 @@ export class Cheatsheet {
     //*****************************************************************************
 
     // Returns true if there is at least one open document of languageId 'scad'
-    private static isScadDocOpen() {
+    private static isScadDocOpen(): boolean {
         const openDocs = vscode.workspace.textDocuments;
         let isScadDocOpen = false;
 
@@ -223,14 +226,14 @@ export class Cheatsheet {
     }
 
     // Returns true is current document is of type 'scad'
-    private static isDocScad(doc: vscode.TextDocument) {
+    private static isDocScad(doc: vscode.TextDocument): boolean {
         const langId = doc.languageId;
         // vscode.window.showInformationMessage("Doc: " + doc.fileName + "\nLang id: " + langId); // DEBUG
         return langId === 'scad';
     }
 
     // Returns cheatsheet html for webview
-    private getWebviewContent(styleKey: string) {
+    private getWebviewContent(styleKey: string): string {
         // Read HTML from file
         let htmlContent = fs
             .readFileSync(
