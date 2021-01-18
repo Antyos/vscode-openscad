@@ -4,11 +4,14 @@ out/
 
 # Workspace settings
 .vscode/*
-!.vscode/launch-template.json
+!.vscode/*.template.json
 
-# Personal reference files
-test/.ignore
-references/
+# Secret files
+**/secret
+*secret*
+
+# Log files
+*.log
 
 # Extension releases
-openscad-*.vsix
+*.vsix
