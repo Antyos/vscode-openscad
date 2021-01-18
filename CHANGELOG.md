@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Updated cheatsheet (PR: #8)
+- Updated cheatsheet (See PR: #8). Thanks [ckittle](https://github.com/ckittel)
 - Included path to openscad command in error message for invalid openscad command
 - Configurations with markdownDescription were showing a less descriptive, plaintext description now shows the full description
 - Syntax highlighting (See issue #5)
