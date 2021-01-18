@@ -52,14 +52,14 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Add preview
-    public add(preview: Preview) {
+    public add(preview: Preview): void {
         this._previews.add(preview);
         preview.onKilled.subscribe(() => this._previews.delete(preview)); // Auto delete when killed
         this.setAreOpenPreviews(true);
     }
 
     // Create new preview (if not one with same uri) and then add it
-    public createAndAdd(uri: vscode.Uri, args?: string[]) {
+    public createAndAdd(uri: vscode.Uri, args?: string[]): Preview | undefined {
         const previewType = PreviewStore.getPreviewType(args);
 
         // Check there's not an existing preview of same type (can view and export same file)
@@ -78,7 +78,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Delete and dispose of a preview
-    public delete(preview: Preview, informUser?: boolean) {
+    public delete(preview: Preview, informUser?: boolean): void {
         preview.dispose();
         if (informUser)
             vscode.window.showInformationMessage(
@@ -92,7 +92,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Functionally same as dispose() but without super.dispose()
-    public deleteAll(informUser?: boolean) {
+    public deleteAll(informUser?: boolean): void {
         for (const preview of this._previews) {
             preview.dispose();
             if (informUser)
@@ -119,7 +119,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Create progress bar for exporting
-    public makeExportProgressBar(preview: Preview) {
+    public makeExportProgressBar(preview: Preview): void {
         // Progress window
         vscode.window.withProgress(
             {
@@ -138,7 +138,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
                 // Return promise that resolve the progress bar when the preview is killed
                 const p = new Promise((resolve) => {
-                    preview.onKilled.subscribe(() => resolve());
+                    preview.onKilled.subscribe(() => resolve(null));
                 });
 
                 return p;
@@ -147,14 +147,14 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Returns the preview type based on the arguments supplied
-    public static getPreviewType(args?: string[]) {
+    public static getPreviewType(args?: string[]): 'output' | 'view' {
         return args?.some((item) => ['-o', '--o'].includes(item))
             ? 'output'
             : 'view';
     }
 
     // Returns size (length) of PreviewStore
-    public get size() {
+    public get size(): number {
         return this._previews.size;
     }
 
@@ -166,7 +166,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Set context 'areOpenPreviews' for use in 'when' clauses
-    private setAreOpenPreviews(value: boolean) {
+    private setAreOpenPreviews(value: boolean): void {
         vscode.commands.executeCommand(
             'setContext',
             PreviewStore.areOpenScadPreviewsContextKey,

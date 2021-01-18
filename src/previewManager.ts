@@ -14,7 +14,7 @@ import {
     ExportFileExt,
     ExportExtForSave,
 } from './exportFileExt';
-import { fileBasenameNoExt, VariableResolver } from './variableResolver';
+import { VariableResolver } from './variableResolver';
 
 // PreviewItems used for `scad.kill` quick pick menu
 class PreviewItem implements vscode.QuickPickItem {
@@ -56,7 +56,7 @@ export class PreviewManager {
         mainUri?: vscode.Uri,
         allUris?: vscode.Uri[],
         args?: string[]
-    ) {
+    ): void {
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach(async (uri) => {
             let resource: vscode.Uri;
 
@@ -87,7 +87,7 @@ export class PreviewManager {
         allUris?: vscode.Uri[],
         fileExt?: TExportFileExt | 'auto',
         useSaveDialogue = false
-    ) {
+    ): Promise<void> {
         let exportExt: TExportFileExt; // File extension for export
 
         // If file extension is not provided, prompt user
@@ -176,7 +176,7 @@ export class PreviewManager {
     }
 
     // Prompt user for instances to kill
-    public async kill(autoKill?: boolean) {
+    public async kill(autoKill?: boolean): Promise<void> {
         // If autoKill (for menu button usage), don't display the menu for 0 or 1 open previews
         if (autoKill) {
             // No active previews: Inform user
@@ -225,7 +225,7 @@ export class PreviewManager {
     }
 
     // Kill all the current previews
-    public killAll() {
+    public killAll(): void {
         // Check that there are open previews
         if (this.previewStore.size <= 0) {
             if (DEBUG) console.error('No open previews');
@@ -246,7 +246,9 @@ export class PreviewManager {
     }
 
     // Run when change configuration event
-    public onDidChangeConfiguration(config: vscode.WorkspaceConfiguration) {
+    public onDidChangeConfiguration(
+        config: vscode.WorkspaceConfiguration
+    ): void {
         // Update configuration
         this.config.openscadPath = config.get<string>('launchPath');
         this.config.maxInstances = config.get<number>('maxInstances');
