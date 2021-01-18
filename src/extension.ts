@@ -13,7 +13,7 @@ import { DEBUG } from './config';
 const previewManager = new PreviewManager();
 
 // Called when extension is activated
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext): void {
     console.log('Activating openscad extension');
 
     // Register commands
@@ -85,7 +85,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.registerWebviewPanelSerializer(Cheatsheet.viewType, {
             async deserializeWebviewPanel(
                 webviewPanel: vscode.WebviewPanel,
-                state: any
+                state: unknown
             ) {
                 if (DEBUG) console.log(`Got state: ${state}`);
                 Cheatsheet.revive(webviewPanel, context.extensionPath);
@@ -95,7 +95,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // Called when extension is deactivated
-export function deactivate() {}
+// export function deactivate() {}
 
 // Run on active change text editor
 function onDidChangeActiveTextEditor() {

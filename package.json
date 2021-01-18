@@ -362,6 +362,7 @@
         "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json"
     },
     "devDependencies": {
+        "@types/command-exists": "^1.2.0",
         "@types/node": "^14.14.20",
         "@types/vscode": "^1.44.0",
         "@typescript-eslint/eslint-plugin": "^4.13.0",

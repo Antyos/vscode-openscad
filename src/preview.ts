@@ -7,10 +7,9 @@
 import * as vscode from 'vscode';
 import * as child from 'child_process';
 import { type } from 'os';
-import { SignalDispatcher } from 'ste-signals';
+import { ISignal, SignalDispatcher } from 'ste-signals';
 import { DEBUG } from './config';
-
-const commandExists = require('command-exists');
+import commandExists = require('command-exists');
 
 const pathByPlatform = {
     Linux: 'openscad',
@@ -81,7 +80,7 @@ export class Preview {
     }
 
     // Kill child process
-    public dispose() {
+    public dispose(): void {
         if (this._isRunning) this._process.kill();
         // this._isRunning = false;
     }
@@ -105,7 +104,7 @@ export class Preview {
     }
 
     // On killed handlers
-    public get onKilled() {
+    public get onKilled(): ISignal {
         return this._onKilled.asEvent();
     }
 
@@ -135,7 +134,7 @@ export class Preview {
     }
 
     // Used to set the path to `openscad.exe` on the system. Necessary to open children
-    public static setScadPath(scadPath?: string) {
+    public static setScadPath(scadPath?: string): void {
         // Set OpenSCAD path if specified; otherwise use system default
         Preview._scadPath = scadPath
             ? scadPath
@@ -150,7 +149,7 @@ export class Preview {
         });
     }
 
-    public get previewType() {
+    public get previewType(): PreviewType {
         return this._previewType;
     }
 
