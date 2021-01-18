@@ -2,18 +2,23 @@
     "root": true,
     "parser": "@typescript-eslint/parser",
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "prettier"
     ],
     "extends": [
         "vscode-ext",
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
     ],
 	"rules": {
-        "quotes": ["error", "single"],
-        "indent": ["error", 4],
-        "semi": ["error", "always"],
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto"
+            }
+        ],
         "no-trailing-spaces": "warn",
         "eol-last": ["error", "always"]
 	}
