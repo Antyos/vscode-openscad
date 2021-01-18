@@ -1,0 +1,25 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint",
+        "prettier"
+    ],
+    "extends": [
+        "vscode-ext",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
+    ],
+	"rules": {
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto"
+            }
+        ],
+        "no-trailing-spaces": "warn",
+        "eol-last": ["error", "always"]
+	}
+}

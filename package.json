@@ -356,15 +356,22 @@
     "scripts": {
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
-        "lint": "tslint -p ./",
+        "lint": "eslint -c .eslintrc.json --ext .ts src",
+        "format": "prettier --config .prettierrc.json --write ./src/**/*.ts && eslint -c .eslintrc.json --ext .ts src --fix",
         "watch": "tsc -watch -p ./",
         "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json"
     },
     "devDependencies": {
         "@types/node": "^14.14.20",
         "@types/vscode": "^1.44.0",
+        "@typescript-eslint/eslint-plugin": "^4.13.0",
+        "@typescript-eslint/parser": "^4.13.0",
         "eslint": "^7.17.0",
+        "eslint-config-prettier": "^7.1.0",
+        "eslint-config-vscode-ext": "^1.0.0",
+        "eslint-plugin-prettier": "^3.3.1",
         "js-yaml": "^3.13.1",
+        "prettier": "^2.2.1",
         "typescript": "^3.5.1",
         "vsce": "^1.75.0"
     },
