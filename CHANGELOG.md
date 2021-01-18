@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.1.0] - (2021-01-18)
+
+### Added
+
+- Keybinding `F5` for `openscad.preview` (See PR #10). Closes #7. Thanks [wiliiambuttenham](https://github.com/williambuttenham)
+- Keybinding `F6` for `openscad.render`
+- `difference()` to snippets (See PR #11). Thanks [wiliiambuttenham](https://github.com/williambuttenham)
+
+### Development
+
+- Updated `@types/node` from v9.4.6 to v14.14.20 (*WHY* did I leave this outdated for so long???)
+- Upgraded from TSLint to ESLint
+- Added Prettier and formatting styles
+- Reformatred all code according to styles set by ESLint and Prettier
+
+<!-- markdownlint-disable-next-line MD036 -->
+_See PR #14 and PR #15 for details on the above_
+
 ## [1.0.2] - (2020-12-09)
 
 ### Fixed
