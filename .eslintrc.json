@@ -1,0 +1,20 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "vscode-ext",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+	"rules": {
+        "quotes": ["error", "single"],
+        "indent": ["error", 4],
+        "semi": ["error", "always"],
+        "no-trailing-spaces": "warn",
+        "eol-last": ["error", "always"]
+	}
+}
