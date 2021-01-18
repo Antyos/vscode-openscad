@@ -4,9 +4,9 @@
 
 ### Added
 
-- Keybinding `F5` for `openscad.preview` (See PR #10). Closes #7. Thanks [wiliiambuttenham](https://github.com/williambuttenham)
+- `difference()` to snippets (See PR [#11](https://github.com/Antyos/vscode-openscad/pull/11)). Thanks [wiliiambuttenham](https://github.com/williambuttenham)
+- Keybinding `F5` for `openscad.preview` (See PR [#12](https://github.com/Antyos/vscode-openscad/pull/12)). Closes [#7](https://github.com/Antyos/vscode-openscad/issues/7). Thanks [wiliiambuttenham](https://github.com/williambuttenham)
 - Keybinding `F6` for `openscad.render`
-- `difference()` to snippets (See PR #11). Thanks [wiliiambuttenham](https://github.com/williambuttenham)
 
 ### Development
 
@@ -16,16 +16,16 @@
 - Reformatred all code according to styles set by ESLint and Prettier
 
 <!-- markdownlint-disable-next-line MD036 -->
-_See PR #14 and PR #15 for details on the above_
+_See PR [#14](https://github.com/Antyos/vscode-openscad/pull/14) and PR [#15](https://github.com/Antyos/vscode-openscad/pull/15) for details on the above_
 
 ## [1.0.2] - (2020-12-09)
 
 ### Fixed
 
-- Updated cheatsheet (See PR: #8). Thanks [ckittle](https://github.com/ckittel)
+- Updated cheatsheet (See PR [#8](https://github.com/Antyos/vscode-openscad/pull/8)). Thanks [ckittle](https://github.com/ckittel)
 - Included path to openscad command in error message for invalid openscad command
 - Configurations with markdownDescription were showing a less descriptive, plaintext description now shows the full description
-- Syntax highlighting (See issue #5)
+- Syntax highlighting (See issue [#5](https://github.com/Antyos/vscode-openscad/issues/5))
     - Improved highlighting of `include` and `use` statements
     - Highlighting of non-alpha characters used within a customizer section header
       or any character outside the `[]` does not prevent the `[]` from being highlighted
