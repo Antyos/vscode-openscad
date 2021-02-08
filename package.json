@@ -384,6 +384,7 @@
     "dependencies": {
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^4.0.0",
-        "ste-signals": "^1.6.11"
+        "ste-signals": "^1.6.11",
+        "vscode-languageclient": "^7.0.0"
     }
 }
