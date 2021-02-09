@@ -7,6 +7,7 @@
 import * as vscode from 'vscode';
 import { Cheatsheet } from './cheatsheet';
 import { PreviewManager } from './previewManager';
+import { activateLanguageServer } from './languageclient';
 import { DEBUG } from './config';
 
 // New launch object
@@ -92,6 +93,8 @@ export function activate(context: vscode.ExtensionContext): void {
             },
         });
     }
+
+    activateLanguageServer(context);
 }
 
 // Called when extension is deactivated
