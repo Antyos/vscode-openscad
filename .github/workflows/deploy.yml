@@ -2,10 +2,11 @@
 # Based on: https://github.com/HaaLeo/publish-vscode-extension
 name: Deploy Extension
 
+# Run when new version ('v*') tag is created 
 on:
   push:
     tags:
-      - "*"
+      - "v*"
 
 jobs:
   deploy:
@@ -15,7 +16,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
       - run: npm ci
         
       # Pulbish to Open VSX Registry
