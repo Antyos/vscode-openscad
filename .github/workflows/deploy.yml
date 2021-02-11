@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: 14
       - run: npm ci
+
+      # Check (and update if necessary) package.json version
+      - name: Check package version
+        uses: technote-space/package-version-check-action@v1
         
       # Pulbish to Open VSX Registry
       - name: Publish to Open VSX Registry
