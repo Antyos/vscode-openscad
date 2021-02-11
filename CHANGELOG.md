@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Changed license from LGPL-3 to GPL-3 to be consistent with [openscad/openscad](https://github.com/openscad/openscad)
+
 ## [1.1.0] - (2021-01-18)
 
 ### Added
