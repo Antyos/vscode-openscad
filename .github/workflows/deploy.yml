@@ -37,3 +37,9 @@ jobs:
           registryUrl: https://marketplace.visualstudio.com
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
           packagePath: ''
+          
+      # Download the built .vsix extension file
+      - name: Download .VSIX file
+        uses: actions/download-artifact@v2.0.8
+        with:
+          path: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
