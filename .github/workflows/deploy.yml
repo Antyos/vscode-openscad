@@ -29,6 +29,7 @@ jobs:
       # Pulbish to Open VSX Registry
       - name: Publish to Open VSX Registry
         uses: HaaLeo/publish-vscode-extension@v0
+        id: publishToOpenVSX
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
       
