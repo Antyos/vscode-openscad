@@ -57,6 +57,9 @@ export class Cheatsheet {
                 localResourceRoots: [
                     vscode.Uri.file(path.join(extensionPath, 'media')),
                 ],
+                // Disable scripts
+                // (defaults to false, but no harm in explcit declaration)
+                enableScripts: false,
             } // Webview options
         );
 
