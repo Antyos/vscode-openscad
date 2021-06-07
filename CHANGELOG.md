@@ -16,8 +16,8 @@
 
 ### Added
 
-- `difference()` to snippets (See PR [#11](https://github.com/Antyos/vscode-openscad/pull/11)). Thanks [wiliiambuttenham](https://github.com/williambuttenham)
-- Keybinding `F5` for `openscad.preview` (See PR [#12](https://github.com/Antyos/vscode-openscad/pull/12)). Closes [#7](https://github.com/Antyos/vscode-openscad/issues/7). Thanks [wiliiambuttenham](https://github.com/williambuttenham)
+- `difference()` to snippets (See PR [#11](https://github.com/Antyos/vscode-openscad/pull/11)). Thanks [williambuttenham](https://github.com/williambuttenham)
+- Keybinding `F5` for `openscad.preview` (See PR [#12](https://github.com/Antyos/vscode-openscad/pull/12)). Closes [#7](https://github.com/Antyos/vscode-openscad/issues/7). Thanks [williambuttenham](https://github.com/williambuttenham)
 - Keybinding `F6` for `openscad.render`
 
 ### Development
