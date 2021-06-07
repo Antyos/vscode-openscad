@@ -8,6 +8,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { ScadConfig } from './config';
+import { JSDOM } from 'jsdom';
 
 // Cheatsheet color schemes. Located in [extensionPath]/media/
 const colorScheme = {
@@ -57,6 +58,9 @@ export class Cheatsheet {
                 localResourceRoots: [
                     vscode.Uri.file(path.join(extensionPath, 'media')),
                 ],
+                // Disable scripts
+                // (defaults to false, but no harm in explcit declaration)
+                enableScripts: false,
             } // Webview options
         );
 
@@ -232,15 +236,7 @@ export class Cheatsheet {
         return langId === 'scad';
     }
 
-    // Returns cheatsheet html for webview
-    private getWebviewContent(styleKey: string): string {
-        // Read HTML from file
-        let htmlContent = fs
-            .readFileSync(
-                path.join(this._extensionPath, 'media', 'cheatsheet.html')
-            )
-            .toString();
-
+    private getStyleSheet(styleKey: string): vscode.Uri {
         // Get the filename of the given colorScheme
         // Thank you: https://blog.smartlogic.io/accessing-object-attributes-based-on-a-variable-in-typescript/
         const styleSrc =
@@ -249,14 +245,45 @@ export class Cheatsheet {
                 : colorScheme['auto'];
 
         // Get style sheet URI
-        const styleUri = vscode.Uri.file(
+        return vscode.Uri.file(
             path.join(this._extensionPath, 'media', styleSrc)
         ).with({ scheme: 'vscode-resource' });
         // if (DEBUG) console.log("Style" + styleUri); // DEBUG
+    }
 
-        // Replace `{{styleSrc}}` with the vscode URI for the desired `.css` file
-        htmlContent = htmlContent.replace('{{styleSrc}}', styleUri.toString());
+    // Returns cheatsheet html for webview
+    private getWebviewContent(styleKey: string): string {
+        // Read HTML from file
+        const htmlContent = fs
+            .readFileSync(
+                path.join(this._extensionPath, 'media', 'cheatsheet.html')
+            )
+            .toString();
 
-        return htmlContent;
+        // Create html document using jsdom to assign new stylesheet
+        const htmlDocument = new JSDOM(htmlContent).window.document;
+        const head = htmlDocument.getElementsByTagName('head')[0];
+        const styles = htmlDocument.getElementsByTagName('link');
+
+        // Remove existing styles
+        Array.from(styles).forEach((element) => {
+            head.removeChild(element);
+        });
+
+        // Get uri of stylesheet
+        const styleUri = this.getStyleSheet(styleKey);
+
+        // Create new style element
+        const newStyle = htmlDocument.createElement('link');
+        newStyle.type = 'text/css';
+        newStyle.rel = 'stylesheet';
+        newStyle.href = styleUri.toString();
+        newStyle.media = 'all';
+
+        // Append style element
+        head.appendChild(newStyle);
+
+        // Return document as html string
+        return htmlDocument.documentElement.outerHTML;
     }
 }

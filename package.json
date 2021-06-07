@@ -368,6 +368,7 @@
     },
     "devDependencies": {
         "@types/command-exists": "^1.2.0",
+        "@types/jsdom": "^16.2.10",
         "@types/node": "^14.17.1",
         "@types/vscode": "^1.44.0",
         "@typescript-eslint/eslint-plugin": "^4.26.0",
@@ -384,6 +385,7 @@
     "dependencies": {
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^4.0.0",
+        "jsdom": "^16.6.0",
         "ste-signals": "^1.7.3"
     }
 }
