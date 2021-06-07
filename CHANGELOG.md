@@ -1,12 +1,12 @@
 # Changelog
 
-## [1.1.1] - (2021-06-07)
+## [[1.1.1](https://github.com/Antyos/vscode-openscad/releases/tag/v1.1.1)] - (2021-06-07)
 
 - Updated cheatsheet to v2021.01 (See PR[#23](https://github.com/Antyos/vscode-openscad/pull/23))
 - Updated `poly` snippet (See PR[#22](https://github.com/Antyos/vscode-openscad/pull/22)). Thanks [mathiasvr](https://github.com/mathiasvr)
 - Changed license from LGPL-3 to GPL-3 to be consistent with [openscad/openscad](https://github.com/openscad/openscad)
 
-## [1.1.0] - (2021-01-18)
+## [[1.1.0](https://github.com/Antyos/vscode-openscad/releases/tag/v1.1.0)] - (2021-01-18)
 
 ### Added
 
@@ -24,7 +24,7 @@
 <!-- markdownlint-disable-next-line MD036 -->
 _See PR [#14](https://github.com/Antyos/vscode-openscad/pull/14) and PR [#15](https://github.com/Antyos/vscode-openscad/pull/15) for details on the above_
 
-## [1.0.2] - (2020-12-09)
+## [[1.0.2](https://github.com/Antyos/vscode-openscad/releases/tag/v1.0.2)] - (2020-12-09)
 
 ### Fixed
 
@@ -47,7 +47,7 @@ _See PR [#14](https://github.com/Antyos/vscode-openscad/pull/14) and PR [#15](ht
 
 - Fixed vulnerability with Lodash
 
-## [1.0.0] - (2020-06-19)
+## [[1.0.0](https://github.com/Antyos/vscode-openscad/releases/tag/v1.0.0)] - (2020-06-19)
 
 ### Added
 
@@ -97,13 +97,13 @@ _See PR [#14](https://github.com/Antyos/vscode-openscad/pull/14) and PR [#15](ht
 - `scad.cheatsheet` command is now `openscad.cheatsheet` for consistancy with configurations
 - `openscad.cheatsheet.openToSide` configuration is an enumerated string instead of a boolean for improved clarity. Options now include `beside` (was `true`) and `currentGroup` (was `false`)
 
-## [0.1.2] - (2020-03-23)
+## [[0.1.2](https://github.com/Antyos/vscode-openscad/releases/tag/v0.1.2)] - (2020-03-23)
 
 ### Fixed
 
 - Fixed syntax highlighting not working on case sensitive operating systems (i.e. Linux)
 
-## [0.1.0] - (2020-03-17)
+## [[0.1.0](https://github.com/Antyos/vscode-openscad/releases/tag/v0.1.0)] - (2020-03-17)
 
 ### Added
 
@@ -120,7 +120,7 @@ _See PR [#14](https://github.com/Antyos/vscode-openscad/pull/14) and PR [#15](ht
     - `openscad.cheatsheet.colorScheme`: The color scheme used for the cheatsheet. Default uses VSCode's current theme for colors, but the original color scheme is available if desired.
         - `openscad.cheatsheet.openToSide`: Open the cheatsheet in the current column or beside the current column
 
-## [0.0.1] - (2020-02-23)
+## [[0.0.1](https://github.com/Antyos/vscode-openscad/releases/tag/v0.0.1)] - (2020-02-23)
 
 ### Initial release
 
