@@ -1,7 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## [1.1.1] - (2021-06-07)
 
+- Updated cheatsheet to v2021.01 (See PR[#23](https://github.com/Antyos/vscode-openscad/pull/23))
+- Updated `poly` snippet (See PR[#22](https://github.com/Antyos/vscode-openscad/pull/22)). Thanks [mathiasvr](https://github.com/mathiasvr)
 - Changed license from LGPL-3 to GPL-3 to be consistent with [openscad/openscad](https://github.com/openscad/openscad)
 
 ## [1.1.0] - (2021-01-18)
