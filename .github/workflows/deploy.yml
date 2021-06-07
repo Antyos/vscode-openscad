@@ -2,21 +2,29 @@
 # Based on: https://github.com/HaaLeo/publish-vscode-extension
 name: Deploy Extension
 
+# Run when new version ('v*') tag is created 
 on:
   push:
     tags:
-      - "*"
+      - "v*"
+
+env:
+  NODE_VERSION: '12.x'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       # Setup
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-node@v2.1.5
         with:
-          node-version: 12
+          node-version: ${{env.NODE_VERSION}}
       - run: npm ci
+
+      # Check (and update if necessary) package.json version
+      - name: Check package version
+        uses: technote-space/package-version-check-action@v1
         
       # Pulbish to Open VSX Registry
       - name: Publish to Open VSX Registry
@@ -32,3 +40,9 @@ jobs:
           registryUrl: https://marketplace.visualstudio.com
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
           packagePath: ''
+          
+      # Download the built .vsix extension file
+      - name: Download .VSIX file
+        uses: actions/download-artifact@v2.0.8
+        with:
+          path: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
