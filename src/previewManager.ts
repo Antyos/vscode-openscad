@@ -1,8 +1,8 @@
-/*---------------------------------------------------------------------------------------------
+/**-----------------------------------------------------------------------------
  * Preview Manager
  *
  * Class for adding / removing OpenSCAD previews to a previewStore
- *--------------------------------------------------------------------------------------------*/
+ *----------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
 import * as path from 'path';
@@ -16,7 +16,7 @@ import {
 } from './exportFileExt';
 import { VariableResolver } from './variableResolver';
 
-// PreviewItems used for `scad.kill` quick pick menu
+/** PreviewItems used for `scad.kill` quick pick menu */
 class PreviewItem implements vscode.QuickPickItem {
     label: string; // File name
     description: string; // File path
@@ -43,7 +43,7 @@ class MessageItem implements vscode.QuickPickItem {
 const mKillAll = new MessageItem('Kill All');
 const mNoPreviews = new MessageItem('No open previews');
 
-// Launcher class to handle launching instance of scad
+/** Manager of multiple Preview objects */
 export class PreviewManager {
     private previewStore = new PreviewStore();
     private config: ScadConfig = {};
@@ -51,7 +51,7 @@ export class PreviewManager {
 
     // public activate() {}
 
-    // Opens file in OpenSCAD
+    /** Opens file in OpenSCAD */
     public openFile(
         mainUri?: vscode.Uri,
         allUris?: vscode.Uri[],
@@ -81,7 +81,7 @@ export class PreviewManager {
         });
     }
 
-    // Export file
+    /** Export file */
     public async exportFile(
         mainUri?: vscode.Uri,
         allUris?: vscode.Uri[],
@@ -175,7 +175,7 @@ export class PreviewManager {
         });
     }
 
-    // Prompt user for instances to kill
+    /** Prompt user for instances to kill */
     public async kill(autoKill?: boolean): Promise<void> {
         // If autoKill (for menu button usage), don't display the menu for 0 or 1 open previews
         if (autoKill) {
@@ -224,7 +224,7 @@ export class PreviewManager {
         this.previewStore.delete(previewToDelete, this.config.showKillMessage);
     }
 
-    // Kill all the current previews
+    /** Kill all the current previews */
     public killAll(): void {
         // Check that there are open previews
         if (this.previewStore.size <= 0) {
@@ -237,7 +237,7 @@ export class PreviewManager {
         // this._previews = undefined;
     }
 
-    // Constructor
+    /** Constructor */
     public constructor() {
         // Load configutation
         this.onDidChangeConfiguration(
@@ -245,7 +245,7 @@ export class PreviewManager {
         );
     }
 
-    // Run when change configuration event
+    /** Run when change configuration event */
     public onDidChangeConfiguration(
         config: vscode.WorkspaceConfiguration
     ): void {
@@ -278,7 +278,7 @@ export class PreviewManager {
             : 0;
     }
 
-    // Gets the uri of the active editor
+    /** Gets the uri of the active editor */
     private async getActiveEditorUri(): Promise<vscode.Uri | undefined> {
         const editor = vscode.window.activeTextEditor;
         if (!editor) return undefined;
@@ -302,7 +302,7 @@ export class PreviewManager {
         else return editor.document.uri;
     }
 
-    // Prompts user for export name and location
+    /** Prompts user for export name and location */
     private async promptForExport(
         resource: vscode.Uri,
         exportExt: TExportFileExt = 'stl',
@@ -333,7 +333,7 @@ export class PreviewManager {
         return savedUri;
     }
 
-    // Returns if the current URI with arguments (output Y/N) can be opened
+    /** Returns if the current URI with arguments (output Y/N) can be opened */
     private canOpenNewPreview(resource: vscode.Uri, args?: string[]): boolean {
         // Make sure path to openscad.exe is valid
         if (!Preview.isValidScadPath) {

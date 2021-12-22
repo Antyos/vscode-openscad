@@ -1,18 +1,18 @@
-/*---------------------------------------------------------------------------------------------
+/**-----------------------------------------------------------------------------
  * Extension
  *
  * Main file for activating extension
- *--------------------------------------------------------------------------------------------*/
+ *----------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
 import { Cheatsheet } from './cheatsheet';
 import { PreviewManager } from './previewManager';
 import { DEBUG } from './config';
 
-// New launch object
+/** New launch object */
 const previewManager = new PreviewManager();
 
-// Called when extension is activated
+/** Called when extension is activated */
 export function activate(context: vscode.ExtensionContext): void {
     console.log('Activating openscad extension');
 
@@ -94,15 +94,15 @@ export function activate(context: vscode.ExtensionContext): void {
     }
 }
 
-// Called when extension is deactivated
+/** Called when extension is deactivated */
 // export function deactivate() {}
 
-// Run on active change text editor
+/** Run on active change text editor */
 function onDidChangeActiveTextEditor() {
     Cheatsheet.onDidChangeActiveTextEditor();
 }
 
-// Run when configuration is changed
+/** Run when configuration is changed */
 function onDidChangeConfiguration() {
     const config = vscode.workspace.getConfiguration('openscad'); // Get new config
     Cheatsheet.onDidChangeConfiguration(config); // Update the cheatsheet with new config

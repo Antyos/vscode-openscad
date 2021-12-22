@@ -1,15 +1,15 @@
-/*---------------------------------------------------------------------------------------------
+/**-----------------------------------------------------------------------------
  * Preview Store
  *
  * Class to manage a Set of previews
- *--------------------------------------------------------------------------------------------*/
+ *----------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
 import { basename } from 'path';
 import { Preview, PreviewType } from './preview';
 import { DEBUG } from './config';
 
-// Used to keep track of Set of Previews
+/** Container of several Preview */
 export class PreviewStore /* extends vscode.Disposable */ {
     private static readonly areOpenScadPreviewsContextKey =
         'areOpenScadPreviews';
@@ -17,7 +17,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     private readonly _previews = new Set<Preview>();
     private _maxPreviews: number;
 
-    // Dispose of the PreviewStore
+    /** Dispose of the PreviewStore */
     public dispose(): void {
         // super.dispose();
         for (const preview of this._previews) {
@@ -26,19 +26,21 @@ export class PreviewStore /* extends vscode.Disposable */ {
         this._previews.clear();
     }
 
-    // Defines: PreviewStore[]
+    /** Defines behavior for `PreviewStore[]` */
     [Symbol.iterator](): Iterator<Preview> {
         return this._previews[Symbol.iterator]();
     }
 
-    // Constructor
+    /** Create a new PreviewStore with a max number of previews */
     public constructor(maxPreviews?: number) {
         this._maxPreviews = maxPreviews ? maxPreviews : 0;
         this.setAreOpenPreviews(false);
     }
 
-    // Finds a resource in the PreviewStore by uri
-    // Returns the preview if found, otherwise undefined
+    /**
+     * Find a resource in the PreviewStore by uri
+     * @returns {Preview | undefined} Preview if found, otherwise undefined
+     */
     public get(
         resource: vscode.Uri,
         previewType?: PreviewType
@@ -51,14 +53,14 @@ export class PreviewStore /* extends vscode.Disposable */ {
         return undefined;
     }
 
-    // Add preview
+    /** Add a preview to PreviewStore */
     public add(preview: Preview): void {
         this._previews.add(preview);
         preview.onKilled.subscribe(() => this._previews.delete(preview)); // Auto delete when killed
         this.setAreOpenPreviews(true);
     }
 
-    // Create new preview (if not one with same uri) and then add it
+    /** Create new preview (if not one with same uri) and then add it. */
     public createAndAdd(uri: vscode.Uri, args?: string[]): Preview | undefined {
         const previewType = PreviewStore.getPreviewType(args);
 
@@ -77,7 +79,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
         return undefined;
     }
 
-    // Delete and dispose of a preview
+    /** Delete and dispose of a preview. */
     public delete(preview: Preview, informUser?: boolean): void {
         preview.dispose();
         if (informUser)
@@ -91,7 +93,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
         }
     }
 
-    // Functionally same as dispose() but without super.dispose()
+    /** Functionally same as dispose() but without super.dispose(). */
     public deleteAll(informUser?: boolean): void {
         for (const preview of this._previews) {
             preview.dispose();
@@ -105,7 +107,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
         this.setAreOpenPreviews(false);
     }
 
-    // Returns a list of all the uris
+    /** Get the list of all open URIs. */
     public getUris(): vscode.Uri[] {
         const uris: vscode.Uri[] = [];
 
@@ -118,7 +120,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
         return uris;
     }
 
-    // Create progress bar for exporting
+    /** Create progress bar for exporting. */
     public makeExportProgressBar(preview: Preview): void {
         // Progress window
         vscode.window.withProgress(
@@ -146,14 +148,14 @@ export class PreviewStore /* extends vscode.Disposable */ {
         );
     }
 
-    // Returns the preview type based on the arguments supplied
+    /** Returns the preview type based on the arguments supplied. */
     public static getPreviewType(args?: string[]): 'output' | 'view' {
         return args?.some((item) => ['-o', '--o'].includes(item))
             ? 'output'
             : 'view';
     }
 
-    // Returns size (length) of PreviewStore
+    /** Returns size (length) of PreviewStore. */
     public get size(): number {
         return this._previews.size;
     }
@@ -165,7 +167,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
         this._maxPreviews = num;
     }
 
-    // Set context 'areOpenPreviews' for use in 'when' clauses
+    /** Set vscode context 'areOpenPreviews'. Used in 'when' clauses. */
     private setAreOpenPreviews(value: boolean): void {
         vscode.commands.executeCommand(
             'setContext',

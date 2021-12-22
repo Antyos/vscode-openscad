@@ -1,8 +1,8 @@
-/*---------------------------------------------------------------------------------------------
+/**-----------------------------------------------------------------------------
  * Cheatsheet
  *
  * Generates a webview panel containing the OpenSCAD cheatsheet
- *--------------------------------------------------------------------------------------------*/
+ *----------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
 import * as path from 'path';
@@ -10,14 +10,18 @@ import * as fs from 'fs';
 import { ScadConfig } from './config';
 import { JSDOM } from 'jsdom';
 
-// Cheatsheet color schemes. Located in [extensionPath]/media/
+/** Cheatsheet color schemes. Located in `[extensionPath]/media/` */
 const colorScheme = {
     original: 'cheatsheet-original.css',
     auto: 'cheatsheet-auto.css',
 };
 
-// Class for Cheatsheet webview and commands
-// Only one instance of cheatsheet panel so basically everything is delcared `static`
+/**
+ * OpenSCAD Cheatsheet webview and commands.
+ *
+ * Only one instance of cheatsheet panel is allowed, so most things are delcared
+ * `static`.
+ */
 export class Cheatsheet {
     public static readonly csCommandId = 'openscad.cheatsheet'; // Command id for opening the cheatsheet
     public static readonly viewType = 'cheatsheet'; // Internal reference to cheatsheet panel
@@ -32,7 +36,7 @@ export class Cheatsheet {
 
     private _disposables: vscode.Disposable[] = [];
 
-    // Create or show cheatsheet panel
+    /** Create or show cheatsheet panel */
     public static createOrShowPanel(extensionPath: string): void {
         // Determine which column to show cheatsheet in
         // If not active editor, check config to open in current window to to the side
@@ -68,7 +72,7 @@ export class Cheatsheet {
         Cheatsheet.currentPanel = new Cheatsheet(panel, extensionPath);
     }
 
-    // Recreate panel in case vscode restarts
+    /** Recreate panel in case vscode restarts */
     public static revive(
         panel: vscode.WebviewPanel,
         extensionPath: string
@@ -76,7 +80,7 @@ export class Cheatsheet {
         Cheatsheet.currentPanel = new Cheatsheet(panel, extensionPath);
     }
 
-    // Constructor
+    /** Create a new Cheatsheet */
     private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
         this._panel = panel;
         this._extensionPath = extensionPath;
@@ -89,7 +93,7 @@ export class Cheatsheet {
         this.updateWebviewContent();
     }
 
-    // Dispose of panel and clean up resources
+    /** Dispose of panel and clean up resources */
     public dispose(): void {
         Cheatsheet.currentPanel = undefined;
 
@@ -104,7 +108,7 @@ export class Cheatsheet {
         }
     }
 
-    // Initializes the status bar (if not yet) and return the status bar
+    /** Initializes the status bar (if not yet) and return the status bar */
     public static getStatusBarItem(): vscode.StatusBarItem {
         if (!Cheatsheet.csStatusBarItem) {
             Cheatsheet.csStatusBarItem = vscode.window.createStatusBarItem(
@@ -116,7 +120,7 @@ export class Cheatsheet {
         return Cheatsheet.csStatusBarItem;
     }
 
-    // Dispose of status bar
+    /** Dispose of status bar */
     public static disposeStatusBar(): void {
         if (!Cheatsheet.csStatusBarItem) {
             return;
@@ -161,13 +165,13 @@ export class Cheatsheet {
         }
     }
 
-    // Run on change active text editor
+    /** Run on change active text editor */
     public static onDidChangeActiveTextEditor(): void {
         // Update to the "Open Cheatsheet" status bar icon
         Cheatsheet.updateStatusBar();
     }
 
-    // Run when configurations are changed
+    /** Run when configurations are changed */
     public static onDidChangeConfiguration(
         config: vscode.WorkspaceConfiguration
     ): void {
@@ -199,7 +203,7 @@ export class Cheatsheet {
         }
     }
 
-    // Updates webview html content
+    /** Updates webview html content */
     public updateWebviewContent(): void {
         // If config.colorScheme isn't defined, use colorScheme 'auto'
         const colorScheme: string =
@@ -214,7 +218,7 @@ export class Cheatsheet {
     // Private Methods
     //*****************************************************************************
 
-    // Returns true if there is at least one open document of languageId 'scad'
+    /** True if there at least one open document of languageId `scad`? */
     private static isScadDocOpen(): boolean {
         const openDocs = vscode.workspace.textDocuments;
         let isScadDocOpen = false;
@@ -229,13 +233,14 @@ export class Cheatsheet {
         return isScadDocOpen;
     }
 
-    // Returns true is current document is of type 'scad'
+    /** True if the current document languageId is `scad` */
     private static isDocScad(doc: vscode.TextDocument): boolean {
         const langId = doc.languageId;
         // vscode.window.showInformationMessage("Doc: " + doc.fileName + "\nLang id: " + langId); // DEBUG
         return langId === 'scad';
     }
 
+    /** Get the file URI to the style sheet */
     private getStyleSheet(styleKey: string): vscode.Uri {
         // Get the filename of the given colorScheme
         // Thank you: https://blog.smartlogic.io/accessing-object-attributes-based-on-a-variable-in-typescript/
@@ -251,7 +256,7 @@ export class Cheatsheet {
         // if (DEBUG) console.log("Style" + styleUri); // DEBUG
     }
 
-    // Returns cheatsheet html for webview
+    /** Get the cheatsheet html content for webview */
     private getWebviewContent(styleKey: string): string {
         // Read HTML from file
         const htmlContent = fs

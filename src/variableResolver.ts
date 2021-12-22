@@ -1,4 +1,4 @@
-/*---------------------------------------------------------------------------------------------
+/**-----------------------------------------------------------------------------
  * Variable Resolver
  *
  * Resolves variables in a string with respect to a workspace or file
@@ -6,7 +6,7 @@
  * Based on code from:
  * - https://github.com/microsoft/vscode/blob/9450b5e5fb04f2a180cfffc4d27f52f972b1f369/src/vs/workbench/services/configurationResolver/common/variableResolver.ts
  * - https://github.com/microsoft/vscode/blob/9f1aa3c9feecd04a79d22fd6752ba14a83b48f1b/src/vs/workbench/services/configurationResolver/browser/configurationResolverService.ts
- *--------------------------------------------------------------------------------------------*/
+ *----------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
 import * as path from 'path';
@@ -16,12 +16,12 @@ import { DEBUG } from './config';
 
 import escapeStringRegexp from 'escape-string-regexp';
 
-// Returns file name without extension
+/** Get file name without extension */
 export function fileBasenameNoExt(uri: vscode.Uri): string {
     return path.basename(uri.fsPath, path.extname(uri.fsPath));
 }
 
-// Resolves variables in '${VAR_NAME}' format within a string
+/** Resolves variables formatted like `${VAR_NAME}` within a string */
 export class VariableResolver {
     // Regex patterns to identify variables
     private static readonly VARIABLE_REGEXP = /\$\{(.*?)\}/g;
@@ -43,8 +43,9 @@ export class VariableResolver {
         'noMatch',
     ];
 
+    // Default naming pattern
     private readonly _defaultPattern =
-        '${fileBasenameNoExtension}.${exportExtension}'; // Default naming pattern
+        '${fileBasenameNoExtension}.${exportExtension}';
     private readonly _isWindows: boolean;
     // private _config: ScadConfig;
 
@@ -53,7 +54,7 @@ export class VariableResolver {
         this._isWindows = platform() === 'win32';
     }
 
-    // Resolve variables in string given a file URI
+    /** Resolve variables in string given a file URI */
     public async resolveString(
         pattern: string = this._defaultPattern,
         resource: vscode.Uri,
@@ -107,7 +108,7 @@ export class VariableResolver {
         }
     }
 
-    // Tests all variables
+    /** Tests all variables */
     public testVars(resource: vscode.Uri): void {
         if (DEBUG) console.log('Testing evaluateSingleVariable()...');
 
@@ -124,8 +125,10 @@ export class VariableResolver {
         });
     }
 
-    // Evaluate a single variable in format '${VAR_NAME}'
-    // See https://code.visualstudio.com/docs/editor/variables-reference
+    /** Evaluate a single variable in format '${VAR_NAME}'
+     *
+     * See also: https://code.visualstudio.com/docs/editor/variables-reference
+     */
     private evaluateSingleVariable(
         match: string,
         variable: string,

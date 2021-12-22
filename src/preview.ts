@@ -1,8 +1,8 @@
-/*---------------------------------------------------------------------------------------------
+/**-----------------------------------------------------------------------------
  * Preview
  *
  * Stores a single instance of OpenSCAD
- *--------------------------------------------------------------------------------------------*/
+ *----------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
 import * as child from 'child_process';
@@ -19,7 +19,7 @@ const pathByPlatform = {
 
 export type PreviewType = 'view' | 'output';
 
-// Preview class to open instance of OpenSCAD
+/** Open an instance of OpenSCAD to preview a file */
 export class Preview {
     // Paths
     private static _scadPath: string;
@@ -30,7 +30,7 @@ export class Preview {
     private _isRunning: boolean;
     private _onKilled = new SignalDispatcher();
 
-    // Constructor
+    /** Launch an instance of OpenSCAD to prview a file */
     private constructor(
         fileUri: vscode.Uri,
         previewType?: PreviewType,
@@ -79,13 +79,13 @@ export class Preview {
         this._isRunning = true;
     }
 
-    // Kill child process
+    /** Kill child process */
     public dispose(): void {
         if (this._isRunning) this._process.kill();
         // this._isRunning = false;
     }
 
-    // Returns if the given Uri is equivalent to the preview's Uri
+    /** Returns if the given Uri is equivalent to the preview's Uri */
     public matchUri(uri: vscode.Uri, previewType?: PreviewType): boolean {
         return (
             this._fileUri.toString() === uri.toString() &&
@@ -93,23 +93,24 @@ export class Preview {
         );
     }
 
-    // Return Uri
+    /** Get Uri of file in preview */
     public get uri(): vscode.Uri {
         return this._fileUri;
     }
 
-    // Get if running
     public get isRunning(): boolean {
         return this._isRunning;
     }
 
-    // On killed handlers
+    /** On killed handlers */
     public get onKilled(): ISignal {
         return this._onKilled.asEvent();
     }
 
-    // Static factory method. Create new preview child process
-    // Needed to make sure path to `openscad.exe` is defined
+    /**
+     * Static factory method. Create new preview child process Needed to make
+     * sure path to `openscad.exe` is defined.
+     */
     public static create(
         resource: vscode.Uri,
         previewType?: PreviewType,
@@ -133,7 +134,9 @@ export class Preview {
         return new Preview(resource, previewType, args);
     }
 
-    // Used to set the path to `openscad.exe` on the system. Necessary to open children
+    /** Used to set the path to `openscad.exe` on the system. Necessary to open
+     *  children.
+     */
     public static setScadPath(scadPath?: string): void {
         // Set OpenSCAD path if specified; otherwise use system default
         Preview._scadPath = scadPath

@@ -1,10 +1,10 @@
-/*---------------------------------------------------------------------------------------------
+/**-----------------------------------------------------------------------------
  * Export File Extensions
  *
  * Contains types and objects relating to exportable file types
- *--------------------------------------------------------------------------------------------*/
+ *----------------------------------------------------------------------------*/
 
-// Avaiable file extensions for export
+/** Avaiable file extensions for export */
 export type TExportFileExt =
     | 'stl'
     | 'off'
@@ -20,6 +20,7 @@ export type TExportFileExt =
     | 'nef3'
     | 'nefdbg';
 
+/** List of all file exportable extensions */
 export const ExportFileExt: TExportFileExt[] = [
     'stl',
     'off',
@@ -36,7 +37,7 @@ export const ExportFileExt: TExportFileExt[] = [
     'nefdbg',
 ];
 
-// File types used in save dialogue
+/** File types used in save dialogue */
 export const ExportExtForSave = {
     STL: ['stl'],
     OFF: ['off'],
