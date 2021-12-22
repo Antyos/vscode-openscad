@@ -12,14 +12,15 @@
         "plugin:@typescript-eslint/recommended",
         "prettier"
     ],
-	"rules": {
+    "rules": {
         "prettier/prettier": [
             "error",
             {
-                "endOfLine": "auto"
+                "endOfLine": "auto",
+                "singleQuote": true
             }
         ],
         "no-trailing-spaces": "warn",
         "eol-last": ["error", "always"]
-	}
+    }
 }
