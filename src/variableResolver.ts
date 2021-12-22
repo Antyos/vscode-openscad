@@ -11,7 +11,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { platform } from 'os';
-import { existsSync, readdir, mkdirSync } from 'fs';
+import * as fs from 'fs';
 import { DEBUG } from './config';
 
 import escapeStringRegexp from 'escape-string-regexp';
@@ -83,13 +83,21 @@ export class VariableResolver {
 
         // Cases for version number
         switch (version) {
-            case -1: // No version number
+            // No version number
+            case -1:
                 return replaced;
-            case -2: // Reached max version number\
+            // Error while parsing files in export directory
+            case -2:
                 vscode.window.showErrorMessage(
                     `Could not read files in directory specified for export`
                 );
                 return replaced;
+            // Create an empty directory; version 1 by default
+            case -3:
+                return replaced.replace(
+                    VariableResolver.VERSION_FORMAT,
+                    String(1)
+                );
             default:
                 // Substitute version number
                 return replaced.replace(
@@ -149,13 +157,14 @@ export class VariableResolver {
             case 'exportExtension':
                 if (exportExt) return exportExt;
                 else return match;
+            // We will evaluate the number later
             case '#':
             default:
                 return match;
         }
     }
 
-    // Evaluate version number in format '${#}'
+    /** Evaluate version number in format '${#}' */
     private async getVersionNumber(
         pattern: string,
         resource: vscode.Uri
@@ -173,17 +182,23 @@ export class VariableResolver {
             this._isWindows ? 'i' : ''
         );
 
-        // Get file directory
+        // Get file directory. If the path is not absolute, get the path of
+        // `resource`. Note that `pattern` may contain a directory
         const fileDir = path.isAbsolute(pattern)
-            ? path.dirname(pattern) // Already absolute path
-            : path.dirname(path.join(path.dirname(resource.fsPath), pattern)); // Get path of resource ('pattern' may contain a directory)
+            ? path.dirname(pattern)
+            : path.dirname(path.join(path.dirname(resource.fsPath), pattern));
 
         // Make export directory if it doesn't exist
-        if (!existsSync(fileDir)) mkdirSync(fileDir);
+        try {
+            await fs.promises.access(fileDir, fs.constants.W_OK);
+        } catch {
+            await fs.promises.mkdir(fileDir);
+            return -3;
+        }
 
         // Read all files in directory
         const versionNum: number = await new Promise((resolve, reject) => {
-            readdir(fileDir, (err, files) => {
+            fs.readdir(fileDir, (err, files) => {
                 // Error; Return -2 (dir read error)
                 if (err) {
                     if (DEBUG) console.error(err);
