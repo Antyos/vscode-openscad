@@ -14,7 +14,7 @@ import { platform } from 'os';
 import { existsSync, readdir, mkdirSync } from 'fs';
 import { DEBUG } from './config';
 
-import escapeStringRegexp = require('escape-string-regexp');
+import escapeStringRegexp from 'escape-string-regexp';
 
 // Returns file name without extension
 export function fileBasenameNoExt(uri: vscode.Uri): string {
@@ -124,8 +124,8 @@ export class VariableResolver {
         resource: vscode.Uri,
         exportExt = 'scad'
     ): string {
-        const workspaceFolder = vscode.workspace.getWorkspaceFolder(resource)
-            ?.uri.fsPath;
+        const workspaceFolder =
+            vscode.workspace.getWorkspaceFolder(resource)?.uri.fsPath;
 
         switch (variable) {
             case 'workspaceFolder':
