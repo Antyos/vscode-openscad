@@ -206,10 +206,7 @@ export class Cheatsheet {
     /** Updates webview html content */
     public updateWebviewContent(): void {
         // If config.colorScheme isn't defined, use colorScheme 'auto'
-        const colorScheme: string =
-            Cheatsheet.config.colorScheme !== undefined
-                ? Cheatsheet.config.colorScheme
-                : 'auto';
+        const colorScheme: string = Cheatsheet.config.colorScheme || 'auto';
 
         this._panel.webview.html = this.getWebviewContent(colorScheme);
     }
