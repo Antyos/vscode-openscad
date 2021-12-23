@@ -1,10 +1,7 @@
 {
     "root": true,
     "parser": "@typescript-eslint/parser",
-    "plugins": [
-        "@typescript-eslint",
-        "prettier"
-    ],
+    "plugins": ["@typescript-eslint", "prettier", "simple-import-sort"],
     "extends": [
         "vscode-ext",
         "eslint:recommended",
@@ -20,6 +17,8 @@
                 "singleQuote": true
             }
         ],
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error",
         "no-trailing-spaces": "warn",
         "eol-last": ["error", "always"]
     }
