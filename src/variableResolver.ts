@@ -8,13 +8,13 @@
  * - https://github.com/microsoft/vscode/blob/9f1aa3c9feecd04a79d22fd6752ba14a83b48f1b/src/vs/workbench/services/configurationResolver/browser/configurationResolverService.ts
  *----------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as path from 'path';
-import { platform } from 'os';
-import * as fs from 'fs';
-import { DEBUG } from './config';
-
 import escapeStringRegexp from 'escape-string-regexp';
+import * as fs from 'fs';
+import { platform } from 'os';
+import * as path from 'path';
+import * as vscode from 'vscode';
+
+import { DEBUG } from './config';
 
 /** Get file name without extension */
 export function fileBasenameNoExt(uri: vscode.Uri): string {

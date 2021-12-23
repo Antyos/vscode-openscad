@@ -4,10 +4,11 @@
  * Stores a single instance of OpenSCAD
  *----------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
 import * as child from 'child_process';
 import { type } from 'os';
 import { ISignal, SignalDispatcher } from 'ste-signals';
+import * as vscode from 'vscode';
+
 import { DEBUG } from './config';
 import commandExists = require('command-exists');
 

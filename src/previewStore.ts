@@ -4,10 +4,11 @@
  * Class to manage a Set of previews
  *----------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
 import { basename } from 'path';
-import { Preview, PreviewType } from './preview';
+import * as vscode from 'vscode';
+
 import { DEBUG } from './config';
+import { Preview, PreviewType } from './preview';
 
 /** Container of several Preview */
 export class PreviewStore /* extends vscode.Disposable */ {

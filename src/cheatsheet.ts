@@ -4,11 +4,12 @@
  * Generates a webview panel containing the OpenSCAD cheatsheet
  *----------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
-import * as path from 'path';
 import * as fs from 'fs';
-import { ScadConfig } from './config';
 import { JSDOM } from 'jsdom';
+import * as path from 'path';
+import * as vscode from 'vscode';
+
+import { ScadConfig } from './config';
 
 /** Cheatsheet color schemes. Located in `[extensionPath]/media/` */
 const colorScheme = {

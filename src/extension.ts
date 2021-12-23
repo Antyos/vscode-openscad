@@ -5,9 +5,10 @@
  *----------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
+
 import { Cheatsheet } from './cheatsheet';
-import { PreviewManager } from './previewManager';
 import { DEBUG } from './config';
+import { PreviewManager } from './previewManager';
 
 /** New launch object */
 const previewManager = new PreviewManager();

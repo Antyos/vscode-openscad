@@ -4,16 +4,17 @@
  * Class for adding / removing OpenSCAD previews to a previewStore
  *----------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
 import * as path from 'path';
-import { ScadConfig, DEBUG } from './config';
+import * as vscode from 'vscode';
+
+import { DEBUG, ScadConfig } from './config';
+import {
+    ExportExtForSave,
+    ExportFileExt,
+    TExportFileExt,
+} from './exportFileExt';
 import { Preview } from './preview';
 import { PreviewStore } from './previewStore';
-import {
-    TExportFileExt,
-    ExportFileExt,
-    ExportExtForSave,
-} from './exportFileExt';
 import { VariableResolver } from './variableResolver';
 
 /** PreviewItems used for `scad.kill` quick pick menu */
