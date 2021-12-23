@@ -18,52 +18,40 @@ export function activate(context: vscode.ExtensionContext): void {
     console.log('Activating openscad extension');
 
     // Register commands
-    context.subscriptions.push(
+    const commands = [
         vscode.commands.registerCommand(Cheatsheet.csCommandId, () =>
             Cheatsheet.createOrShowPanel(context.extensionPath)
-        )
-    );
-    context.subscriptions.push(
+        ),
         vscode.commands.registerCommand(
             'openscad.preview',
             (mainUri, allUris) => previewManager.openFile(mainUri, allUris)
-        )
-    );
-    context.subscriptions.push(
+        ),
         vscode.commands.registerCommand(
             'openscad.exportByType',
             (mainUri, allUris) => previewManager.exportFile(mainUri, allUris)
-        )
-    );
-    context.subscriptions.push(
+        ),
         vscode.commands.registerCommand(
             'openscad.exportByConfig',
             (mainUri, allUris) =>
                 previewManager.exportFile(mainUri, allUris, 'auto')
-        )
-    );
-    context.subscriptions.push(
+        ),
         vscode.commands.registerCommand(
             'openscad.exportWithSaveDialogue',
             (mainUri, allUris) =>
                 previewManager.exportFile(mainUri, allUris, 'auto', true)
-        )
-    );
-    context.subscriptions.push(
+        ),
         vscode.commands.registerCommand('openscad.kill', () =>
             previewManager.kill()
-        )
-    );
-    context.subscriptions.push(
+        ),
         vscode.commands.registerCommand('openscad.autoKill', () =>
             previewManager.kill(true)
-        )
-    );
-    context.subscriptions.push(
+        ),
         vscode.commands.registerCommand('openscad.killAll', () =>
             previewManager.killAll()
-        )
-    );
+        ),
+    ];
+
+    commands.forEach((command) => context.subscriptions.push(command));
 
     // Register status bar item
     context.subscriptions.push(Cheatsheet.getStatusBarItem());
