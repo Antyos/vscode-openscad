@@ -25,9 +25,6 @@ test/
 # Ignore source files for images
 media/icons/source/**
 
-# Icon theme is currently unsupported
-scad-icon-theme.json
-
 # Ignore yaml-tmlanguage files (only used for dev)
 syntaxes/*.yaml-tmLanguage
 
