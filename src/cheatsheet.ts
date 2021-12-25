@@ -4,9 +4,7 @@
  * Generates a webview panel containing the OpenSCAD cheatsheet
  *----------------------------------------------------------------------------*/
 
-import * as fs from 'fs';
 import { JSDOM } from 'jsdom';
-import * as path from 'path';
 import * as vscode from 'vscode';
 
 import { ScadConfig } from './config';
@@ -31,14 +29,14 @@ export class Cheatsheet {
     private static csStatusBarItem: vscode.StatusBarItem | undefined; // Cheatsheet status bar item
 
     private readonly _panel: vscode.WebviewPanel; // Webview panels
-    private readonly _extensionPath: string; // Extension path
+    private readonly _extensionPath: vscode.Uri; // Extension path
     private static config: ScadConfig = {}; // Extension config
     // private isScadDocument: boolean;                         // Is current document openSCAD
 
     private _disposables: vscode.Disposable[] = [];
 
     /** Create or show cheatsheet panel */
-    public static createOrShowPanel(extensionPath: string): void {
+    public static createOrShowPanel(extensionPath: vscode.Uri): void {
         // Determine which column to show cheatsheet in
         // If not active editor, check config to open in current window to to the side
         const column = vscode.window.activeTextEditor
@@ -61,7 +59,7 @@ export class Cheatsheet {
             {
                 // Only allow webview to access certain directory
                 localResourceRoots: [
-                    vscode.Uri.file(path.join(extensionPath, 'media')),
+                    vscode.Uri.joinPath(extensionPath, 'media'),
                 ],
                 // Disable scripts
                 // (defaults to false, but no harm in explcit declaration)
@@ -76,13 +74,13 @@ export class Cheatsheet {
     /** Recreate panel in case vscode restarts */
     public static revive(
         panel: vscode.WebviewPanel,
-        extensionPath: string
+        extensionPath: vscode.Uri
     ): void {
         Cheatsheet.currentPanel = new Cheatsheet(panel, extensionPath);
     }
 
     /** Create a new Cheatsheet */
-    private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
+    private constructor(panel: vscode.WebviewPanel, extensionPath: vscode.Uri) {
         this._panel = panel;
         this._extensionPath = extensionPath;
 
@@ -209,7 +207,10 @@ export class Cheatsheet {
         // If config.colorScheme isn't defined, use colorScheme 'auto'
         const colorScheme: string = Cheatsheet.config.colorScheme || 'auto';
 
-        this._panel.webview.html = this.getWebviewContent(colorScheme);
+        // Set webview content
+        this.getWebviewContent(colorScheme).then((content) => {
+            this._panel.webview.html = content;
+        });
     }
 
     //*****************************************************************************
@@ -248,20 +249,23 @@ export class Cheatsheet {
                 : colorScheme['auto'];
 
         // Get style sheet URI
-        return vscode.Uri.file(
-            path.join(this._extensionPath, 'media', styleSrc)
-        ).with({ scheme: 'vscode-resource' });
+        return vscode.Uri.joinPath(this._extensionPath, 'media', styleSrc);
+        // ).with({ scheme: 'vscode-resource' });
         // if (DEBUG) console.log("Style" + styleUri); // DEBUG
     }
 
     /** Get the cheatsheet html content for webview */
-    private getWebviewContent(styleKey: string): string {
+    private async getWebviewContent(styleKey: string): Promise<string> {
         // Read HTML from file
-        const htmlContent = fs
-            .readFileSync(
-                path.join(this._extensionPath, 'media', 'cheatsheet.html')
+        const htmlContent = await vscode.workspace.fs
+            .readFile(
+                vscode.Uri.joinPath(
+                    this._extensionPath,
+                    'media',
+                    'cheatsheet.html'
+                )
             )
-            .toString();
+            .then((content) => content.toString());
 
         // Create html document using jsdom to assign new stylesheet
         const htmlDocument = new JSDOM(htmlContent).window.document;

@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext): void {
     // Register commands
     const commands = [
         vscode.commands.registerCommand(Cheatsheet.csCommandId, () =>
-            Cheatsheet.createOrShowPanel(context.extensionPath)
+            Cheatsheet.createOrShowPanel(context.extensionUri)
         ),
         vscode.commands.registerCommand(
             'openscad.preview',
@@ -77,7 +77,7 @@ export function activate(context: vscode.ExtensionContext): void {
                 state: unknown
             ) {
                 if (DEBUG) console.log(`Got state: ${state}`);
-                Cheatsheet.revive(webviewPanel, context.extensionPath);
+                Cheatsheet.revive(webviewPanel, context.extensionUri);
             },
         });
     }
