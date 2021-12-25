@@ -2,6 +2,9 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+/* global __dirname */
+/* eslint-env commonjs */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 //@ts-check
 'use strict';
