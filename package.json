@@ -38,7 +38,8 @@
         "onCommand:openscad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
-    "main": "./out/extension.js",
+    "main": "./dist/extension.js",
+    "browser": "./dist/web/extensionWeb.js",
     "contributes": {
         "commands": [
             {
@@ -110,19 +111,19 @@
             "editor/title": [
                 {
                     "command": "openscad.preview",
-                    "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu",
+                    "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu && !virtualWorkspace",
                     "group": "navigation@-1.2"
                 },
                 {
                     "command": "openscad.autoKill",
                     "alt": "openscad.kill",
-                    "when": "editorLangId == scad && config.openscad.interface.showKillIconInEditorTitleMenu",
+                    "when": "editorLangId == scad && config.openscad.interface.showKillIconInEditorTitleMenu && !virtualWorkspace",
                     "group": "navigation@-1.3"
                 },
                 {
                     "command": "openscad.exportByConfig",
                     "alt": "openscad.exportWithSaveDialogue",
-                    "when": "editorLangId == scad && config.openscad.interface.showExportIconInEditorTitleMenu",
+                    "when": "editorLangId == scad && config.openscad.interface.showExportIconInEditorTitleMenu && !virtualWorkspace",
                     "group": "navigation@-1.1"
                 }
             ],
