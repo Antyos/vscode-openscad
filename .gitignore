@@ -1,6 +1,7 @@
 # Generated code
 node_modules/
 out/
+dist/
 
 # Workspace settings
 .vscode/*
