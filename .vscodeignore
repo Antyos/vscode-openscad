@@ -1,6 +1,7 @@
 # VSCode workspace files
 .vscode/**
 .vscode-test/**
+.vscode-test-web/**
 
 # Gitignore
 .gitignore
@@ -14,6 +15,9 @@ tsconfig.json
 .eslintignore
 .prettierrc.json
 .prettierignore
+
+# Webpack
+webpack.config.js
 
 # Typescript files
 src/
