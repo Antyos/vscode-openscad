@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 /* global __dirname */
 /* eslint-env commonjs */
 /* eslint-disable @typescript-eslint/no-var-requires */
@@ -15,12 +11,46 @@
 const path = require('path');
 const webpack = require('webpack');
 
-/** @type WebpackConfig*/
-const webExtensionConfig = {
-    mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
-    target: 'webworker', // extensions run in a webworker context
+/** @type WebpackConfig */
+const nodeConfig = {
+    target: 'node',
+    mode: 'none',
     entry: {
-        extension: './src/web/extensionWeb.ts',
+        extension: './src/extension.ts',
+    },
+    output: {
+        filename: '[name].js',
+        path: path.join(__dirname, 'lib', 'node'),
+        libraryTarget: 'commonjs',
+    },
+    devtool: 'nosources-source-map',
+    resolve: {
+        extensions: ['.ts', '.js'],
+        // alias: {
+        //     debug: path.join(__dirname, 'polyfill', 'debug.js'),
+        // },
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'ts-loader',
+                    },
+                ],
+            },
+        ],
+    },
+};
+
+/** @type WebpackConfig */
+const browserConfig = {
+    target: 'webworker', // extensions run in a webworker context
+    mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
+    entry: {
+        extensionWeb: './src/web/extensionWeb.ts',
         // 'test/suite/index': './src/web/test/suite/index.ts',
     },
     output: {
@@ -32,15 +62,15 @@ const webExtensionConfig = {
     resolve: {
         mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
         extensions: ['.ts', '.js'], // support ts-files and js-files
-        alias: {
-            // provides alternate implementation for node module and source files
-        },
-        fallback: {
-            // Webpack 5 no longer polyfills Node.js core modules automatically.
-            // see https://webpack.js.org/configuration/resolve/#resolvefallback
-            // for the list of Node.js core module polyfills.
-            assert: require.resolve('assert'),
-        },
+        // alias: {
+        //     // provides alternate implementation for node module and source files
+        // },
+        // fallback: {
+        //     // Webpack 5 no longer polyfills Node.js core modules automatically.
+        //     // see https://webpack.js.org/configuration/resolve/#resolvefallback
+        //     // for the list of Node.js core module polyfills.
+        //     // assert: require.resolve('assert'),
+        // },
     },
     module: {
         rules: [
@@ -72,4 +102,4 @@ const webExtensionConfig = {
     },
 };
 
-module.exports = [webExtensionConfig];
+module.exports = [nodeConfig, browserConfig];
