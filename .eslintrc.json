@@ -26,5 +26,5 @@
         "no-trailing-spaces": "warn",
         "eol-last": ["warn", "always"]
     },
-    "ignorePatterns": ["**/*.d.ts"]
+    "ignorePatterns": ["**/*.d.ts", "dist/*"]
 }
