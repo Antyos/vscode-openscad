@@ -4,7 +4,7 @@
  * Generates a webview panel containing the OpenSCAD cheatsheet
  *----------------------------------------------------------------------------*/
 
-import { JSDOM } from 'jsdom';
+import { HTMLElement, parse } from 'node-html-parser';
 import * as vscode from 'vscode';
 
 import { ScadConfig } from './config';
@@ -240,7 +240,7 @@ export class Cheatsheet {
     }
 
     /** Get the file URI to the style sheet */
-    private getStyleSheet(styleKey: string): vscode.Uri {
+    private getStyleSheetUri(styleKey: string): vscode.Uri {
         // Get the filename of the given colorScheme
         // Thank you: https://blog.smartlogic.io/accessing-object-attributes-based-on-a-variable-in-typescript/
         const styleSrc =
@@ -252,6 +252,25 @@ export class Cheatsheet {
         return vscode.Uri.joinPath(this._extensionPath, 'media', styleSrc);
         // ).with({ scheme: 'vscode-resource' });
         // if (DEBUG) console.log("Style" + styleUri); // DEBUG
+    }
+
+    /**
+     * Get a <link> HTMLElement for a stylesheet.
+     * @param stylesheetRef Key to lookup the desired stylesheet
+     * @returns HTMLElement
+     */
+    private getStyleSheetElement(stylesheetRef: string): HTMLElement {
+        const element = new HTMLElement('link', { id: '' }, '', null);
+        const attrs = {
+            type: 'text/css',
+            rel: 'stylesheet',
+            href: stylesheetRef,
+            media: 'all',
+        };
+
+        element.setAttributes(attrs);
+
+        return element;
     }
 
     /** Get the cheatsheet html content for webview */
@@ -268,29 +287,24 @@ export class Cheatsheet {
             .then((content) => content.toString());
 
         // Create html document using jsdom to assign new stylesheet
-        const htmlDocument = new JSDOM(htmlContent).window.document;
+        const htmlDocument = parse(htmlContent);
         const head = htmlDocument.getElementsByTagName('head')[0];
-        const styles = htmlDocument.getElementsByTagName('link');
 
         // Remove existing styles
-        Array.from(styles).forEach((element) => {
+        head.getElementsByTagName('link').forEach((element) => {
             head.removeChild(element);
         });
 
         // Get uri of stylesheet
-        const styleUri = this.getStyleSheet(styleKey);
+        const styleRef = this.getStyleSheetUri(styleKey).toString();
 
         // Create new style element
-        const newStyle = htmlDocument.createElement('link');
-        newStyle.type = 'text/css';
-        newStyle.rel = 'stylesheet';
-        newStyle.href = styleUri.toString();
-        newStyle.media = 'all';
+        const newStyle = this.getStyleSheetElement(styleRef);
 
         // Append style element
         head.appendChild(newStyle);
 
         // Return document as html string
-        return htmlDocument.documentElement.outerHTML;
+        return htmlDocument.toString();
     }
 }
