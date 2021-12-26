@@ -360,15 +360,12 @@
         ]
     },
     "scripts": {
-        "pretest": "npm run compile-web",
-        "vscode:prepublish": "npm run package-web",
+        "vscode:prepublish": "npm run package",
         "lint": "eslint -c .eslintrc.json --ext .ts src",
         "format": "prettier --config .prettierrc.json --write ./src/**/*.ts && eslint -c .eslintrc.json --ext .ts src --fix",
-        "compile-node": "tsc -p ./",
-        "watch-node": "tsc -watch -p ./",
-        "compile-web": "webpack",
-        "watch-web": "webpack --watch",
-        "package-web": "webpack --mode production --devtool hidden-source-map",
+        "compile": "webpack",
+        "watch": "webpack --watch",
+        "package": "webpack --mode production --devtool hidden-source-map",
         "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json"
     },
     "devDependencies": {
