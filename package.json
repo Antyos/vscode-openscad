@@ -396,7 +396,7 @@
     "dependencies": {
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^5.0.0",
-        "jsdom": "^19.0.0",
+        "node-html-parser": "^5.2.0",
         "ste-signals": "^2.1.4"
     }
 }
