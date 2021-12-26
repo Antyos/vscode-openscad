@@ -13,22 +13,31 @@ const webpack = require('webpack');
 
 /** @type WebpackConfig */
 const nodeConfig = {
+    // VS Code client extensions run in Node context. See: https://webpack.js.org/configuration/node/
     target: 'node',
+    // Leaves the source code as close as possible to the original (when packaging we set this to 'production')
     mode: 'none',
+    // Entry point into extension (in package.json). See: https://webpack.js.org/configuration/entry-context/
     entry: {
         extension: './src/extension.ts',
     },
+    // Bundle output location. See: https://webpack.js.org/configuration/output/
     output: {
         filename: '[name].js',
-        path: path.join(__dirname, 'lib', 'node'),
+        path: path.join(__dirname, 'dist'),
         libraryTarget: 'commonjs',
     },
     devtool: 'nosources-source-map',
+    // Support reading TypeScript and JavaScript files. See: https://github.com/TypeStrong/ts-loader
     resolve: {
         extensions: ['.ts', '.js'],
         // alias: {
         //     debug: path.join(__dirname, 'polyfill', 'debug.js'),
         // },
+    },
+    // Modules that cannot be added through Webpack. See: https://webpack.js.org/configuration/externals/
+    externals: {
+        vscode: 'commonjs vscode', // ignored because 'vscode' module is created on the fly and doesn't really exist
     },
     module: {
         rules: [
@@ -47,8 +56,9 @@ const nodeConfig = {
 
 /** @type WebpackConfig */
 const browserConfig = {
-    target: 'webworker', // extensions run in a webworker context
-    mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
+    // extensions run in a webworker context
+    target: 'webworker',
+    mode: 'none',
     entry: {
         extensionWeb: './src/web/extensionWeb.ts',
         // 'test/suite/index': './src/web/test/suite/index.ts',
