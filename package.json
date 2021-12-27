@@ -382,6 +382,7 @@
         "eslint-config-vscode-ext": "^1.1.0",
         "eslint-plugin-prettier": "^4.0.0",
         "eslint-plugin-simple-import-sort": "^7.0.0",
+        "eslint-plugin-unicorn": "^39.0.0",
         "js-yaml": "^4.1.0",
         "prettier": "^2.5.1",
         "ts-loader": "^9.2.6",
