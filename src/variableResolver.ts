@@ -8,7 +8,7 @@
  * - https://github.com/microsoft/vscode/blob/9f1aa3c9feecd04a79d22fd6752ba14a83b48f1b/src/vs/workbench/services/configurationResolver/browser/configurationResolverService.ts
  *----------------------------------------------------------------------------*/
 
-import escapeStringRegexp from 'escape-string-regexp';
+import escapeStringRegexp = require('escape-string-regexp');
 import * as fs from 'fs';
 import { platform } from 'os';
 import * as path from 'path';
