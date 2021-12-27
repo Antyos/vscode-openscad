@@ -5,17 +5,16 @@
  *----------------------------------------------------------------------------*/
 
 import * as path from 'path'; // node:path
-import * as vscode from 'vscode';
-
-import { ScadConfig } from './config';
+import { ScadConfig } from 'src/common/config';
 import {
     ExportExtensionsForSave,
     ExportFileExtensions,
     TExportFileExtensions,
-} from './export-file-extensions';
-import { Preview } from './preview';
-import { PreviewStore } from './preview-store';
-import { VariableResolver } from './variable-resolver';
+} from 'src/node/export/export-file-extensions';
+import { VariableResolver } from 'src/node/export/variable-resolver';
+import { Preview } from 'src/node/preview/preview';
+import { PreviewStore } from 'src/node/preview/preview-store';
+import * as vscode from 'vscode';
 
 /** PreviewItems used for `scad.kill` quick pick menu */
 class PreviewItem implements vscode.QuickPickItem {

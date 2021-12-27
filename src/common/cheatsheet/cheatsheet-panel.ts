@@ -6,8 +6,8 @@
 
 import * as vscode from 'vscode';
 
+import { ScadConfig } from '../config';
 import { CheatsheetContent } from './cheatsheet-content';
-import { ScadConfig } from './config';
 
 /**
  * OpenSCAD Cheatsheet webview and commands.

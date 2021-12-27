@@ -4,10 +4,9 @@
  * Main file for activating extension
  *----------------------------------------------------------------------------*/
 
+import { Cheatsheet } from 'src/common/cheatsheet/cheatsheet-panel';
+import { PreviewManager } from 'src/node/preview/preview-manager';
 import * as vscode from 'vscode';
-
-import { Cheatsheet } from '../cheatsheet-panel';
-import { PreviewManager } from '../preview-manager';
 
 /** New launch object */
 const previewManager = new PreviewManager();
