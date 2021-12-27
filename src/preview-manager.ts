@@ -4,7 +4,7 @@
  * Class for adding / removing OpenSCAD previews to a previewStore
  *----------------------------------------------------------------------------*/
 
-import * as path from 'node:path';
+import * as path from 'path'; // node:path
 import * as vscode from 'vscode';
 
 import { DEBUG, ScadConfig } from './config';

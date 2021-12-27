@@ -4,8 +4,8 @@
  * Stores a single instance of OpenSCAD
  *----------------------------------------------------------------------------*/
 
-import * as child from 'node:child_process';
-import { type } from 'node:os';
+import * as child from 'child_process'; // node:child_process
+import { type } from 'os'; // node:os
 import { ISignal, SignalDispatcher } from 'ste-signals';
 import * as vscode from 'vscode';
 

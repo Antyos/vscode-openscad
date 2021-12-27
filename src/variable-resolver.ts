@@ -9,9 +9,9 @@
  *----------------------------------------------------------------------------*/
 
 import escapeStringRegexp = require('escape-string-regexp');
-import * as fs from 'node:fs';
-import { platform } from 'node:os';
-import * as path from 'node:path';
+import * as fs from 'fs'; // node:fs
+import { platform } from 'os'; // node:os
+import * as path from 'path'; // node:path
 import * as vscode from 'vscode';
 
 import { DEBUG } from './config';

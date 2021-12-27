@@ -4,7 +4,7 @@
  * Class to manage a Set of previews
  *----------------------------------------------------------------------------*/
 
-import { basename } from 'node:path';
+import { basename } from 'path'; // node:path
 import * as vscode from 'vscode';
 
 import { DEBUG } from './config';

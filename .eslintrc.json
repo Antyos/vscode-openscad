@@ -30,7 +30,11 @@
         "simple-import-sort/imports": "warn",
         "simple-import-sort/exports": "warn",
         "no-trailing-spaces": "warn",
-        "eol-last": ["warn", "always"]
+        "eol-last": ["warn", "always"],
+        // node:protocol imports are supported in Node v16.0.0, v14.18.0.
+        // VS Code 1.61.0 runs on Node v14.16.0, so this must be disabled for now
+        "unicorn/prefer-node-protocol": "off",
+        "unicorn/import-style": "off"
     },
     "ignorePatterns": ["**/*.d.ts", "dist/*"]
 }
