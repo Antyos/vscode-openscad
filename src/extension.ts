@@ -51,16 +51,11 @@ export function activate(context: vscode.ExtensionContext): void {
         ),
     ];
 
-    for (const command of commands) context.subscriptions.push(command);
-
-    // Register status bar item
-    context.subscriptions.push(Cheatsheet.getStatusBarItem());
-
-    // Register listeners to make sure cheatsheet items are up-to-date
+    // Register commands, event listeners, and status bar item
     context.subscriptions.push(
-        vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor)
-    );
-    context.subscriptions.push(
+        ...commands,
+        Cheatsheet.getStatusBarItem(),
+        vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor),
         vscode.workspace.onDidChangeConfiguration(onDidChangeConfiguration)
     );
     onDidChangeConfiguration();

@@ -9,9 +9,9 @@ import * as vscode from 'vscode';
 
 import { DEBUG, ScadConfig } from './config';
 import {
-    ExportExtForSave as ExportExtensionForSave,
-    ExportFileExt as ExportFileExtension,
-    TExportFileExt as TExportFileExtension,
+    ExportExtensionsForSave,
+    ExportFileExtensions,
+    TExportFileExtensions,
 } from './export-file-extensions';
 import { Preview } from './preview';
 import { PreviewStore } from './preview-store';
@@ -86,10 +86,10 @@ export class PreviewManager {
     public async exportFile(
         mainUri?: vscode.Uri,
         allUris?: vscode.Uri[],
-        fileExtension?: TExportFileExtension | 'auto',
+        fileExtension?: TExportFileExtensions | 'auto',
         useSaveDialogue = false
     ): Promise<void> {
-        let exportExtension: TExportFileExtension; // File extension for export
+        let exportExtension: TExportFileExtensions; // File extension for export
 
         // If file extension is not provided, prompt user
         if (
@@ -99,19 +99,19 @@ export class PreviewManager {
         ) {
             // Show quick pick menu to prompt user for file extension
             const pick = await vscode.window.showQuickPick(
-                ExportFileExtension,
+                ExportFileExtensions,
                 {
                     placeHolder: 'Select file extension for export',
                 }
             );
 
-            if (pick) exportExtension = <TExportFileExtension>pick;
+            if (pick) exportExtension = <TExportFileExtensions>pick;
             // If user selected a file, cast and set exportExt
             else return; // Still no file extension, return
         }
         // Get file extension from config
         else if (fileExtension === 'auto') {
-            exportExtension = <TExportFileExtension>(
+            exportExtension = <TExportFileExtensions>(
                 this.config.preferredExportFileExtension
             );
         }
@@ -307,7 +307,7 @@ export class PreviewManager {
     /** Prompts user for export name and location */
     private async promptForExport(
         resource: vscode.Uri,
-        exportExtension: TExportFileExtension = 'stl',
+        exportExtension: TExportFileExtensions = 'stl',
         pattern: string = this.variableResolver.defaultPattern
     ): Promise<vscode.Uri | undefined> {
         // Replace the `.scad` file extrension with the preferred type (or default to stl)
@@ -328,7 +328,7 @@ export class PreviewManager {
         // Open save dialogue
         const savedUri = await vscode.window.showSaveDialog({
             defaultUri: resourceNewExtension,
-            filters: ExportExtensionForSave,
+            filters: ExportExtensionsForSave,
         });
 
         // Return Uri

@@ -5,7 +5,7 @@
  *----------------------------------------------------------------------------*/
 
 /** Avaiable file extensions for export */
-export type TExportFileExt =
+export type TExportFileExtensions =
     | 'stl'
     | 'off'
     | 'amf'
@@ -21,7 +21,7 @@ export type TExportFileExt =
     | 'nefdbg';
 
 /** List of all file exportable extensions */
-export const ExportFileExt: TExportFileExt[] = [
+export const ExportFileExtensions: TExportFileExtensions[] = [
     'stl',
     'off',
     'amf',
@@ -38,7 +38,7 @@ export const ExportFileExt: TExportFileExt[] = [
 ];
 
 /** File types used in save dialogue */
-export const ExportExtForSave = {
+export const ExportExtensionsForSave = {
     STL: ['stl'],
     OFF: ['off'],
     AMF: ['amf'],

@@ -41,8 +41,9 @@ export class Preview {
         this._fileUri = fileUri;
         this._previewType = previewType ? previewType : 'view';
 
+        // Prepend arguments to path if they exist
         const commandArguments: string[] = arguments_
-            ? arguments_.concat(this._fileUri.fsPath)
+            ? [...arguments_, this._fileUri.fsPath]
             : [this._fileUri.fsPath];
 
         if (DEBUG) console.log(`commangArgs: ${commandArguments}`); // DEBUG
