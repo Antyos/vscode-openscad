@@ -1,18 +1,7 @@
-/* global __dirname */
-/* eslint-env commonjs */
-/* eslint-disable @typescript-eslint/no-var-requires */
+import * as path from 'node:path';
+import webpack, { Configuration } from 'webpack';
 
-//@ts-check
-'use strict';
-
-//@ts-check
-/** @typedef {import('webpack').Configuration} WebpackConfig **/
-
-const path = require('path');
-const webpack = require('webpack');
-
-/** @type WebpackConfig */
-const nodeConfig = {
+const nodeConfig: Configuration = {
     // VS Code client extensions run in Node context. See: https://webpack.js.org/configuration/node/
     target: 'node',
     // Leaves the source code as close as possible to the original (when packaging we set this to 'production')
@@ -54,8 +43,7 @@ const nodeConfig = {
     },
 };
 
-/** @type WebpackConfig */
-const browserConfig = {
+const browserConfig: Configuration = {
     // extensions run in a webworker context
     target: 'webworker',
     mode: 'none',
