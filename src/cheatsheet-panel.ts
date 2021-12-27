@@ -139,12 +139,12 @@ export class Cheatsheet {
                 showCsStatusBarItem = true;
                 break;
             case 'openDoc':
-                showCsStatusBarItem = Cheatsheet.isScadDocOpen();
+                showCsStatusBarItem = Cheatsheet.isAnyOpenDocumentScad();
                 break;
             case 'activeDoc':
                 // Check the languageId of the active text document
                 if (vscode.window.activeTextEditor) {
-                    showCsStatusBarItem = Cheatsheet.isDocScad(
+                    showCsStatusBarItem = Cheatsheet.isDocumentScad(
                         vscode.window.activeTextEditor.document
                     );
                 }
@@ -218,13 +218,13 @@ export class Cheatsheet {
     //*****************************************************************************
 
     /** True if there at least one open document of languageId `scad`? */
-    private static isScadDocOpen(): boolean {
+    private static isAnyOpenDocumentScad(): boolean {
         const openDocuments = vscode.workspace.textDocuments;
         let isScadDocumentOpen = false;
 
         // Iterate through open text documents
         for (const document of openDocuments) {
-            if (this.isDocScad(document))
+            if (this.isDocumentScad(document))
                 // If document is of type 'scad' return true
                 isScadDocumentOpen = true;
         }
@@ -232,10 +232,9 @@ export class Cheatsheet {
         return isScadDocumentOpen;
     }
 
-    /** True if the current document languageId is `scad` */
-    private static isDocScad(document: vscode.TextDocument): boolean {
-        const langId = document.languageId;
+    /** True if a document languageId is `scad` */
+    private static isDocumentScad(document: vscode.TextDocument): boolean {
         // vscode.window.showInformationMessage("Doc: " + doc.fileName + "\nLang id: " + langId); // DEBUG
-        return langId === 'scad';
+        return document.languageId === 'scad';
     }
 }
