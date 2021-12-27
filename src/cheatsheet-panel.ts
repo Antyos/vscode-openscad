@@ -4,16 +4,10 @@
  * Generates a webview panel containing the OpenSCAD cheatsheet
  *----------------------------------------------------------------------------*/
 
-import { HTMLElement, parse } from 'node-html-parser';
 import * as vscode from 'vscode';
 
+import { CheatsheetContent } from './cheatsheet-content';
 import { ScadConfig } from './config';
-
-/** Cheatsheet color schemes. Located in `[extensionPath]/media/` */
-const colorScheme = {
-    original: 'cheatsheet-original.css',
-    auto: 'cheatsheet-auto.css',
-};
 
 /**
  * OpenSCAD Cheatsheet webview and commands.
@@ -29,10 +23,9 @@ export class Cheatsheet {
     private static csStatusBarItem: vscode.StatusBarItem | undefined; // Cheatsheet status bar item
 
     private readonly _panel: vscode.WebviewPanel; // Webview panels
-    private readonly _extensionPath: vscode.Uri; // Extension path
     private static config: ScadConfig = {}; // Extension config
-    // private isScadDocument: boolean;                         // Is current document openSCAD
 
+    private cheatsheetContent: CheatsheetContent;
     private _disposables: vscode.Disposable[] = [];
 
     /** Create or show cheatsheet panel */
@@ -80,9 +73,8 @@ export class Cheatsheet {
     }
 
     /** Create a new Cheatsheet */
-    private constructor(panel: vscode.WebviewPanel, extensionPath: vscode.Uri) {
+    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
         this._panel = panel;
-        this._extensionPath = extensionPath;
 
         // Listen for when panel is disposed
         // This happens when user closes the panel or when the panel is closed progamatically
@@ -90,6 +82,11 @@ export class Cheatsheet {
             () => this.dispose(),
             undefined,
             this._disposables
+        );
+
+        // Cheatsheet content
+        this.cheatsheetContent = new CheatsheetContent(
+            vscode.Uri.joinPath(extensionUri, 'media', 'cheatsheet')
         );
 
         // Set HTML content
@@ -212,9 +209,11 @@ export class Cheatsheet {
         const colorScheme: string = Cheatsheet.config.colorScheme || 'auto';
 
         // Set webview content
-        this.getWebviewContent(colorScheme).then((content) => {
-            this._panel.webview.html = content;
-        });
+        this.cheatsheetContent
+            .getWebviewContent(colorScheme)
+            .then((content) => {
+                this._panel.webview.html = content;
+            });
     }
 
     //*****************************************************************************
@@ -241,83 +240,5 @@ export class Cheatsheet {
         const langId = document.languageId;
         // vscode.window.showInformationMessage("Doc: " + doc.fileName + "\nLang id: " + langId); // DEBUG
         return langId === 'scad';
-    }
-
-    /** Get the file URI to the style sheet */
-    private getStyleSheetUri(styleKey: string): vscode.Uri {
-        // Get the filename of the given colorScheme
-        // Thank you: https://blog.smartlogic.io/accessing-object-attributes-based-on-a-variable-in-typescript/
-        const styleSource =
-            styleKey in colorScheme
-                ? colorScheme[styleKey as keyof typeof colorScheme]
-                : colorScheme['auto'];
-
-        // Get style sheet URI
-        return vscode.Uri.joinPath(
-            this._extensionPath,
-            'media',
-            'cheatsheet',
-            styleSource
-        ).with({ scheme: 'vscode-resource' });
-        // if (DEBUG) console.log("Style" + styleUri); // DEBUG
-    }
-
-    /**
-     * Get a <link> HTMLElement for a stylesheet.
-     * @param stylesheetRef Key to lookup the desired stylesheet
-     * @returns HTMLElement
-     */
-    private getStyleSheetElement(stylesheetReference: string): HTMLElement {
-        // HTMLElement `parent` argument cannot be type 'undefined', so we have
-        // to disable the check here
-        // eslint-disable-next-line unicorn/no-null
-        const element = new HTMLElement('link', { id: '' }, '', null);
-        const attributes = {
-            type: 'text/css',
-            rel: 'stylesheet',
-            href: stylesheetReference,
-            media: 'all',
-        };
-
-        element.setAttributes(attributes);
-
-        return element;
-    }
-
-    /** Get the cheatsheet html content for webview */
-    private async getWebviewContent(styleKey: string): Promise<string> {
-        // Read HTML from file
-        const htmlContent = await vscode.workspace.fs
-            .readFile(
-                vscode.Uri.joinPath(
-                    this._extensionPath,
-                    'media',
-                    'cheatsheet',
-                    'cheatsheet.html'
-                )
-            )
-            .then((content) => content.toString());
-
-        // Create html document using jsdom to assign new stylesheet
-        const htmlDocument = parse(htmlContent);
-        const head = htmlDocument.querySelectorAll('head')[0];
-
-        // Remove existing styles
-        for (const element of head.querySelectorAll('link')) {
-            element.remove();
-        }
-
-        // Get uri of stylesheet
-        const styleReference = this.getStyleSheetUri(styleKey).toString();
-
-        // Create new style element
-        const newStyle = this.getStyleSheetElement(styleReference);
-
-        // Append style element
-        // eslint-disable-next-line unicorn/prefer-dom-node-append
-        head.appendChild(newStyle);
-
-        // Return document as html string
-        return htmlDocument.toString();
     }
 }

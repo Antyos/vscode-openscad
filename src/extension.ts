@@ -6,7 +6,7 @@
 
 import * as vscode from 'vscode';
 
-import { Cheatsheet } from './cheatsheet';
+import { Cheatsheet } from './cheatsheet-panel';
 import { DEBUG } from './config';
 import { PreviewManager } from './preview-manager';
 
