@@ -8,7 +8,7 @@
     "plugins": [
         "@typescript-eslint",
         "prettier",
-        "simple-import-sort",
+        "import",
         "unicorn"
     ],
     "extends": [
@@ -16,6 +16,8 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:import/recommended",
+        "plugin:import/typescript",
         "plugin:unicorn/recommended",
         "prettier"
     ],
