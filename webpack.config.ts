@@ -1,6 +1,9 @@
 import * as path from 'node:path';
 import webpack, { Configuration } from 'webpack';
 
+// eslint-disable-next-line unicorn/prefer-module
+const projectRoot = __dirname;
+
 const nodeConfig: Configuration = {
     // VS Code client extensions run in Node context. See: https://webpack.js.org/configuration/node/
     target: 'node',
@@ -13,7 +16,7 @@ const nodeConfig: Configuration = {
     // Bundle output location. See: https://webpack.js.org/configuration/output/
     output: {
         filename: '[name].js',
-        path: path.join(__dirname, 'dist'),
+        path: path.join(projectRoot, 'dist'),
         libraryTarget: 'commonjs',
     },
     devtool: 'nosources-source-map',
@@ -53,7 +56,7 @@ const browserConfig: Configuration = {
     },
     output: {
         filename: '[name].js',
-        path: path.join(__dirname, './dist/web'),
+        path: path.join(projectRoot, './dist/web'),
         libraryTarget: 'commonjs',
         devtoolModuleFilenameTemplate: '../../[resource-path]',
     },
@@ -100,4 +103,5 @@ const browserConfig: Configuration = {
     },
 };
 
+// eslint-disable-next-line unicorn/prefer-module
 module.exports = [nodeConfig, browserConfig];
