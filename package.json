@@ -39,7 +39,7 @@
         "onWebviewPanel:cheatsheet"
     ],
     "main": "./dist/extension.js",
-    "browser": "./dist/web/extensionWeb.js",
+    "browser": "./dist/web/extension-web.js",
     "contributes": {
         "commands": [
             {

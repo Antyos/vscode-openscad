@@ -12,10 +12,10 @@ import {
     ExportExtForSave as ExportExtensionForSave,
     ExportFileExt as ExportFileExtension,
     TExportFileExt as TExportFileExtension,
-} from './exportFileExt';
+} from './export-file-extensions';
 import { Preview } from './preview';
-import { PreviewStore } from './previewStore';
-import { VariableResolver } from './variableResolver';
+import { PreviewStore } from './preview-store';
+import { VariableResolver } from './variable-resolver';
 
 /** PreviewItems used for `scad.kill` quick pick menu */
 class PreviewItem implements vscode.QuickPickItem {

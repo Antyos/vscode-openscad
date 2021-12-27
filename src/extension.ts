@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
 
 import { Cheatsheet } from './cheatsheet';
 import { DEBUG } from './config';
-import { PreviewManager } from './previewManager';
+import { PreviewManager } from './preview-manager';
 
 /** New launch object */
 const previewManager = new PreviewManager();
