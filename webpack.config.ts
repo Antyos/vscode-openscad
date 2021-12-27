@@ -51,7 +51,7 @@ const browserConfig: Configuration = {
     target: 'webworker',
     mode: 'none',
     entry: {
-        extensionWeb: './src/web/extension-web.ts',
+        'extension-web': './src/web/extension-web.ts',
         // 'test/suite/index': './src/web/test/suite/index.ts',
     },
     output: {
