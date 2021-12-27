@@ -253,7 +253,12 @@ export class Cheatsheet {
                 : colorScheme['auto'];
 
         // Get style sheet URI
-        return vscode.Uri.joinPath(this._extensionPath, 'media', styleSource);
+        return vscode.Uri.joinPath(
+            this._extensionPath,
+            'media',
+            'cheatsheet',
+            styleSource
+        );
         // ).with({ scheme: 'vscode-resource' });
         // if (DEBUG) console.log("Style" + styleUri); // DEBUG
     }
@@ -288,6 +293,7 @@ export class Cheatsheet {
                 vscode.Uri.joinPath(
                     this._extensionPath,
                     'media',
+                    'cheatsheet',
                     'cheatsheet.html'
                 )
             )
