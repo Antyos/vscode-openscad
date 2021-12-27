@@ -1,19 +1,54 @@
 import { HTMLElement, parse } from 'node-html-parser';
 import * as vscode from 'vscode';
 
-/** Cheatsheet color schemes. Located in `[extensionPath]/media/` */
+/** Cheatsheet color schemes. Located in `[extensionPath]/media/cheatsheet/` */
 const colorScheme = {
     original: 'cheatsheet-original.css',
     auto: 'cheatsheet-auto.css',
 };
 
+const DEFAULT_STYLE = 'auto';
+
 /** Get HTML content of the OpenSCAD cheatsheet */
 export class CheatsheetContent {
     /** Uri to the directory containing the cheatsheet html and style sheets */
     private readonly _cheatsheetUri: vscode.Uri;
+    /** Stored copy of the cheatsheet HTML document */
+    private _content?: string = undefined;
+    /** The last key used to get the cheatsheet stylesheet */
+    private _lastStyleKey?: string = undefined;
 
     public constructor(cheatsheetUri: vscode.Uri) {
         this._cheatsheetUri = cheatsheetUri;
+    }
+
+    /** Get cheatsheet HTML content. Stores HTML from lastStyleKey. */
+    public getContent(styleKey: string): Promise<string> {
+        // If the styleKey hasn't changed, return the stored copy of the document
+        if (styleKey === this._lastStyleKey && this._content) {
+            return new Promise<string>((resolve) => {
+                resolve(this._content || '');
+            });
+        }
+
+        // Update lastStyleKey. If we do this inside the next promise, we may
+        // create a race condition if two calls to getContent() are made before
+        // the promises can be resolved.
+        this._lastStyleKey = styleKey;
+
+        // Get the new document
+        return new Promise((resolve) => {
+            this.getCheatsheetContent(styleKey).then((content) => {
+                // Store content for later
+                this._content = content;
+                resolve(content);
+            });
+        });
+    }
+
+    /** The key used the last time getContent() was called */
+    public get lastStyleKey(): string | undefined {
+        return this._lastStyleKey;
     }
 
     /** Get the file URI to the style sheet */
@@ -23,7 +58,7 @@ export class CheatsheetContent {
         const styleSource =
             styleKey in colorScheme
                 ? colorScheme[styleKey as keyof typeof colorScheme]
-                : colorScheme['auto'];
+                : colorScheme[DEFAULT_STYLE];
 
         // Get style sheet URI
         return vscode.Uri.joinPath(this._cheatsheetUri, styleSource).with({
@@ -55,7 +90,7 @@ export class CheatsheetContent {
     }
 
     /** Get the cheatsheet html content for webview */
-    public async getWebviewContent(styleKey: string): Promise<string> {
+    public async getCheatsheetContent(styleKey: string): Promise<string> {
         // Read HTML from file
         const htmlContent = await vscode.workspace.fs
             .readFile(

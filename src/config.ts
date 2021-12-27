@@ -16,7 +16,6 @@ export interface ScadConfig {
     useAutoNamingInSaveDialogues?: boolean;
     displayInStatusBar?: string;
     colorScheme?: string;
-    lastColorScheme?: string;
     openToSide?: string;
 }
 

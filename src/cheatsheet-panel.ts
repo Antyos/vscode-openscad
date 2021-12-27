@@ -194,11 +194,10 @@ export class Cheatsheet {
 
         // Update css of webview (if config option has changed)
         if (
-            Cheatsheet.config.lastColorScheme !==
-                Cheatsheet.config.colorScheme &&
-            Cheatsheet.currentPanel !== undefined
+            Cheatsheet.currentPanel &&
+            Cheatsheet.config.colorScheme !==
+                Cheatsheet.currentPanel.cheatsheetContent.lastStyleKey
         ) {
-            Cheatsheet.config.lastColorScheme = Cheatsheet.config.colorScheme; // Update last colorScheme
             Cheatsheet.currentPanel.updateWebviewContent(); // Update webview html content
         }
     }
@@ -209,11 +208,9 @@ export class Cheatsheet {
         const colorScheme: string = Cheatsheet.config.colorScheme || 'auto';
 
         // Set webview content
-        this.cheatsheetContent
-            .getWebviewContent(colorScheme)
-            .then((content) => {
-                this._panel.webview.html = content;
-            });
+        this.cheatsheetContent.getContent(colorScheme).then((content) => {
+            this._panel.webview.html = content;
+        });
     }
 
     //*****************************************************************************
