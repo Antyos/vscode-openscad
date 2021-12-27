@@ -18,6 +18,3 @@ export interface ScadConfig {
     colorScheme?: string;
     openToSide?: string;
 }
-
-/** DEBUG variable. Set to false when compiling for release to disable all console logging */
-export const DEBUG = false;

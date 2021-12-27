@@ -9,7 +9,6 @@ import { type } from 'os'; // node:os
 import { ISignal, SignalDispatcher } from 'ste-signals';
 import * as vscode from 'vscode';
 
-import { DEBUG } from './config';
 import commandExists = require('command-exists');
 
 const pathByPlatform = {
@@ -46,7 +45,7 @@ export class Preview {
             ? [...arguments_, this._fileUri.fsPath]
             : [this._fileUri.fsPath];
 
-        if (DEBUG) console.log(`commangArgs: ${commandArguments}`); // DEBUG
+        console.log(`commangArgs: ${commandArguments}`); // DEBUG
 
         // New process
         this._process = child.execFile(
@@ -56,7 +55,7 @@ export class Preview {
                 // If there's an error
                 if (error) {
                     // console.error(`exec error: ${error}`);
-                    if (DEBUG) console.error(`stderr: ${stderr}`); // DEBUG
+                    console.error(`stderr: ${stderr}`); // DEBUG
                     vscode.window.showErrorMessage(stderr); // Display error message
                 }
                 // No error
@@ -65,12 +64,12 @@ export class Preview {
                     // If there is no error, assume stderr should be treated as stdout
                     // For more info. see: https://github.com/openscad/openscad/issues/3358
                     const message = stdout || stderr;
-                    if (DEBUG) console.log(`stdout: ${message}`); // DEBUG
+                    console.log(`stdout: ${message}`); // DEBUG
 
                     vscode.window.showInformationMessage(message); // Display info
                 }
 
-                // if (DEBUG) console.log(`real stdout: ${stdout}`);    // DEBUG
+                // console.log(`real stdout: ${stdout}`);    // DEBUG
 
                 this._isRunning = false;
                 this._onKilled.dispatch(); // Dispatch 'onKilled' event
@@ -121,7 +120,7 @@ export class Preview {
         // Error checking
         // Make sure scad path is defined
         if (!Preview._isValidScadPath) {
-            if (DEBUG) console.error('OpenSCAD path is undefined in config');
+            console.error('OpenSCAD path is undefined in config');
             vscode.window.showErrorMessage('OpenSCAD path does not exist.');
             return undefined;
         }
@@ -147,7 +146,7 @@ export class Preview {
             ? scadPath
             : pathByPlatform[type() as keyof typeof pathByPlatform];
 
-        if (DEBUG) console.log(`Path: '${Preview._scadPath}'`); // DEBUG
+        console.log(`Path: '${Preview._scadPath}'`); // DEBUG
 
         // Verify 'openscad' command is valid
         Preview._isValidScadPath = false; // Set to false until can test if the command exists

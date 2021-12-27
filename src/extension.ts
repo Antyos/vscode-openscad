@@ -7,7 +7,6 @@
 import * as vscode from 'vscode';
 
 import { Cheatsheet } from './cheatsheet-panel';
-import { DEBUG } from './config';
 import { PreviewManager } from './preview-manager';
 
 /** New launch object */
@@ -71,7 +70,7 @@ export function activate(context: vscode.ExtensionContext): void {
                 webviewPanel: vscode.WebviewPanel,
                 state: unknown
             ) {
-                if (DEBUG) console.log(`Got state: ${state}`);
+                console.log(`Got state: ${state}`);
                 Cheatsheet.revive(webviewPanel, context.extensionUri);
             },
         });

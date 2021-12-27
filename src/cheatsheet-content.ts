@@ -64,7 +64,7 @@ export class CheatsheetContent {
         return vscode.Uri.joinPath(this._cheatsheetUri, styleSource).with({
             scheme: 'vscode-resource',
         });
-        // if (DEBUG) console.log("Style" + styleUri); // DEBUG
+        // console.log("Style" + styleUri); // DEBUG
     }
 
     /**

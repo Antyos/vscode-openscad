@@ -7,7 +7,6 @@
 import { basename } from 'path'; // node:path
 import * as vscode from 'vscode';
 
-import { DEBUG } from './config';
 import { Preview, PreviewType } from './preview';
 
 /** Container of several Preview */
@@ -138,7 +137,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
                 // Cancel export
                 token.onCancellationRequested(() => {
-                    if (DEBUG) console.log('Canceled Export');
+                    console.log('Canceled Export');
                     this.delete(preview);
                 });
 

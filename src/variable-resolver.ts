@@ -14,8 +14,6 @@ import { platform } from 'os'; // node:os
 import * as path from 'path'; // node:path
 import * as vscode from 'vscode';
 
-import { DEBUG } from './config';
-
 /** Get file name without extension */
 export function fileBasenameNoExtension(uri: vscode.Uri): string {
     return path.basename(uri.fsPath, path.extname(uri.fsPath));
@@ -60,7 +58,7 @@ export class VariableResolver {
         resource: vscode.Uri,
         exportExtension?: string
     ): Promise<string> {
-        // if (DEBUG) console.log(`resolveString pattern: ${pattern}`); // DEBUG
+        // console.log(`resolveString pattern: ${pattern}`); // DEBUG
 
         // Replace all variable pattern matches '${VAR_NAME}'
         const replaced = pattern.replace(
@@ -80,7 +78,7 @@ export class VariableResolver {
         // Get dynamic version number
         const version = await this.getVersionNumber(replaced, resource);
 
-        if (DEBUG) console.log(`Version number: ${version}`);
+        console.log(`Version number: ${version}`);
 
         // Cases for version number
         switch (version) {
@@ -110,7 +108,7 @@ export class VariableResolver {
 
     /** Tests all variables */
     public testVars(resource: vscode.Uri): void {
-        if (DEBUG) console.log('Testing evaluateSingleVariable()...');
+        console.log('Testing evaluateSingleVariable()...');
 
         for (const variable of this._variables) {
             if (DEBUG)
@@ -203,7 +201,7 @@ export class VariableResolver {
             fs.readdir(fileDirectory, (error, files) => {
                 // Error; Return -2 (dir read error)
                 if (error) {
-                    if (DEBUG) console.error(error);
+                    console.error(error);
                     reject(-2); // File read error
                 }
 
@@ -214,13 +212,13 @@ export class VariableResolver {
                     })
                 );
 
-                // if (DEBUG) console.log(`Last version: ${lastVersion}`); // DEBUG
+                // console.log(`Last version: ${lastVersion}`); // DEBUG
 
                 resolve(lastVersion);
             });
         });
 
-        // if (DEBUG) console.log(`Version num: ${versionNum}`);   // DEBUG
+        // console.log(`Version num: ${versionNum}`);   // DEBUG
 
         // Return next version
         return versionNumber < 0 ? versionNumber : versionNumber + 1;

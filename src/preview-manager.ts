@@ -7,7 +7,7 @@
 import * as path from 'path'; // node:path
 import * as vscode from 'vscode';
 
-import { DEBUG, ScadConfig } from './config';
+import { ScadConfig } from './config';
 import {
     ExportExtensionsForSave,
     ExportFileExtensions,
@@ -61,7 +61,7 @@ export class PreviewManager {
         for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
             let resource: vscode.Uri;
 
-            // if (DEBUG) console.log(`openFile: { main: ${mainUri}, all: ${allUris}, args: ${args}}`);   // DEBUG
+            // console.log(`openFile: { main: ${mainUri}, all: ${allUris}, args: ${args}}`);   // DEBUG
 
             // If uri not given, try opening activeTextEditor
             if (!(uri instanceof vscode.Uri)) {
@@ -75,7 +75,7 @@ export class PreviewManager {
             // Check if a new preview can be opened
             if (!this.canOpenNewPreview(resource, arguments_)) return;
 
-            if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
+            console.log(`uri: ${resource}`); // DEBUG
 
             // Create and add new OpenSCAD preview to PreviewStore
             this.previewStore.createAndAdd(resource, arguments_);
@@ -172,7 +172,7 @@ export class PreviewManager {
             // Check if a new preview can be opened
             if (!this.canOpenNewPreview(resource, arguments_)) return;
 
-            if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
+            console.log(`uri: ${resource}`); // DEBUG
 
             this.previewStore.createAndAdd(resource, arguments_);
         }
@@ -231,7 +231,7 @@ export class PreviewManager {
     public killAll(): void {
         // Check that there are open previews
         if (this.previewStore.size <= 0) {
-            if (DEBUG) console.error('No open previews');
+            console.error('No open previews');
             vscode.window.showInformationMessage('No open previews.');
             return;
         }
@@ -321,9 +321,7 @@ export class PreviewManager {
             : path.join(path.dirname(resource.fsPath), fileName); // Full file path
         const resourceNewExtension = vscode.Uri.file(filePath); // Resource URI with new file extension
 
-        if (DEBUG) {
-            console.log(`Opening Save Dialogue to: ${filePath}`);
-        }
+        console.log(`Opening Save Dialogue to: ${filePath}`);
 
         // Open save dialogue
         const savedUri = await vscode.window.showSaveDialog({
