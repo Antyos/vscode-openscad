@@ -143,8 +143,8 @@ export class PreviewStore /* extends vscode.Disposable */ {
                 });
 
                 // Return promise that resolve the progress bar when the preview is killed
-                const p = new Promise((resolve) => {
-                    preview.onKilled.subscribe(() => resolve(null));
+                const p = new Promise<void>((resolve) => {
+                    preview.onKilled.subscribe(() => resolve());
                 });
 
                 return p;

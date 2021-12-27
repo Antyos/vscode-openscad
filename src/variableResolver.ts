@@ -17,7 +17,7 @@ import * as vscode from 'vscode';
 import { DEBUG } from './config';
 
 /** Get file name without extension */
-export function fileBasenameNoExt(uri: vscode.Uri): string {
+export function fileBasenameNoExtension(uri: vscode.Uri): string {
     return path.basename(uri.fsPath, path.extname(uri.fsPath));
 }
 
@@ -152,7 +152,7 @@ export class VariableResolver {
             case 'fileBasename':
                 return path.basename(resource.fsPath);
             case 'fileBasenameNoExtension':
-                return fileBasenameNoExt(resource);
+                return fileBasenameNoExtension(resource);
             case 'fileDirname':
                 return path.dirname(resource.fsPath);
             case 'fileExtname':
@@ -186,21 +186,21 @@ export class VariableResolver {
 
         // Get file directory. If the path is not absolute, get the path of
         // `resource`. Note that `pattern` may contain a directory
-        const fileDir = path.isAbsolute(pattern)
+        const fileDirectory = path.isAbsolute(pattern)
             ? path.dirname(pattern)
             : path.dirname(path.join(path.dirname(resource.fsPath), pattern));
 
         // Make export directory if it doesn't exist
         try {
-            await fs.promises.access(fileDir, fs.constants.W_OK);
+            await fs.promises.access(fileDirectory, fs.constants.W_OK);
         } catch {
-            await fs.promises.mkdir(fileDir);
+            await fs.promises.mkdir(fileDirectory);
             return -3;
         }
 
         // Read all files in directory
         const versionNumber: number = await new Promise((resolve, reject) => {
-            fs.readdir(fileDir, (error, files) => {
+            fs.readdir(fileDirectory, (error, files) => {
                 // Error; Return -2 (dir read error)
                 if (error) {
                     if (DEBUG) console.error(error);
@@ -208,16 +208,10 @@ export class VariableResolver {
                 }
 
                 // Get all the files that match the pattern (with different version numbers)
-                const lastVersion = files.reduce(
-                    (maxVersion: number, file: string) => {
-                        // Get pattern matches of file
-                        const matched = patternAsRegexp.exec(file);
-                        // If there's a match, return whichever version is greater
-                        return matched
-                            ? Math.max(maxVersion, Number(matched[1]))
-                            : maxVersion;
-                    },
-                    0
+                const lastVersion = Math.max(
+                    ...files.map((fileName) => {
+                        return Number(patternAsRegexp.exec(fileName)?.[1] || 0);
+                    })
                 );
 
                 // if (DEBUG) console.log(`Last version: ${lastVersion}`); // DEBUG
@@ -228,7 +222,8 @@ export class VariableResolver {
 
         // if (DEBUG) console.log(`Version num: ${versionNum}`);   // DEBUG
 
-        return versionNumber < 0 ? versionNumber : versionNumber + 1; // Return next version
+        // Return next version
+        return versionNumber < 0 ? versionNumber : versionNumber + 1;
 
         // Consider adding case for MAX_SAFE_NUMBER (despite it's unlikeliness)
     }

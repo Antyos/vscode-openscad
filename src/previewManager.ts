@@ -53,12 +53,12 @@ export class PreviewManager {
     // public activate() {}
 
     /** Opens file in OpenSCAD */
-    public openFile(
+    public async openFile(
         mainUri?: vscode.Uri,
         allUris?: vscode.Uri[],
         arguments_?: string[]
-    ): void {
-        (Array.isArray(allUris) ? allUris : [mainUri]).forEach(async (uri) => {
+    ): Promise<void> {
+        for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
             let resource: vscode.Uri;
 
             // if (DEBUG) console.log(`openFile: { main: ${mainUri}, all: ${allUris}, args: ${args}}`);   // DEBUG
@@ -79,7 +79,7 @@ export class PreviewManager {
 
             // Create and add new OpenSCAD preview to PreviewStore
             this.previewStore.createAndAdd(resource, arguments_);
-        });
+        }
     }
 
     /** Export file */
@@ -119,7 +119,7 @@ export class PreviewManager {
         else exportExtension = fileExtension;
 
         // Iterate through uris
-        (Array.isArray(allUris) ? allUris : [mainUri]).forEach(async (uri) => {
+        for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
             let resource: vscode.Uri;
             let filePath: string;
             const arguments_: string[] = [];
@@ -175,7 +175,7 @@ export class PreviewManager {
             if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
 
             this.previewStore.createAndAdd(resource, arguments_);
-        });
+        }
     }
 
     /** Prompt user for instances to kill */

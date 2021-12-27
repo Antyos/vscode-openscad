@@ -86,7 +86,11 @@ export class Cheatsheet {
 
         // Listen for when panel is disposed
         // This happens when user closes the panel or when the panel is closed progamatically
-        this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
+        this._panel.onDidDispose(
+            () => this.dispose(),
+            undefined,
+            this._disposables
+        );
 
         // Set HTML content
         this.updateWebviewContent();
@@ -219,11 +223,11 @@ export class Cheatsheet {
 
     /** True if there at least one open document of languageId `scad`? */
     private static isScadDocOpen(): boolean {
-        const openDocs = vscode.workspace.textDocuments;
+        const openDocuments = vscode.workspace.textDocuments;
         let isScadDocumentOpen = false;
 
         // Iterate through open text documents
-        for (const document of openDocs) {
+        for (const document of openDocuments) {
             if (this.isDocScad(document))
                 // If document is of type 'scad' return true
                 isScadDocumentOpen = true;
@@ -260,6 +264,9 @@ export class Cheatsheet {
      * @returns HTMLElement
      */
     private getStyleSheetElement(stylesheetReference: string): HTMLElement {
+        // HTMLElement `parent` argument cannot be type 'undefined', so we have
+        // to disable the check here
+        // eslint-disable-next-line unicorn/no-null
         const element = new HTMLElement('link', { id: '' }, '', null);
         const attributes = {
             type: 'text/css',
@@ -302,7 +309,8 @@ export class Cheatsheet {
         const newStyle = this.getStyleSheetElement(styleReference);
 
         // Append style element
-        head.append(newStyle);
+        // eslint-disable-next-line unicorn/prefer-dom-node-append
+        head.appendChild(newStyle);
 
         // Return document as html string
         return htmlDocument.toString();
