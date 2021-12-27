@@ -1,5 +1,5 @@
 import * as path from 'node:path';
-import webpack, { Configuration } from 'webpack';
+import { Configuration, ProvidePlugin } from 'webpack';
 
 // eslint-disable-next-line unicorn/prefer-module
 const projectRoot = __dirname;
@@ -87,7 +87,7 @@ const browserConfig: Configuration = {
         ],
     },
     plugins: [
-        new webpack.ProvidePlugin({
+        new ProvidePlugin({
             process: 'process/browser', // provide a shim for the global `process` variable
         }),
     ],
