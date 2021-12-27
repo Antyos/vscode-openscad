@@ -6,8 +6,8 @@
 
 import * as vscode from 'vscode';
 
-import { Cheatsheet } from './cheatsheet-panel';
-import { PreviewManager } from './preview-manager';
+import { Cheatsheet } from '../cheatsheet-panel';
+import { PreviewManager } from '../preview-manager';
 
 /** New launch object */
 const previewManager = new PreviewManager();

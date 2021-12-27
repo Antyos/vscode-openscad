@@ -11,12 +11,12 @@ const nodeConfig: Configuration = {
     mode: 'none',
     // Entry point into extension (in package.json). See: https://webpack.js.org/configuration/entry-context/
     entry: {
-        extension: './src/extension.ts',
+        'extension-node': './src/node/extension-node.ts',
     },
     // Bundle output location. See: https://webpack.js.org/configuration/output/
     output: {
         filename: '[name].js',
-        path: path.join(projectRoot, 'dist'),
+        path: path.join(projectRoot, 'dist', 'node'),
         libraryTarget: 'commonjs',
     },
     devtool: 'nosources-source-map',
