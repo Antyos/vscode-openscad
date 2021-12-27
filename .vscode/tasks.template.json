@@ -8,7 +8,22 @@
             "script": "lint",
             "problemMatcher": ["$eslint-stylish"],
             "label": "npm: lint",
-            "detail": "eslint -c .eslintrc.json --ext .ts src"
-        }
-    ]
+        },
+        {
+            "type": "npm",
+            "script": "compile",
+            "group": {
+                "kind": "build",
+                "isDefault": true,
+            },
+            "problemMatcher": ["$ts-webpack", "$tslint-webpack"],
+        },
+        {
+            "type": "npm",
+            "script": "watch",
+            "group": "build",
+            "isBackground": true,
+            "problemMatcher": ["$ts-webpack-watch", "$tslint-webpack-watch"],
+        },
+    ],
 }
