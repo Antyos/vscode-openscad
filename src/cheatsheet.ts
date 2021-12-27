@@ -258,8 +258,7 @@ export class Cheatsheet {
             'media',
             'cheatsheet',
             styleSource
-        );
-        // ).with({ scheme: 'vscode-resource' });
+        ).with({ scheme: 'vscode-resource' });
         // if (DEBUG) console.log("Style" + styleUri); // DEBUG
     }
 
