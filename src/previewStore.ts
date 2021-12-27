@@ -4,7 +4,7 @@
  * Class to manage a Set of previews
  *----------------------------------------------------------------------------*/
 
-import { basename } from 'path';
+import { basename } from 'node:path';
 import * as vscode from 'vscode';
 
 import { DEBUG } from './config';
@@ -62,12 +62,15 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     /** Create new preview (if not one with same uri) and then add it. */
-    public createAndAdd(uri: vscode.Uri, args?: string[]): Preview | undefined {
-        const previewType = PreviewStore.getPreviewType(args);
+    public createAndAdd(
+        uri: vscode.Uri,
+        arguments_?: string[]
+    ): Preview | undefined {
+        const previewType = PreviewStore.getPreviewType(arguments_);
 
         // Check there's not an existing preview of same type (can view and export same file)
         if (this.get(uri, previewType) === undefined) {
-            const newPreview = Preview.create(uri, previewType, args);
+            const newPreview = Preview.create(uri, previewType, arguments_);
 
             if (!newPreview) return undefined;
 
@@ -150,8 +153,8 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     /** Returns the preview type based on the arguments supplied. */
-    public static getPreviewType(args?: string[]): 'output' | 'view' {
-        return args?.some((item) => ['-o', '--o'].includes(item))
+    public static getPreviewType(arguments_?: string[]): 'output' | 'view' {
+        return arguments_?.some((item) => ['-o', '--o'].includes(item))
             ? 'output'
             : 'view';
     }
@@ -164,8 +167,8 @@ export class PreviewStore /* extends vscode.Disposable */ {
     public get maxPreviews(): number {
         return this._maxPreviews;
     }
-    public set maxPreviews(num: number) {
-        this._maxPreviews = num;
+    public set maxPreviews(number_: number) {
+        this._maxPreviews = number_;
     }
 
     /** Set vscode context 'areOpenPreviews'. Used in 'when' clauses. */

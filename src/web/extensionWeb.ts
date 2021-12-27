@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext): void {
         unsupportedWebCommand('openscad.killAll'),
     ];
 
-    commands.forEach((command) => context.subscriptions.push(command));
+    for (const command of commands) context.subscriptions.push(command);
 
     // Register status bar item
     context.subscriptions.push(Cheatsheet.getStatusBarItem());

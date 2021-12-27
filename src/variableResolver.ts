@@ -9,9 +9,9 @@
  *----------------------------------------------------------------------------*/
 
 import escapeStringRegexp = require('escape-string-regexp');
-import * as fs from 'fs';
-import { platform } from 'os';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import { platform } from 'node:os';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 
 import { DEBUG } from './config';
@@ -24,7 +24,7 @@ export function fileBasenameNoExt(uri: vscode.Uri): string {
 /** Resolves variables formatted like `${VAR_NAME}` within a string */
 export class VariableResolver {
     // Regex patterns to identify variables
-    private static readonly VARIABLE_REGEXP = /\$\{(.*?)\}/g;
+    private static readonly VARIABLE_REGEXP = /\${(.*?)}/g;
     // private static readonly VARIABLE_REGEXP_SINGLE = /\$\{(.*?)\}/; // Unused
     private static readonly VERSION_FORMAT = /\${#}/g;
 
@@ -58,7 +58,7 @@ export class VariableResolver {
     public async resolveString(
         pattern: string = this._defaultPattern,
         resource: vscode.Uri,
-        exportExt?: string
+        exportExtension?: string
     ): Promise<string> {
         // if (DEBUG) console.log(`resolveString pattern: ${pattern}`); // DEBUG
 
@@ -70,7 +70,7 @@ export class VariableResolver {
                     match,
                     variable,
                     resource,
-                    exportExt
+                    exportExtension
                 );
 
                 return resolvedValue;
@@ -112,7 +112,7 @@ export class VariableResolver {
     public testVars(resource: vscode.Uri): void {
         if (DEBUG) console.log('Testing evaluateSingleVariable()...');
 
-        this._variables.forEach((variable) => {
+        for (const variable of this._variables) {
             if (DEBUG)
                 console.log(
                     `${variable} : ${this.evaluateSingleVariable(
@@ -122,7 +122,7 @@ export class VariableResolver {
                         'test'
                     )}`
                 );
-        });
+        }
     }
 
     /** Evaluate a single variable in format '${VAR_NAME}'
@@ -133,7 +133,7 @@ export class VariableResolver {
         match: string,
         variable: string,
         resource: vscode.Uri,
-        exportExt = 'scad'
+        exportExtension = 'scad'
     ): string {
         const workspaceFolder =
             vscode.workspace.getWorkspaceFolder(resource)?.uri.fsPath;
@@ -158,8 +158,7 @@ export class VariableResolver {
             case 'fileExtname':
                 return path.extname(resource.fsPath);
             case 'exportExtension':
-                if (exportExt) return exportExt;
-                else return match;
+                return exportExtension ? exportExtension : match;
             // We will evaluate the number later
             case '#':
             default:
@@ -173,7 +172,7 @@ export class VariableResolver {
         resource: vscode.Uri
     ): Promise<number> {
         // No version number in string: return -1
-        if (!pattern.match(VariableResolver.VERSION_FORMAT)) return -1;
+        if (!VariableResolver.VERSION_FORMAT.test(pattern)) return -1;
 
         // Replace the number placeholder with a regex number capture pattern
         // Regexp is case insensitive if OS is Windows
@@ -200,23 +199,23 @@ export class VariableResolver {
         }
 
         // Read all files in directory
-        const versionNum: number = await new Promise((resolve, reject) => {
-            fs.readdir(fileDir, (err, files) => {
+        const versionNumber: number = await new Promise((resolve, reject) => {
+            fs.readdir(fileDir, (error, files) => {
                 // Error; Return -2 (dir read error)
-                if (err) {
-                    if (DEBUG) console.error(err);
+                if (error) {
+                    if (DEBUG) console.error(error);
                     reject(-2); // File read error
                 }
 
                 // Get all the files that match the pattern (with different version numbers)
                 const lastVersion = files.reduce(
-                    (maxVer: number, file: string) => {
+                    (maxVersion: number, file: string) => {
                         // Get pattern matches of file
                         const matched = patternAsRegexp.exec(file);
                         // If there's a match, return whichever version is greater
                         return matched
-                            ? Math.max(maxVer, Number(matched[1]))
-                            : maxVer;
+                            ? Math.max(maxVersion, Number(matched[1]))
+                            : maxVersion;
                     },
                     0
                 );
@@ -229,9 +228,7 @@ export class VariableResolver {
 
         // if (DEBUG) console.log(`Version num: ${versionNum}`);   // DEBUG
 
-        if (versionNum < 0) return versionNum;
-        // Error; return as-is
-        else return versionNum + 1; // Return next version
+        return versionNumber < 0 ? versionNumber : versionNumber + 1; // Return next version
 
         // Consider adding case for MAX_SAFE_NUMBER (despite it's unlikeliness)
     }

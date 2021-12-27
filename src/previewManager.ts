@@ -4,14 +4,14 @@
  * Class for adding / removing OpenSCAD previews to a previewStore
  *----------------------------------------------------------------------------*/
 
-import * as path from 'path';
+import * as path from 'node:path';
 import * as vscode from 'vscode';
 
 import { DEBUG, ScadConfig } from './config';
 import {
-    ExportExtForSave,
-    ExportFileExt,
-    TExportFileExt,
+    ExportExtForSave as ExportExtensionForSave,
+    ExportFileExt as ExportFileExtension,
+    TExportFileExt as TExportFileExtension,
 } from './exportFileExt';
 import { Preview } from './preview';
 import { PreviewStore } from './previewStore';
@@ -28,7 +28,7 @@ class PreviewItem implements vscode.QuickPickItem {
         this.label =
             (preview.previewType === 'output' ? 'Exporting: ' : '') +
             (fileName ? fileName : ''); // Remove path before filename
-        this.description = preview.uri.path.substring(1); // Remove first '/'
+        this.description = preview.uri.path.slice(1); // Remove first '/'
         this.uri = preview.uri;
     }
 }
@@ -56,7 +56,7 @@ export class PreviewManager {
     public openFile(
         mainUri?: vscode.Uri,
         allUris?: vscode.Uri[],
-        args?: string[]
+        arguments_?: string[]
     ): void {
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach(async (uri) => {
             let resource: vscode.Uri;
@@ -73,12 +73,12 @@ export class PreviewManager {
             else resource = uri;
 
             // Check if a new preview can be opened
-            if (!this.canOpenNewPreview(resource, args)) return;
+            if (!this.canOpenNewPreview(resource, arguments_)) return;
 
             if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
 
             // Create and add new OpenSCAD preview to PreviewStore
-            this.previewStore.createAndAdd(resource, args);
+            this.previewStore.createAndAdd(resource, arguments_);
         });
     }
 
@@ -86,40 +86,43 @@ export class PreviewManager {
     public async exportFile(
         mainUri?: vscode.Uri,
         allUris?: vscode.Uri[],
-        fileExt?: TExportFileExt | 'auto',
+        fileExtension?: TExportFileExtension | 'auto',
         useSaveDialogue = false
     ): Promise<void> {
-        let exportExt: TExportFileExt; // File extension for export
+        let exportExtension: TExportFileExtension; // File extension for export
 
         // If file extension is not provided, prompt user
         if (
-            !fileExt ||
-            (fileExt === 'auto' &&
+            !fileExtension ||
+            (fileExtension === 'auto' &&
                 this.config.preferredExportFileExtension === 'none')
         ) {
             // Show quick pick menu to prompt user for file extension
-            const pick = await vscode.window.showQuickPick(ExportFileExt, {
-                placeHolder: 'Select file extension for export',
-            });
+            const pick = await vscode.window.showQuickPick(
+                ExportFileExtension,
+                {
+                    placeHolder: 'Select file extension for export',
+                }
+            );
 
-            if (pick) exportExt = <TExportFileExt>pick;
+            if (pick) exportExtension = <TExportFileExtension>pick;
             // If user selected a file, cast and set exportExt
             else return; // Still no file extension, return
         }
         // Get file extension from config
-        else if (fileExt === 'auto') {
-            exportExt = <TExportFileExt>(
+        else if (fileExtension === 'auto') {
+            exportExtension = <TExportFileExtension>(
                 this.config.preferredExportFileExtension
             );
         }
         // File extension is provided
-        else exportExt = fileExt;
+        else exportExtension = fileExtension;
 
         // Iterate through uris
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach(async (uri) => {
             let resource: vscode.Uri;
             let filePath: string;
-            const args: string[] = [];
+            const arguments_: string[] = [];
 
             // If uri not given, try opening activeTextEditor
             if (!(uri instanceof vscode.Uri)) {
@@ -139,7 +142,7 @@ export class PreviewManager {
                 // Get Uri from save dialogue prompt
                 const newUri = await this.promptForExport(
                     resource,
-                    exportExt,
+                    exportExtension,
                     pattern
                 );
 
@@ -153,7 +156,7 @@ export class PreviewManager {
                 const fileName = await this.variableResolver.resolveString(
                     this.config.autoNamingFormat,
                     resource,
-                    exportExt
+                    exportExtension
                 );
                 // Set full file path; Make sure fileName is not already an absolute path
                 filePath = path.isAbsolute(fileName)
@@ -164,15 +167,14 @@ export class PreviewManager {
             // this.variableResolver.testVars(resource);   // TESTING / DEBUG
 
             // Set arguments
-            args.push('-o'); // Set for output / export
-            args.push(filePath); // Filename for export
+            arguments_.push('-o', filePath); // Filename for export
 
             // Check if a new preview can be opened
-            if (!this.canOpenNewPreview(resource, args)) return;
+            if (!this.canOpenNewPreview(resource, arguments_)) return;
 
             if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
 
-            this.previewStore.createAndAdd(resource, args);
+            this.previewStore.createAndAdd(resource, arguments_);
         });
     }
 
@@ -296,8 +298,7 @@ export class PreviewManager {
                 filters: { 'OpenSCAD Designs': ['scad'] },
             });
             // If user saved, set `resource` otherwise, return
-            if (savedUri) return savedUri;
-            else return undefined;
+            return savedUri ? savedUri : undefined;
         }
         // If document is already saved, set `resource`
         else return editor.document.uri;
@@ -306,19 +307,19 @@ export class PreviewManager {
     /** Prompts user for export name and location */
     private async promptForExport(
         resource: vscode.Uri,
-        exportExt: TExportFileExt = 'stl',
+        exportExtension: TExportFileExtension = 'stl',
         pattern: string = this.variableResolver.defaultPattern
     ): Promise<vscode.Uri | undefined> {
         // Replace the `.scad` file extrension with the preferred type (or default to stl)
         const fileName = await this.variableResolver.resolveString(
             pattern,
             resource,
-            exportExt
+            exportExtension
         ); // Filename for export
         const filePath = path.isAbsolute(fileName)
             ? fileName
             : path.join(path.dirname(resource.fsPath), fileName); // Full file path
-        const resourceNewExt = vscode.Uri.file(filePath); // Resource URI with new file extension
+        const resourceNewExtension = vscode.Uri.file(filePath); // Resource URI with new file extension
 
         if (DEBUG) {
             console.log(`Opening Save Dialogue to: ${filePath}`);
@@ -326,8 +327,8 @@ export class PreviewManager {
 
         // Open save dialogue
         const savedUri = await vscode.window.showSaveDialog({
-            defaultUri: resourceNewExt,
-            filters: ExportExtForSave,
+            defaultUri: resourceNewExtension,
+            filters: ExportExtensionForSave,
         });
 
         // Return Uri
@@ -335,7 +336,10 @@ export class PreviewManager {
     }
 
     /** Returns if the current URI with arguments (output Y/N) can be opened */
-    private canOpenNewPreview(resource: vscode.Uri, args?: string[]): boolean {
+    private canOpenNewPreview(
+        resource: vscode.Uri,
+        arguments_?: string[]
+    ): boolean {
         // Make sure path to openscad.exe is valid
         if (!Preview.isValidScadPath) {
             if (DEBUG)
@@ -365,7 +369,7 @@ export class PreviewManager {
         else if (
             this.previewStore.get(
                 resource,
-                PreviewStore.getPreviewType(args)
+                PreviewStore.getPreviewType(arguments_)
             ) !== undefined
         ) {
             if (DEBUG)

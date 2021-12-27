@@ -99,7 +99,7 @@ export class Cheatsheet {
         // Clean up resources
         this._panel.dispose();
 
-        while (this._disposables.length) {
+        while (this._disposables.length > 0) {
             const x = this._disposables.pop();
             if (x) {
                 x.dispose;
@@ -220,21 +220,21 @@ export class Cheatsheet {
     /** True if there at least one open document of languageId `scad`? */
     private static isScadDocOpen(): boolean {
         const openDocs = vscode.workspace.textDocuments;
-        let isScadDocOpen = false;
+        let isScadDocumentOpen = false;
 
         // Iterate through open text documents
-        openDocs.forEach((doc) => {
-            if (this.isDocScad(doc))
+        for (const document of openDocs) {
+            if (this.isDocScad(document))
                 // If document is of type 'scad' return true
-                isScadDocOpen = true;
-        });
+                isScadDocumentOpen = true;
+        }
 
-        return isScadDocOpen;
+        return isScadDocumentOpen;
     }
 
     /** True if the current document languageId is `scad` */
-    private static isDocScad(doc: vscode.TextDocument): boolean {
-        const langId = doc.languageId;
+    private static isDocScad(document: vscode.TextDocument): boolean {
+        const langId = document.languageId;
         // vscode.window.showInformationMessage("Doc: " + doc.fileName + "\nLang id: " + langId); // DEBUG
         return langId === 'scad';
     }
@@ -243,13 +243,13 @@ export class Cheatsheet {
     private getStyleSheetUri(styleKey: string): vscode.Uri {
         // Get the filename of the given colorScheme
         // Thank you: https://blog.smartlogic.io/accessing-object-attributes-based-on-a-variable-in-typescript/
-        const styleSrc =
+        const styleSource =
             styleKey in colorScheme
                 ? colorScheme[styleKey as keyof typeof colorScheme]
                 : colorScheme['auto'];
 
         // Get style sheet URI
-        return vscode.Uri.joinPath(this._extensionPath, 'media', styleSrc);
+        return vscode.Uri.joinPath(this._extensionPath, 'media', styleSource);
         // ).with({ scheme: 'vscode-resource' });
         // if (DEBUG) console.log("Style" + styleUri); // DEBUG
     }
@@ -259,16 +259,16 @@ export class Cheatsheet {
      * @param stylesheetRef Key to lookup the desired stylesheet
      * @returns HTMLElement
      */
-    private getStyleSheetElement(stylesheetRef: string): HTMLElement {
+    private getStyleSheetElement(stylesheetReference: string): HTMLElement {
         const element = new HTMLElement('link', { id: '' }, '', null);
-        const attrs = {
+        const attributes = {
             type: 'text/css',
             rel: 'stylesheet',
-            href: stylesheetRef,
+            href: stylesheetReference,
             media: 'all',
         };
 
-        element.setAttributes(attrs);
+        element.setAttributes(attributes);
 
         return element;
     }
@@ -288,21 +288,21 @@ export class Cheatsheet {
 
         // Create html document using jsdom to assign new stylesheet
         const htmlDocument = parse(htmlContent);
-        const head = htmlDocument.getElementsByTagName('head')[0];
+        const head = htmlDocument.querySelectorAll('head')[0];
 
         // Remove existing styles
-        head.getElementsByTagName('link').forEach((element) => {
-            head.removeChild(element);
-        });
+        for (const element of head.querySelectorAll('link')) {
+            element.remove();
+        }
 
         // Get uri of stylesheet
-        const styleRef = this.getStyleSheetUri(styleKey).toString();
+        const styleReference = this.getStyleSheetUri(styleKey).toString();
 
         // Create new style element
-        const newStyle = this.getStyleSheetElement(styleRef);
+        const newStyle = this.getStyleSheetElement(styleReference);
 
         // Append style element
-        head.appendChild(newStyle);
+        head.append(newStyle);
 
         // Return document as html string
         return htmlDocument.toString();

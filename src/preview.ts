@@ -4,8 +4,8 @@
  * Stores a single instance of OpenSCAD
  *----------------------------------------------------------------------------*/
 
-import * as child from 'child_process';
-import { type } from 'os';
+import * as child from 'node:child_process';
+import { type } from 'node:os';
 import { ISignal, SignalDispatcher } from 'ste-signals';
 import * as vscode from 'vscode';
 
@@ -35,22 +35,22 @@ export class Preview {
     private constructor(
         fileUri: vscode.Uri,
         previewType?: PreviewType,
-        args?: string[] | undefined
+        arguments_?: string[] | undefined
     ) {
         // Set local arguments
         this._fileUri = fileUri;
         this._previewType = previewType ? previewType : 'view';
 
-        const commandArgs: string[] = args
-            ? args.concat(this._fileUri.fsPath)
+        const commandArguments: string[] = arguments_
+            ? arguments_.concat(this._fileUri.fsPath)
             : [this._fileUri.fsPath];
 
-        if (DEBUG) console.log(`commangArgs: ${commandArgs}`); // DEBUG
+        if (DEBUG) console.log(`commangArgs: ${commandArguments}`); // DEBUG
 
         // New process
         this._process = child.execFile(
             Preview._scadPath,
-            commandArgs,
+            commandArguments,
             (error, stdout, stderr) => {
                 // If there's an error
                 if (error) {
@@ -115,7 +115,7 @@ export class Preview {
     public static create(
         resource: vscode.Uri,
         previewType?: PreviewType,
-        args?: string[]
+        arguments_?: string[]
     ): Preview | undefined {
         // Error checking
         // Make sure scad path is defined
@@ -127,12 +127,14 @@ export class Preview {
 
         // If previewType is undefined, automatically assign it based on arguemnts
         if (!previewType)
-            previewType = args?.some((item) => ['-o', '--o'].includes(item))
+            previewType = arguments_?.some((item) =>
+                ['-o', '--o'].includes(item)
+            )
                 ? 'output'
                 : 'view';
 
         // New file
-        return new Preview(resource, previewType, args);
+        return new Preview(resource, previewType, arguments_);
     }
 
     /** Used to set the path to `openscad.exe` on the system. Necessary to open
@@ -148,7 +150,7 @@ export class Preview {
 
         // Verify 'openscad' command is valid
         Preview._isValidScadPath = false; // Set to false until can test if the command exists
-        commandExists(Preview._scadPath, (err: null, exists: boolean) => {
+        commandExists(Preview._scadPath, (error: null, exists: boolean) => {
             Preview._isValidScadPath = exists;
         });
     }
