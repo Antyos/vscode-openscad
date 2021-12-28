@@ -44,63 +44,36 @@ const nodeConfig: Configuration = {
             },
         ],
     },
+    performance: {
+        hints: false,
+    },
+    infrastructureLogging: {
+        level: 'log', // enables logging required for problem matchers
+    },
 };
 
 const browserConfig: Configuration = {
     // extensions run in a webworker context
+    ...nodeConfig,
     target: 'webworker',
-    mode: 'none',
     entry: {
         'extension-web': './src/web/extension-web.ts',
         // 'test/suite/index': './src/web/test/suite/index.ts',
     },
     output: {
-        filename: '[name].js',
+        ...nodeConfig.output,
         path: path.join(projectRoot, './dist/web'),
-        libraryTarget: 'commonjs',
         devtoolModuleFilenameTemplate: '../../[resource-path]',
     },
     resolve: {
+        ...nodeConfig.resolve,
         mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
-        extensions: ['.ts', '.js'], // support ts-files and js-files
-        alias: {
-            src: path.resolve(projectRoot, 'src'),
-        },
-        // fallback: {
-        //     // Webpack 5 no longer polyfills Node.js core modules automatically.
-        //     // see https://webpack.js.org/configuration/resolve/#resolvefallback
-        //     // for the list of Node.js core module polyfills.
-        //     // assert: require.resolve('assert'),
-        // },
-    },
-    module: {
-        rules: [
-            {
-                test: /\.ts$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'ts-loader',
-                    },
-                ],
-            },
-        ],
     },
     plugins: [
         new ProvidePlugin({
             process: 'process/browser', // provide a shim for the global `process` variable
         }),
     ],
-    externals: {
-        vscode: 'commonjs vscode', // ignored because it doesn't exist
-    },
-    performance: {
-        hints: false,
-    },
-    devtool: 'nosources-source-map', // create a source map that points to the original source file
-    infrastructureLogging: {
-        level: 'log', // enables logging required for problem matchers
-    },
 };
 
 // eslint-disable-next-line unicorn/prefer-module
