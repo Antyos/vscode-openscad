@@ -23,9 +23,9 @@ const nodeConfig: Configuration = {
     // Support reading TypeScript and JavaScript files. See: https://github.com/TypeStrong/ts-loader
     resolve: {
         extensions: ['.ts', '.js'],
-        // alias: {
-        //     debug: path.join(__dirname, 'polyfill', 'debug.js'),
-        // },
+        alias: {
+            src: path.resolve(projectRoot, 'src'),
+        },
     },
     // Modules that cannot be added through Webpack. See: https://webpack.js.org/configuration/externals/
     externals: {
@@ -63,9 +63,9 @@ const browserConfig: Configuration = {
     resolve: {
         mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
         extensions: ['.ts', '.js'], // support ts-files and js-files
-        // alias: {
-        //     // provides alternate implementation for node module and source files
-        // },
+        alias: {
+            src: path.resolve(projectRoot, 'src'),
+        },
         // fallback: {
         //     // Webpack 5 no longer polyfills Node.js core modules automatically.
         //     // see https://webpack.js.org/configuration/resolve/#resolvefallback
