@@ -5,8 +5,9 @@
  * the Cheatsheet webview panel.
  *----------------------------------------------------------------------------*/
 
-import { Cheatsheet } from 'src/common/cheatsheet/cheatsheet-panel';
 import * as vscode from 'vscode';
+
+import { Cheatsheet } from 'src/common/cheatsheet/cheatsheet-panel';
 
 /**
  * Register a command that is not supported in VS Code web.
