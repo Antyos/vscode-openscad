@@ -6,12 +6,14 @@
         "sourceType": "module"
     },
     "plugins": [
+        //
         "@typescript-eslint",
         "prettier",
         "import",
         "unicorn"
     ],
     "extends": [
+        //
         "vscode-ext",
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
@@ -29,8 +31,8 @@
                 "singleQuote": true
             }
         ],
-        "simple-import-sort/imports": "warn",
-        "simple-import-sort/exports": "warn",
+        // "simple-import-sort/imports": "warn",
+        // "simple-import-sort/exports": "warn",
         "no-trailing-spaces": "warn",
         "eol-last": ["warn", "always"],
         // node:protocol imports are supported in Node v16.0.0, v14.18.0.
@@ -38,5 +40,9 @@
         "unicorn/prefer-node-protocol": "off",
         "unicorn/import-style": "off"
     },
-    "ignorePatterns": ["**/*.d.ts", "dist/*"]
+    "ignorePatterns": [
+        //
+        "**/*.d.ts",
+        "dist/*"
+    ]
 }
