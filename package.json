@@ -38,8 +38,8 @@
         "onCommand:openscad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
-    "main": "./dist/node/extension-node.js",
-    "browser": "./dist/web/extension-web.js",
+    "main": "./dist/node/extension.node.js",
+    "browser": "./dist/web/extension.web.js",
     "contributes": {
         "commands": [
             {
