@@ -1,5 +1,6 @@
 import { HTMLElement, parse } from 'node-html-parser';
 import * as vscode from 'vscode';
+
 import { CheatsheetStyles } from './styles';
 
 /** Get HTML content of the OpenSCAD cheatsheet */
@@ -8,8 +9,6 @@ export class CheatsheetContent {
     private readonly _cheatsheetUri: vscode.Uri;
     /** HTMLElement of document */
     private _document?: HTMLElement;
-    /** Stored copy of the cheatsheet HTML document */
-    private _content?: string = undefined;
     /** The last key used to get the cheatsheet stylesheet */
     private _lastStyleKey?: string = undefined;
     /** Styles container */
@@ -23,12 +22,15 @@ export class CheatsheetContent {
     }
 
     /** Get cheatsheet HTML content. Stores HTML from lastStyleKey. */
-    public getContent(styleKey: string): Promise<string> {
+    public async getContent(styleKey: string): Promise<string> {
+        // Load cheatsheet if it hasn't been loaded yet
+        if (this._document === undefined) {
+            this._document = await this.getCheatsheetHTML().then((x) => x);
+        }
+
         // If the styleKey hasn't changed, return the stored copy of the document
-        if (styleKey === this._lastStyleKey && this._content) {
-            return new Promise<string>((resolve) => {
-                resolve(this._content || '');
-            });
+        if (styleKey === this._lastStyleKey) {
+            return this._document.toString();
         }
 
         // Update lastStyleKey. If we do this inside the next promise, we may
@@ -36,14 +38,66 @@ export class CheatsheetContent {
         // the promises can be resolved.
         this._lastStyleKey = styleKey;
 
-        // Get the new document
-        return new Promise((resolve) => {
-            this.getCheatsheetContent(styleKey).then((content) => {
-                // Store content for later
-                this._content = content;
-                resolve(content);
-            });
-        });
+        // Turn off all stylesheets
+        this.disableAllStylesheets();
+        this.enableStylesheet(styleKey);
+
+        // Return document content
+        return this._document.toString();
+    }
+
+    /**
+     * Disable all stylesheet links in `this._document`.
+     * Returns false if `this._document` is undefined.
+     */
+    public disableAllStylesheets(): boolean {
+        // Return if document is undefined
+        if (!this._document) {
+            return false;
+        }
+
+        // Get the stylesheet links. We need to cast to HTMLLinkElement so we
+        // can set the 'disabled' property.
+        const stylesheets = this._document.querySelectorAll(
+            'link[rel=stylesheet]'
+        );
+
+        // Set 'disabled' property of all stylesheets
+        for (const style of stylesheets) {
+            style.setAttribute('disabled', '');
+        }
+
+        return true;
+    }
+
+    /**
+     * Enable a stylesheet link by id from `this._document`.
+     * Returns false if `this._document` is undefined or no stylesheet exists
+     * with the passed id.
+     */
+    public enableStylesheet(id: string): boolean {
+        // Return if document is undefined
+        if (!this._document) {
+            return false;
+        }
+
+        // Get link element of stylesheet we want to enable
+        const linkElement = this._document.querySelector(
+            `link[rel=stylesheet][id=${id}]`
+        );
+
+        // Return false if element is undefined
+        if (!linkElement) {
+            return false;
+        }
+
+        // Remove disabled property
+        linkElement.removeAttribute('disabled');
+        return true;
+    }
+
+    public setStylesheet(id: string): boolean {
+        return this.disableAllStylesheets() && this.enableStylesheet(id);
     }
 
     /** The key used the last time getContent() was called */
@@ -66,7 +120,8 @@ export class CheatsheetContent {
             type: 'text/css',
             rel: 'stylesheet',
             href: href,
-            media: 'none', // We will turn on specific stylesheets later
+            media: 'all',
+            id: id || '',
         };
 
         element.setAttributes(attributes);
@@ -75,7 +130,7 @@ export class CheatsheetContent {
     }
 
     /** Get the cheatsheet html content for webview */
-    public async getCheatsheetContent(styleKey: string): Promise<string> {
+    private async getCheatsheetHTML(): Promise<HTMLElement> {
         // Read HTML from file
         const htmlContent = await vscode.workspace.fs
             .readFile(
@@ -105,6 +160,6 @@ export class CheatsheetContent {
         }
 
         // Return document as html string
-        return htmlDocument.toString();
+        return htmlDocument;
     }
 }
