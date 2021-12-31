@@ -40,7 +40,7 @@ export class CheatsheetStyles {
             ...Object.entries(STYLES).map(([styleKey, stylePath]) => {
                 return {
                     [styleKey]: vscode.Uri.joinPath(stylesUri, stylePath).with({
-                        scheme: 'vscode-resource',
+                        scheme: 'file',
                     }),
                 };
             })

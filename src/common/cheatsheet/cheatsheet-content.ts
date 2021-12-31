@@ -1,3 +1,6 @@
+// node-html-parser only has appendChild(), not append(); disable the warning.
+/* eslint-disable unicorn/prefer-dom-node-append */
+
 import { HTMLElement, parse } from 'node-html-parser';
 import * as vscode from 'vscode';
 
@@ -13,11 +16,15 @@ export class CheatsheetContent {
     private _lastStyleKey?: string = undefined;
     /** Styles container */
     private _cheatsheetStyles: CheatsheetStyles;
+    /** Content Security Policy */
+    private _csp: string;
+    private _webview: vscode.Webview;
 
-    public constructor(cheatsheetUri: vscode.Uri) {
+    public constructor(cheatsheetUri: vscode.Uri, webview: vscode.Webview) {
         this._cheatsheetUri = cheatsheetUri;
-
         this._cheatsheetStyles = new CheatsheetStyles(cheatsheetUri);
+        this._webview = webview;
+        this._csp = `default-src 'none'; style-src ${this._webview.cspSource};`;
     }
 
     /** Get cheatsheet HTML content. Stores HTML from lastStyleKey. */
@@ -128,35 +135,62 @@ export class CheatsheetContent {
         return element;
     }
 
+    /**
+     * Get a Content-Security-Policy element for the webview
+     *
+     * See:
+     *  - https://code.visualstudio.com/api/extension-guides/webview#content-security-policy
+     *  - https://developers.google.com/web/fundamentals/security/csp/
+     */
+    protected getCSPElement(): HTMLElement {
+        // eslint-disable-next-line unicorn/no-null
+        const element = new HTMLElement('meta', { id: '' }, '', null);
+
+        element.setAttributes({
+            'http-equiv': 'Content-Security-Policy',
+            content: this._csp,
+        });
+
+        return element;
+    }
+
     /** Get the cheatsheet html content for webview */
     private async getCheatsheetHTML(): Promise<HTMLElement> {
-        // Read HTML from file
-        const htmlContent = await vscode.workspace.fs
+        // Read and parse HTML from file
+        const htmlDocument = await vscode.workspace.fs
             .readFile(
                 vscode.Uri.joinPath(this._cheatsheetUri, 'cheatsheet.html')
             )
-            .then((content) => content.toString());
+            .then((content) => content.toString())
+            .then((content) => parse(content));
 
-        // Create html document using jsdom to assign new stylesheet
-        const htmlDocument = parse(htmlContent);
+        // Get document head
         const head = htmlDocument.querySelectorAll('head')[0];
 
-        // Remove existing styles
+        // Remove existing css
         for (const element of head.querySelectorAll('link')) {
             element.remove();
         }
 
+        // Add our css
         for (const styleKey of this._cheatsheetStyles) {
+            // Get Uri of stylesheet for webview
+            const styleUri = this._webview.asWebviewUri(
+                this._cheatsheetStyles.styles[styleKey]
+            );
+
             // Create new style element
             const newStyle = this.getStyleSheetElement(
-                this._cheatsheetStyles.styles[styleKey].toString(),
+                styleUri.toString(),
                 styleKey
             );
 
             // Append style element
-            // eslint-disable-next-line unicorn/prefer-dom-node-append
             head.appendChild(newStyle);
         }
+
+        // Add CSP
+        head.appendChild(this.getCSPElement());
 
         // Return document as html string
         return htmlDocument;

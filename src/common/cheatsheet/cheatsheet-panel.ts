@@ -6,7 +6,7 @@
 
 import * as vscode from 'vscode';
 
-import { ScadConfig } from '../config';
+import { ScadConfig } from 'src/common/config';
 import { CheatsheetContent } from './cheatsheet-content';
 
 /**
@@ -52,7 +52,7 @@ export class Cheatsheet {
             {
                 // Only allow webview to access certain directory
                 localResourceRoots: [
-                    vscode.Uri.joinPath(extensionPath, 'media'),
+                    vscode.Uri.joinPath(extensionPath, 'media', 'cheatsheet'),
                 ],
                 // Disable scripts
                 // (defaults to false, but no harm in explcit declaration)
@@ -86,7 +86,8 @@ export class Cheatsheet {
 
         // Cheatsheet content
         this.cheatsheetContent = new CheatsheetContent(
-            vscode.Uri.joinPath(extensionUri, 'media', 'cheatsheet')
+            vscode.Uri.joinPath(extensionUri, 'media', 'cheatsheet'),
+            this._panel.webview
         );
 
         // Set HTML content
