@@ -11,8 +11,8 @@ import * as vscode from 'vscode';
  * Available css styles for Cheatsheet. Paths are relative to [extensionUri].
  */
 export const STYLES = {
-    auto: 'media/cheatsheet/cheatsheet-auto.css',
-    original: 'media/cheatsheet/cheatsheet-original.css',
+    auto: 'cheatsheet-auto.css',
+    original: 'cheatsheet-original.css',
 };
 
 type StyleKey = keyof typeof STYLES;
@@ -29,7 +29,7 @@ export class CheatsheetStyles {
         yield* Object.keys(this.styles) as StyleKey[];
     }
 
-    public constructor(extensionUri: vscode.Uri) {
+    public constructor(stylesUri: vscode.Uri) {
         // Map STYLES to Uris relative to `extensionUri`.
         //
         // Note: because we are compiling to ES6, we can't use
@@ -39,7 +39,9 @@ export class CheatsheetStyles {
             {},
             ...Object.entries(STYLES).map(([styleKey, stylePath]) => {
                 return {
-                    [styleKey]: vscode.Uri.joinPath(extensionUri, stylePath),
+                    [styleKey]: vscode.Uri.joinPath(stylesUri, stylePath).with({
+                        scheme: 'vscode-resource',
+                    }),
                 };
             })
         );

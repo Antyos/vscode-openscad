@@ -17,7 +17,6 @@ export class CheatsheetContent {
     public constructor(cheatsheetUri: vscode.Uri) {
         this._cheatsheetUri = cheatsheetUri;
 
-        // ! This is WRONG. We need extensionUri, but I'm lazy right now.
         this._cheatsheetStyles = new CheatsheetStyles(cheatsheetUri);
     }
 
