@@ -161,11 +161,19 @@ export class CheatsheetContent {
             .readFile(
                 vscode.Uri.joinPath(this._cheatsheetUri, 'cheatsheet.html')
             )
-            .then((content) => content.toString())
-            .then((content) => parse(content));
+            .then((uint8array) => {
+                const fileContent = new TextDecoder().decode(uint8array);
+                // console.log(fileContent.toString());
+                return parse(fileContent.toString());
+            });
 
         // Get document head
-        const head = htmlDocument.querySelectorAll('head')[0];
+        const head = htmlDocument.querySelector('head');
+
+        // ! FIXME
+        if (!head) {
+            throw 'No head found';
+        }
 
         // Remove existing css
         for (const element of head.querySelectorAll('link')) {
