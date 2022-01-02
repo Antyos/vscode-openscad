@@ -1,28 +1,9 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "es6",
-        "outDir": "dist",
-        "lib": [
-            //
-            "es6",
-            "WebWorker",
-        ],
-        "sourceMap": true,
-        "rootDir": "src",
-        "strict": true,
-        "paths": {
-            "src/*": ["./src/*"],
-        },
-    },
-    "include": [
-        //
-        "src/**/*",
-    ],
-    "exclude": [
-        //
-        "node_modules",
-        ".vscode-test",
-        ".vscode-test-web",
+    "extends": "./tsconfig.base.json",
+    "files": [],
+    "references": [
+        { "path": "./src/common/tsconfig.json" },
+        { "path": "./src/node/tsconfig.json" },
+        { "path": "./src/web/tsconfig.json" },
     ],
 }
