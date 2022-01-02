@@ -7,7 +7,11 @@
     "endOfLine": "auto",
     "overrides": [
         {
-            "files": ["**/.vscode/*.json", "**/tsconfig.json"],
+            "files": [
+                "**/.vscode/*.json",
+                "**/tsconfig.json",
+                "**/tsconfig.*.json"
+            ],
             "options": {
                 "tabWidth": 4,
                 "parser": "json5",

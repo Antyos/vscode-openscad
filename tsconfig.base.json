@@ -10,14 +10,15 @@
         "rootDir": "src",
         "baseUrl": ".",
         "paths": {
-            "src/*": ["./src/*"]
+            "src/*": ["./src/*"],
         },
-        "composite": true
+        "composite": true,
     },
     "exclude": [
         //
         "node_modules",
         ".vscode-test",
-        ".vscode-test-web"
-    ]
+        ".vscode-test-web",
+        "dist",
+    ],
 }
