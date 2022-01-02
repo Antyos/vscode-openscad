@@ -111,15 +111,14 @@ export class VariableResolver {
         console.log('Testing evaluateSingleVariable()...');
 
         for (const variable of this._variables) {
-            if (DEBUG)
-                console.log(
-                    `${variable} : ${this.evaluateSingleVariable(
-                        '${' + variable + '}',
-                        variable,
-                        resource,
-                        'test'
-                    )}`
-                );
+            console.log(
+                `${variable} : ${this.evaluateSingleVariable(
+                    '${' + variable + '}',
+                    variable,
+                    resource,
+                    'test'
+                )}`
+            );
         }
     }
 
