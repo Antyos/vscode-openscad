@@ -2,6 +2,7 @@
 /* eslint-disable unicorn/prefer-dom-node-append */
 
 import { HTMLElement, parse } from 'node-html-parser';
+import { TextDecoder } from 'util'; // node:util
 import * as vscode from 'vscode';
 
 import { CheatsheetStyles } from './styles';

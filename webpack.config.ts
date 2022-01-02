@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import * as path from 'node:path';
 import { Configuration, ProvidePlugin } from 'webpack';
 
