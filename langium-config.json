@@ -1,0 +1,13 @@
+{
+    "projectName": "OpenScad",
+    "languages": [
+        {
+            "id": "open-scad",
+            "grammar": "src/language-server/open-scad.langium",
+            "fileExtensions": [
+                ".scad"
+            ]
+        }
+    ],
+    "out": "src/language-server/generated"
+}
