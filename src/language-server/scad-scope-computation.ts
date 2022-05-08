@@ -1,8 +1,8 @@
 import { AstNode, AstNodeDescription, DefaultScopeComputation, LangiumDocument, MultiMap, PrecomputedScopes } from 'langium';
 import { CancellationToken } from 'vscode-jsonrpc';
-import { Assignment, OpenScadAstType, ModuleDefinition, FunctionDefinition, BlockStatement, Expr_InlineFunctionDefinition } from './generated/ast';
+import { Assignment, ScadAstType, ModuleDefinition, FunctionDefinition, BlockStatement, Expr_InlineFunctionDefinition } from './generated/ast';
 
-export class OpenScadScopeComputation extends DefaultScopeComputation {
+export class ScadScopeComputation extends DefaultScopeComputation {
 
     override async computeScope(document: LangiumDocument, cancelToken = CancellationToken.None): Promise<PrecomputedScopes> {
         const scopes = await super.computeScope(document, cancelToken);
@@ -22,7 +22,7 @@ export class OpenScadScopeComputation extends DefaultScopeComputation {
     }
 
     protected override processNode(node: AstNode, document: LangiumDocument, scopes: PrecomputedScopes): void {
-        switch (node.$type as OpenScadAstType) {
+        switch (node.$type as ScadAstType) {
             case 'VariableDefinition':
                 // variable Definitions are handled by the containing nodes
                 return;
@@ -33,7 +33,7 @@ export class OpenScadScopeComputation extends DefaultScopeComputation {
                 {
                     // attach the parameters of modules and functions
                     const definition = node as ModuleDefinition | FunctionDefinition | Expr_InlineFunctionDefinition;
-                    definition.params.params.forEach(p =>
+                    definition.params?.params?.forEach(p =>
                         scopes.add(definition, this.descriptions.createDescription(p.var, p.var.name, document)));
                 }
                 break;

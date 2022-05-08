@@ -1,12 +1,13 @@
 
 import { LangiumDocument, AstNode, AstNodeDescription, AstReflection, getDocument, IndexManager, LangiumServices, Scope, ScopeProvider, stream, Stream, StreamScope, MultiMap, streamContents } from 'langium';
+import { resolve } from 'path';
 import { Use, Include, ModuleDefinition, FunctionDefinition, VariableDefinition, isPrimary, Primary, Expr, isExpr, isPrimary_Parentheses } from './generated/ast';
 
-export class OpenScadScopeProvider implements ScopeProvider {
+export class ScadScopeProvider implements ScopeProvider {
     protected readonly reflection: AstReflection;
     protected readonly indexManager: IndexManager;
 
-    constructor(services: LangiumServices) {
+    constructor(private extensionPath: string, services: LangiumServices) {
         this.reflection = services.shared.AstReflection;
         this.indexManager = services.shared.workspace.IndexManager;
     }
@@ -58,26 +59,41 @@ export class OpenScadScopeProvider implements ScopeProvider {
 
         }
 
+        const referenceTypes = [referenceType, ...includeFunctions ? [FunctionDefinition] : []];
+
         if (precomputed) {
             let currentNode: AstNode | undefined = node;
             do {
                 const allDescriptions = precomputed.get(currentNode);
                 if (allDescriptions.length > 0) {
                     scopes.push(stream(allDescriptions).filter(
-                        desc =>
-                            this.reflection.isSubtype(desc.type, referenceType)
-                            || (includeFunctions && desc.type === FunctionDefinition)
+                        desc => referenceTypes.some(referenceType => this.reflection.isSubtype(desc.type, referenceType))
                     ));
                 }
                 currentNode = currentNode.$container;
             } while (currentNode);
         }
 
-        let result: Scope = this.getGlobalScope(node, document, referenceType);
+        const builtinScope = this.createBuiltinScope(referenceTypes);
+
+        let result: Scope = this.getGlobalScope(node, document, referenceTypes, builtinScope);
         for (let i = scopes.length - 1; i >= 0; i--) {
             result = this.createScope(scopes[i], result);
         }
         return result;
+    }
+
+    private flatMap<T, R>(array: T[], f: (item: T) => Stream<R>): R[] {
+        const result: R[] = [];
+        array.forEach(item => f(item).forEach(r => result.push(r)));
+        return result;
+    }
+
+    private createBuiltinScope(referenceTypes: string[]): Scope {
+        return new StreamScope(
+            stream(referenceTypes)
+                .flatMap(referenceType => this.indexManager.allElements(referenceType))
+                .filter(x => x.documentUri.fsPath.startsWith(resolve(this.extensionPath, 'builtin'))));
     }
 
     /**
@@ -90,7 +106,7 @@ export class OpenScadScopeProvider implements ScopeProvider {
     /**
      * Create a global scope filtered for the given reference type.
      */
-    protected getGlobalScope(node: AstNode, document: LangiumDocument<AstNode>, referenceType: string): Scope {
+    protected getGlobalScope(node: AstNode, document: LangiumDocument<AstNode>, referenceTypes: string[], builtinScope: Scope): Scope {
         const documentUriString = document.uri.toString();
 
         const useFiles = new Set<string>(this.indexManager.allElements(Use).filter(x => x.documentUri.toString() === documentUriString).map(x => x.name));
@@ -98,7 +114,7 @@ export class OpenScadScopeProvider implements ScopeProvider {
         const includeMap = new MultiMap<string, string>();
         this.indexManager.allElements(Include).forEach(x => includeMap.add(x.documentUri.fsPath, x.name));
 
-        const includeFiles = new Set<string>(document.uri.fsPath);
+        const includeFiles = new Set<string>([document.uri.fsPath]);
         {
             const border = [document.uri.fsPath]
             while (border.length > 0) {
@@ -109,14 +125,14 @@ export class OpenScadScopeProvider implements ScopeProvider {
             }
         }
         return new StreamScope(
-            this.indexManager
-                .allElements(referenceType)
+            stream(referenceTypes)
+                .flatMap(referenceType => this.indexManager.allElements(referenceType))
                 .filter(element => {
                     const fsPath = element.documentUri.fsPath;
                     return includeFiles.has(fsPath) || (
                         // only modules and functions are exported using use
                         [ModuleDefinition, FunctionDefinition].indexOf(element.type) != -1
                         && useFiles.has(fsPath));
-                }));
+                }), builtinScope);
     }
 }

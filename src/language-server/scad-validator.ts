@@ -1,20 +1,20 @@
 import { /*ValidationAcceptor,*/ ValidationCheck, ValidationRegistry } from 'langium';
-import { OpenScadAstType } from './generated/ast';
-import type { OpenScadServices } from './open-scad-module';
+import { ScadAstType } from './generated/ast';
+import type { ScadServices } from './scad-module';
 
 /**
  * Map AST node types to validation checks.
  */
-type OpenScadChecks = { [type in OpenScadAstType]?: ValidationCheck | ValidationCheck[] }
+type ScadChecks = { [type in ScadAstType]?: ValidationCheck | ValidationCheck[] }
 
 /**
  * Registry for validation checks.
  */
-export class OpenScadValidationRegistry extends ValidationRegistry {
-    constructor(services: OpenScadServices) {
+export class ScadValidationRegistry extends ValidationRegistry {
+    constructor(services: ScadServices) {
         super(services);
         const validator = services.validation.OpenScadValidator;
-        const checks: OpenScadChecks = {
+        const checks: ScadChecks = {
             // Person: validator.checkPersonStartsWithCapital
         };
         this.register(checks, validator);
@@ -24,7 +24,7 @@ export class OpenScadValidationRegistry extends ValidationRegistry {
 /**
  * Implementation of custom validations.
  */
-export class OpenScadValidator {
+export class ScadValidator {
 
     // checkPersonStartsWithCapital(person: Person, accept: ValidationAcceptor): void {
     //     if (person.name) {

@@ -1,4 +1,4 @@
-grammar OpenScad
+grammar Scad
 
 entry Input: statements+=Statement*; 
 Statement: 
@@ -90,7 +90,7 @@ terminal MODULE: /module/;
 terminal IF: /if/;
 terminal ELSE: /else/;
 
-terminal NUMBER returns number: /[0-9]+/;
+terminal NUMBER returns number: /([0-9]+(\.[0-9]*)?|\.[0-9]+)(e[+-]?[0-9]+)?/;
 terminal ID: /\$?[a-zA-Z0-9_]+/;
 terminal STRING: /"[^"]*"|'[^']*'/;
 terminal FILE_REFERENCE: /\<[^>]*\>/;

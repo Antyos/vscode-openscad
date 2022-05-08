@@ -3,7 +3,7 @@ import { CompletionItem, CompletionItemKind } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { ModuleDefinition } from "./generated/ast";
 
-export class OpenScadCompletionProvider extends DefaultCompletionProvider {
+export class ScadCompletionProvider extends DefaultCompletionProvider {
     protected override   completionForKeyword(keyword: Keyword, context: AstNode | undefined, acceptor: CompletionAcceptor): void {
         return;
         // super.completionForKeyword(keyword, context, acceptor);

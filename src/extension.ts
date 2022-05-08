@@ -133,8 +133,8 @@ function startLanguageClient(context: vscode.ExtensionContext): LanguageClient {
     // If the extension is launched in debug mode then the debug server options are used
     // Otherwise the run options are used
     const serverOptions: ServerOptions = {
-        run: { module: serverModule, transport: TransportKind.ipc },
-        debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
+        run: { module: serverModule, transport: TransportKind.ipc, args: [context.extensionPath] },
+        debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions, args: [context.extensionPath] }
     };
 
     const fileSystemWatcher = vscode.workspace.createFileSystemWatcher('**/*.scad');
