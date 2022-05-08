@@ -49,19 +49,20 @@ Multiplication: expr+=Unary (('*'|'/'|'%') expr+=Unary)*;
 Unary: ('+'|'-'|'!')* expr=Exponent; 
 Exponent: call=Call ('^' unary=Unary)?; 
 Call: part+=Primary (
-    '(' args+=Arguments ')' 
+    call=Call_Function
     | '[' expr+=Expr ']'
     | '.' id+=ID
 )*; 
+Call_Function: '(' args+=Arguments ')' ;
 
 Primary:
 'true'|'false'|'undef'|number=NUMBER|string=STRING|var=[VariableDefinition]
-| '(' expr+=Expr ')'
+| paren=Primary_Parentheses
 | '[' (
      expr+=Expr ':' expr+=Expr (':' expr+=Expr)? // range 
      | v+=ListComprehensionElementP (',' v+=ListComprehensionElementP)* ','?
 )? ']' ; 
-
+Primary_Parentheses: '(' expr+=Expr ')';
 
 ListComprehensionElementP: e=ListComprehensionElement | '(' e=ListComprehensionElement ')'; 
 ListComprehensionElement:
