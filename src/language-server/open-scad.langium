@@ -36,10 +36,10 @@ SingleModuleInstantiation: id=ModuleId '(' args=Arguments ')' ;
 
 Expr: 
     or=LogicOr ('?' trueExpr=Expr ':' falseExpr=Expr)?
-    | FUNCTION '(' params=Parameters ')' expr=Expr
+    | inline=Expr_InlineFunctionDefinition
     | LET '(' args=Arguments ')' (expr=Expr|lc=ListComprehensionElementP)
     | (ASSERT|ECHO) '(' args=Arguments ')' expr=Expr? ; 
-
+Expr_InlineFunctionDefinition: FUNCTION '(' params=Parameters ')' expr=Expr;
 LogicOr: expr+=LogicAnd ('||' expr+=LogicAnd )*; 
 LogicAnd: expr+= Equality ('&&' expr+=Equality)*; 
 Equality: expr+=Comparison (('='|'!=') expr+=Comparison)*; 

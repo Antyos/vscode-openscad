@@ -1,6 +1,6 @@
 import { AstNode, AstNodeDescription, DefaultScopeComputation, LangiumDocument, MultiMap, PrecomputedScopes } from 'langium';
 import { CancellationToken } from 'vscode-jsonrpc';
-import { Assignment, OpenScadAstType, ModuleDefinition, FunctionDefinition, BlockStatement } from './generated/ast';
+import { Assignment, OpenScadAstType, ModuleDefinition, FunctionDefinition, BlockStatement, Expr_InlineFunctionDefinition } from './generated/ast';
 
 export class OpenScadScopeComputation extends DefaultScopeComputation {
 
@@ -29,13 +29,15 @@ export class OpenScadScopeComputation extends DefaultScopeComputation {
 
             case 'ModuleDefinition':
             case 'FunctionDefinition':
+            case 'Expr_InlineFunctionDefinition':
                 {
                     // attach the parameters of modules and functions
-                    const definition = node as ModuleDefinition | FunctionDefinition;
+                    const definition = node as ModuleDefinition | FunctionDefinition | Expr_InlineFunctionDefinition;
                     definition.params.params.forEach(p =>
                         scopes.add(definition, this.descriptions.createDescription(p.var, p.var.name, document)));
                 }
                 break;
+
             case 'Assignment':
                 {
                     // the variable definition of assignments are attached to the container
