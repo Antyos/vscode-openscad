@@ -1,15 +1,17 @@
 
-import { LangiumDocument, AstNode, AstNodeDescription, AstReflection, getDocument, IndexManager, LangiumServices, Scope, ScopeProvider, stream, Stream, StreamScope, MultiMap, streamContents } from 'langium';
+import { LangiumDocument, AstNode, AstNodeDescription, AstReflection, getDocument, IndexManager, LangiumServices, Scope, ScopeProvider, stream, Stream, StreamScope, MultiMap, streamContents, EMPTY_SCOPE, AstNodeDescriptionProvider } from 'langium';
 import { resolve } from 'path';
-import { Use, Include, ModuleDefinition, FunctionDefinition, VariableDefinition, isPrimary, Primary, Expr, isExpr, isPrimary_Parentheses } from './generated/ast';
+import { isFunctionDefinition, Use, Include, ModuleDefinition, FunctionDefinition, VariableDefinition, isPrimary, Primary, Expr, isExpr, isPrimary_Parentheses, ParameterDefinition, isArgument, isCall_Function, isSingleModuleInstantiation, isListComprehensionElement_For } from './generated/ast';
 
 export class ScadScopeProvider implements ScopeProvider {
     protected readonly reflection: AstReflection;
     protected readonly indexManager: IndexManager;
+    protected readonly descriptionProvider: AstNodeDescriptionProvider;
 
-    constructor(private extensionPath: string, services: LangiumServices) {
+    constructor(private extensionPath: string | undefined, services: LangiumServices) {
         this.reflection = services.shared.AstReflection;
         this.indexManager = services.shared.workspace.IndexManager;
+        this.descriptionProvider = services.index.AstNodeDescriptionProvider;
     }
 
     /**
@@ -29,11 +31,75 @@ export class ScadScopeProvider implements ScopeProvider {
         return undefined;
     }
 
+    private getPrimaryIfDirect(node: Expr): Primary | undefined {
+        let current: AstNode | undefined = node;
+        while (current !== undefined) {
+            if (isPrimary(current)) {
+                return current;
+            }
+
+            const contents = streamContents(current).toArray();
+            if (contents.length !== 1)
+                return undefined;
+
+            current = contents[0];
+        }
+        return undefined;
+    }
+
     getScope(node: AstNode, referenceId: string): Scope {
         const scopes: Array<Stream<AstNodeDescription>> = [];
         const referenceType = this.reflection.getReferenceType(referenceId);
         const document = getDocument(node);
         const precomputed = document.precomputedScopes;
+
+
+        if (referenceType === ParameterDefinition && isArgument(node)) {
+            if (precomputed === undefined) {
+                return EMPTY_SCOPE;
+            }
+            // parameter definitions are a separate story
+
+            // search the corresponding module or function
+            const c = node.$container.$container;
+            if (isCall_Function(c)) {
+                // determine called function
+                let primary = c.$container.target;
+                while (primary.paren !== undefined) {
+                    const tmp = this.getPrimaryIfDirect(primary.paren.expr);
+                    if (tmp === undefined)
+                        return EMPTY_SCOPE;
+                    primary = tmp;
+                }
+                const variable = primary.var;
+                if (variable === undefined)
+                    return EMPTY_SCOPE;
+                const func = variable.ref;
+                if (func === undefined || !isFunctionDefinition(func)) {
+                    return EMPTY_SCOPE;
+                }
+                // return parameter definitions of function
+                return new StreamScope(stream(func.params.params.map(p => this.descriptionProvider.createDescription(p.def, p.def.name))));
+            }
+            else if (isSingleModuleInstantiation(c)) {
+                // determine the module
+                if (c.id.id?.ref !== undefined) {
+                    const module = c.id.id.ref;
+                    if (module === undefined)
+                        return EMPTY_SCOPE;
+
+                    return new StreamScope(stream(module.params.params.map(p => this.descriptionProvider.createDescription(p.def, p.def.name))));
+                }
+            }
+            else if (isListComprehensionElement_For(c)) {
+                // TODO
+            }
+            else throw 'Not Supported: ' + (c as any).$type;
+
+            // extract from the parameters
+
+
+        }
 
         let includeFunctions = false;
         if (referenceType === VariableDefinition && isPrimary(node)) {
@@ -90,10 +156,13 @@ export class ScadScopeProvider implements ScopeProvider {
     }
 
     private createBuiltinScope(referenceTypes: string[]): Scope {
+        const extensionPath = this.extensionPath;
+        if (extensionPath === undefined)
+            return EMPTY_SCOPE;
         return new StreamScope(
             stream(referenceTypes)
                 .flatMap(referenceType => this.indexManager.allElements(referenceType))
-                .filter(x => x.documentUri.fsPath.startsWith(resolve(this.extensionPath, 'builtin'))));
+                .filter(x => x.documentUri.fsPath.startsWith(resolve(extensionPath, 'builtin'))));
     }
 
     /**

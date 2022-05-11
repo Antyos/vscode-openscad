@@ -366,10 +366,13 @@
         "watch": "tsc -watch -p ./",
         "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json",
         "langium:generate": "langium generate",
-        "langium:watch": "langium generate --watch"
+        "langium:watch": "langium generate --watch",
+        "test": "jest",
+        "test:watch": "jest --watch"
     },
     "devDependencies": {
         "@types/command-exists": "^1.2.0",
+        "@types/jest": "^27.5.0",
         "@types/jsdom": "^16.2.14",
         "@types/node": "^12.12.6",
         "@types/vscode": "^1.44.0",
@@ -379,8 +382,11 @@
         "eslint-config-prettier": "^7.2.0",
         "eslint-config-vscode-ext": "^1.0.0",
         "eslint-plugin-prettier": "^3.4.0",
+        "jest": "^28.1.0",
         "js-yaml": "^3.14.1",
         "prettier": "^2.3.0",
+        "ts-jest": "^28.0.2",
+        "ts-node": "^10.7.0",
         "typescript": "^4.6.4",
         "vsce": "^1.88.0"
     },

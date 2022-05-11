@@ -1,0 +1,13 @@
+{
+    "preset": "ts-jest",
+    "roots": [
+        "<rootDir>/test"
+    ],
+    "collectCoverageFrom": [
+        "packages/langium/src/**/{!(generated),}/*"
+    ],
+    "testEnvironment": "node",
+    "snapshotFormat": {
+        "maxDepth": 1
+    }
+}

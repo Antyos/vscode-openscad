@@ -37,8 +37,12 @@ SingleModuleInstantiation: id=ModuleId '(' args=Arguments ')' ;
 Expr: 
     or=LogicOr ('?' trueExpr=Expr ':' falseExpr=Expr)?
     | inline=Expr_InlineFunctionDefinition
-    | LET '(' args=Arguments ')' (expr=Expr|lc=ListComprehensionElementP)
-    | (ASSERT|ECHO) '(' args=Arguments ')' expr=Expr? ; 
+    | LET '(' let=Expr_LetFirst
+    | assertEcho=Expr_AssertEcho; 
+Expr_AssertEcho: (ASSERT|ECHO) '(' ((ID '=' )? expr+=Expr)* ')' expr+=Expr?;
+Expr_LetFirst:  var=VariableDefinition '=' varExpr=Expr inner=Expr_Let| end=Expr_LetEnd;
+Expr_Let:  ',' var=VariableDefinition '=' varExpr=Expr inner=Expr_Let | end=Expr_LetEnd;
+Expr_LetEnd:  ')' (body=Expr|bodyLc=ListComprehensionElementP);
 Expr_InlineFunctionDefinition: FUNCTION '(' params=Parameters ')' expr=Expr;
 LogicOr: expr+=LogicAnd ('||' expr+=LogicAnd )*; 
 LogicAnd: expr+= Equality ('&&' expr+=Equality)*; 
@@ -48,10 +52,10 @@ Addition: expr+=Multiplication (('+'|'-') expr+=Multiplication)*;
 Multiplication: expr+=Unary (('*'|'/'|'%') expr+=Unary)*;
 Unary: ('+'|'-'|'!')* expr=Exponent; 
 Exponent: call=Call ('^' unary=Unary)?; 
-Call: part+=Primary (
+Call: target=Primary (
     call=Call_Function
-    | '[' expr+=Expr ']'
-    | '.' id+=ID
+    | '[' expr=Expr ']'
+    | '.' axis=ID
 )*; 
 Call_Function: '(' args+=Arguments ')' ;
 
@@ -62,21 +66,25 @@ Primary:
      expr+=Expr ':' expr+=Expr (':' expr+=Expr)? // range 
      | v+=ListComprehensionElementP (',' v+=ListComprehensionElementP)* ','?
 )? ']' ; 
-Primary_Parentheses: '(' expr+=Expr ')';
+Primary_Parentheses: '(' expr=Expr ')';
 
 ListComprehensionElementP: e=ListComprehensionElement | '(' e=ListComprehensionElement ')'; 
 ListComprehensionElement:
     EACH v+=ListComprehensionElementOrExpr
-    | FOR '(' args=Arguments (';' expr=Expr ';' args2=Arguments)? ')' v+=ListComprehensionElementOrExpr
+    | for=ListComprehensionElement_For
     | IF '(' expr=Expr ')' v+=ListComprehensionElementOrExpr ( ELSE v+= ListComprehensionElementOrExpr) ; 
-
+ListComprehensionElement_For: FOR '(' args=Arguments (';' expr=Expr ';' args2=Arguments)? ')' v+=ListComprehensionElementOrExpr;
 ListComprehensionElementOrExpr: elements=ListComprehensionElementP | expr=Expr;
 
 Parameters: (params+=Parameter (',' params+=Parameter)* ','?)?; 
-Parameter: var=VariableDefinition ('=' defaultExpr=Expr)?; 
+Parameter: def=ParameterDefinition ('=' defaultExpr=Expr)?; 
+
+// Definition/name of a parameter. This is referenced from module/function calls. In addition, it is 
+// registered as VariableDefinition for the corresponding module/function body
+ParameterDefinition: name=ID; 
 
 Arguments: (args+=Argument (',' args+=Argument)* ','?)?; 
-Argument: (paramName=[VariableDefinition] '=' )? expr=Expr; 
+Argument: (param=[ParameterDefinition] '=' )? expr=Expr; 
 
 hidden terminal WS: /\s+/;
 

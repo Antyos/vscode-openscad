@@ -30,7 +30,7 @@ export type ScadServices = LangiumServices & ScadAddedServices
  * declared custom services. The Langium defaults can be partially specified to override only
  * selected services, while the custom services must be fully specified.
  */
-export const OpenScadModule: (extensionPath: string) => Module<ScadServices, PartialLangiumServices & ScadAddedServices> = extensionPath => ({
+export const ScadModule: (extensionPath: string | undefined) => Module<ScadServices, PartialLangiumServices & ScadAddedServices> = extensionPath => ({
     index: {
         AstNodeDescriptionProvider: services => new ScadAstNodeDescriptionProvider(services)
     },
@@ -64,24 +64,24 @@ export const OpenScadModule: (extensionPath: string) => Module<ScadServices, Par
  * @param context Optional module context with the LSP connection
  * @returns An object wrapping the shared services and the language-specific services
  */
-export function createScadServices(extensionPath: string, context?: DefaultSharedModuleContext): {
+export function createScadServices(extensionPath: string | undefined, context?: DefaultSharedModuleContext): {
     shared: LangiumSharedServices,
-    OpenScad: ScadServices
+    Scad: ScadServices
 } {
     const shared = inject(
         createDefaultSharedModule(context),
         ScadGeneratedSharedModule,
         {
             workspace: {
-                WorkspaceManager: context => new ScadWorkspaceManager(extensionPath, context)
+                WorkspaceManager: context => new ScadWorkspaceManager(context, extensionPath)
             }
         }
     );
-    const OpenScad = inject(
+    const Scad = inject(
         createDefaultModule({ shared }),
         ScadGeneratedModule,
-        OpenScadModule(extensionPath),
+        ScadModule(extensionPath),
     );
-    shared.ServiceRegistry.register(OpenScad);
-    return { shared, OpenScad };
+    shared.ServiceRegistry.register(Scad);
+    return { shared, Scad };
 }

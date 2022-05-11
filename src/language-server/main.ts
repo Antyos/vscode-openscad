@@ -5,9 +5,6 @@ import { createScadServices } from './scad-module';
 // Create a connection to the client
 const connection = createConnection(ProposedFeatures.all);
 
-console.log("args");
-process.argv.forEach(arg => console.log("arg", arg));
-
 // Inject the shared services and language-specific services
 const { shared } = createScadServices(process.argv[2], { connection });
 
