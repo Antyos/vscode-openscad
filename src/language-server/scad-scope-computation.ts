@@ -14,7 +14,7 @@ export class ScadScopeComputation extends DefaultScopeComputation {
         scopes.keys().forEach(node => {
             let target = node;
             // move definitions of nested block statements up
-            if (node.$type == BlockStatement) {
+            if (node?.$type == BlockStatement) {
                 while (target.$container?.$type === BlockStatement) {
                     target = target.$container;
                 }
