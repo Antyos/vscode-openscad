@@ -22,7 +22,12 @@ Assignment: var=VariableDefinition '=' exp=Expr ';' ;
 // definition of any variable (assignment, parameter). This will be referenced from expressions
 VariableDefinition: name=ID; 
 
-ModuleInstantiation: ('!'|'#'|'%'|'*')* module=SingleModuleInstantiation child=ChildStatement | ifElse=IfelseStatement; 
+ModuleInstantiation: ('!'|'#'|'%'|'*')* (
+    module=SingleModuleInstantiation child=ChildStatement 
+    | ECHO '('( (ID '=' )?expr+=Expr (',' (ID '=' )? expr+=Expr)*)? ')' ';'
+    | ASSERT '(' expr=Expr (',' STRING)? ')' ';'
+    | ifElse=IfelseStatement
+); 
 IfelseStatement: ifStmt=IfStatement (ELSE elseBranch=ChildStatement)?; 
 IfStatement: IF '(' condition=Expr ')' body=ChildStatement; 
 
@@ -30,9 +35,9 @@ ChildStatement: ';' | block=ChildBlock | module=ModuleInstantiation;
 ChildBlock:'{' stmts+=ChildBlockStatement*  '}';
 ChildBlockStatement: ChildStatement | Assignment;
 
-ModuleId: id=[ModuleDefinition]|FOR|LET|ASSERT|ECHO|EACH; 
+ModuleId: id=[ModuleDefinition]|FOR|LET|EACH; 
 
-SingleModuleInstantiation: id=ModuleId '(' args=Arguments ')' ;
+SingleModuleInstantiation: id=ModuleId '(' args=Arguments ')';
 
 Expr: 
     or=LogicOr ('?' trueExpr=Expr ':' falseExpr=Expr)?
@@ -62,10 +67,13 @@ Call_Function: '(' args+=Arguments ')' ;
 Primary:
 'true'|'false'|'undef'|number=NUMBER|string=STRING|var=[VariableDefinition]
 | paren=Primary_Parentheses
-| '[' (
-     expr+=Expr ':' expr+=Expr (':' expr+=Expr)? // range 
-     | v+=ListComprehensionElementP (',' v+=ListComprehensionElementP)* ','?
-)? ']' ; 
+|  '[' vector=Primary_Vector? ']'; 
+Primary_Vector:  
+    expr+=Expr (
+        ':' expr+=Expr (':' expr+=Expr)? // range 
+        |  (',' exp+=Expr )* ','? // vector
+    )
+    | v+=ListComprehensionElementP (',' v+=ListComprehensionElementP)* ','? ;
 Primary_Parentheses: '(' expr=Expr ')';
 
 ListComprehensionElementP: e=ListComprehensionElement | '(' e=ListComprehensionElement ')'; 

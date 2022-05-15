@@ -23,3 +23,9 @@ module color(c, alpha=1.0){}
 module offset(r=undef, delta=undef, chamfer=undef){}
 module minkowski(){}
 module hull(){}
+
+// boolean combinations
+module union(){}
+module difference(){}
+module intersection(){}
+module render(convexity=1){}

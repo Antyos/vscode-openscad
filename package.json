@@ -384,6 +384,7 @@
         "eslint-plugin-prettier": "^3.4.0",
         "jest": "^28.1.0",
         "js-yaml": "^3.14.1",
+        "langium-cli": "^0.3.0",
         "prettier": "^2.3.0",
         "ts-jest": "^28.0.2",
         "ts-node": "^10.7.0",
@@ -391,11 +392,15 @@
         "vsce": "^1.88.0"
     },
     "dependencies": {
+        "chevrotain": "^9.1.0",
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^4.0.0",
         "jsdom": "^19.0.0",
         "langium": "^0.3.0",
         "ste-signals": "^1.7.3",
-        "vscode-languageclient": "^7.0.0"
+        "vscode-languageclient": "^7.0.0",
+        "vscode-languageserver": "^7.0.0",
+        "vscode-languageserver-textdocument": "^1.0.4",
+        "vscode-uri": "^3.0.3"
     }
 }
