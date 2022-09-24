@@ -13,7 +13,7 @@ const nodeConfig: Configuration = {
     mode: 'none',
     // Entry point into extension (in package.json). See: https://webpack.js.org/configuration/entry-context/
     entry: {
-        'extension.node': './src/node/extension.node.ts',
+        'extension.node': './src/extension.node.ts',
     },
     // Bundle output location. See: https://webpack.js.org/configuration/output/
     output: {
@@ -59,7 +59,7 @@ const browserConfig: Configuration = {
     ...nodeConfig,
     target: 'webworker',
     entry: {
-        'extension.web': './src/web/extension.web.ts',
+        'extension.web': './src/extension.web.ts',
         // 'test/suite/index': './src/web/test/suite/index.ts',
     },
     output: {
