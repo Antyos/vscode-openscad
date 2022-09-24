@@ -19,6 +19,7 @@
         "node_modules",
         ".vscode-test",
         ".vscode-test-web",
+        "webpack.config.ts", // Without this, ts complains not all source files are included
         "dist",
     ],
 }
