@@ -7,7 +7,7 @@
 
 import * as vscode from 'vscode';
 
-import { Cheatsheet } from 'src/common/cheatsheet/cheatsheet-panel';
+import { Cheatsheet } from 'src/cheatsheet/cheatsheet-panel';
 
 /**
  * Register a command that is not supported in VS Code web.

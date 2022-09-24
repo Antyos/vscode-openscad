@@ -6,7 +6,7 @@
 
 import * as vscode from 'vscode';
 
-import { ScadConfig } from 'src/common/config';
+import { ScadConfig } from 'src/config';
 import { CheatsheetContent } from './cheatsheet-content';
 
 /**
