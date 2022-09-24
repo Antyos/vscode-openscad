@@ -7,7 +7,7 @@
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
     "engines": {
-        "vscode": "^1.70.0"
+        "vscode": "^1.63.0"
     },
     "categories": [
         "Programming Languages",
@@ -377,8 +377,8 @@
         "@types/glob": "^7.2.0",
         "@types/jsdom": "^16.2.14",
         "@types/mocha": "^9.0.0",
-        "@types/node": "^14.16.0",
-        "@types/vscode": "^1.61.0",
+        "@types/node": "^16.11.0",
+        "@types/vscode": "^1.63.0",
         "@types/webpack-env": "^1.16.3",
         "@typescript-eslint/eslint-plugin": "^5.8.0",
         "@typescript-eslint/parser": "^5.8.0",
@@ -407,7 +407,7 @@
     "dependencies": {
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^4.0.0",
-        "node-html-parser": "^5.2.0",
+        "node-html-parser": "^6.1.1",
         "ste-signals": "^2.1.4"
     }
 }
