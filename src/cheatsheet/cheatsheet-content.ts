@@ -121,14 +121,20 @@ export class CheatsheetContent {
     private getStyleSheetElement(href: string, id?: string): HTMLElement {
         // HTMLElement `parent` argument cannot be type 'undefined', so we have
         // to disable the check here
-        // eslint-disable-next-line unicorn/no-null
-        const element = new HTMLElement('link', { id: id || '' }, '', null);
+        const element = new HTMLElement(
+            'link',
+            { id: id ?? '' },
+            '',
+            // eslint-disable-next-line unicorn/no-null
+            null,
+            [0, 0]
+        );
         const attributes = {
             type: 'text/css',
             rel: 'stylesheet',
             href: href,
             media: 'all',
-            id: id || '',
+            id: id ?? '',
         };
 
         element.setAttributes(attributes);
@@ -145,7 +151,7 @@ export class CheatsheetContent {
      */
     protected getCSPElement(): HTMLElement {
         // eslint-disable-next-line unicorn/no-null
-        const element = new HTMLElement('meta', { id: '' }, '', null);
+        const element = new HTMLElement('meta', { id: '' }, '', null, [0, 0]);
 
         element.setAttributes({
             'http-equiv': 'Content-Security-Policy',
