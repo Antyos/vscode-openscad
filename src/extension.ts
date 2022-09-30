@@ -8,9 +8,15 @@ import * as vscode from 'vscode';
 import { Cheatsheet } from './cheatsheet';
 import { PreviewManager } from './previewManager';
 import { DEBUG } from './config';
+import * as path from 'path';
+import {
+    LanguageClient, LanguageClientOptions, ServerOptions, TransportKind
+} from 'vscode-languageclient/node';
 
 // New launch object
 const previewManager = new PreviewManager();
+
+let client: LanguageClient;
 
 // Called when extension is activated
 export function activate(context: vscode.ExtensionContext): void {
@@ -92,10 +98,17 @@ export function activate(context: vscode.ExtensionContext): void {
             },
         });
     }
+
+    client = startLanguageClient(context);
 }
 
 // Called when extension is deactivated
-// export function deactivate() {}
+export function deactivate(): Thenable<void> | undefined {
+    if (client) {
+        return client.stop();
+    }
+    return undefined;
+}
 
 // Run on active change text editor
 function onDidChangeActiveTextEditor() {
@@ -108,4 +121,44 @@ function onDidChangeConfiguration() {
     Cheatsheet.onDidChangeConfiguration(config); // Update the cheatsheet with new config
     previewManager.onDidChangeConfiguration(config); // Update launcher with new config
     // vscode.window.showInformationMessage("Config change!"); // DEBUG
+}
+
+function startLanguageClient(context: vscode.ExtensionContext): LanguageClient {
+    const serverModule = context.asAbsolutePath(path.join('out', 'language-server', 'main'));
+    // The debug options for the server
+    // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging.
+    // By setting `process.env.DEBUG_BREAK` to a truthy value, the language server will wait until a debugger is attached.
+    const debugOptions = { execArgv: ['--nolazy', `--inspect${process.env.DEBUG_BREAK ? '-brk' : ''}=${process.env.DEBUG_SOCKET || '6009'}`] };
+
+    // If the extension is launched in debug mode then the debug server options are used
+    // Otherwise the run options are used
+    const serverOptions: ServerOptions = {
+        run: { module: serverModule, transport: TransportKind.ipc, args: [context.extensionPath] },
+        debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions, args: [context.extensionPath] }
+    };
+
+    const fileSystemWatcher = vscode.workspace.createFileSystemWatcher('**/*.scad');
+    context.subscriptions.push(fileSystemWatcher);
+
+    // Options to control the language client
+    const clientOptions: LanguageClientOptions = {
+        documentSelector: [{ scheme: 'file', language: 'scad' }],
+        synchronize: {
+            // Notify the server about file changes to files contained in the workspace
+            fileEvents: fileSystemWatcher
+        }
+    };
+
+    // Create the language client and start the client.
+    const client = new LanguageClient(
+        'scad',
+        'OpenSCAD',
+        serverOptions,
+        clientOptions
+    );
+
+    // Start the client. This will also launch the server
+    console.log('Starting openscad language server and client');
+    client.start();
+    return client;
 }
