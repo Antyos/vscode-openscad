@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Syntax highlighting for `$vpf` (See PR[#35](https://github.com/Antyos/vscode-openscad/pull/35)). Thanks [atnbueno](https://github.com/atnbueno)
+
 ## [[1.1.1](https://github.com/Antyos/vscode-openscad/releases/tag/v1.1.1)] - (2021-06-07)
 
 ### Changed
