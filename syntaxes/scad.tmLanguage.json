@@ -165,7 +165,7 @@
     },
     {
       "name": "variable.language.scad",
-      "match": "\\$(children|fn|fa|fs|t|preview|vpt|vpr|vpd|parent_modules)\\b"
+      "match": "\\$(children|fn|fa|fs|t|preview|vpr|vpt|vpf|vpd|parent_modules)\\b"
     },
     {
       "include": "#constants"
