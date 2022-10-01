@@ -367,6 +367,7 @@
         "format": "prettier --config .prettierrc.json --write ./src/**/*.ts && eslint -c .eslintrc.json --ext .ts src --fix",
         "clean": "del-cli dist",
         "compile": "webpack",
+        "compile-clean": "npm run clean && npm run compile",
         "watch": "webpack --watch",
         "package": "webpack --mode production --devtool hidden-source-map",
         "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json",
