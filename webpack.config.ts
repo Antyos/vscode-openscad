@@ -18,8 +18,9 @@ const nodeConfig: Configuration = {
     // Bundle output location. See: https://webpack.js.org/configuration/output/
     output: {
         filename: '[name].js',
-        path: path.join(projectRoot, 'dist', 'node'),
+        path: path.join(projectRoot, 'dist'),
         libraryTarget: 'commonjs',
+        devtoolModuleFilenameTemplate: '../[resource-path]',
     },
     devtool: 'nosources-source-map',
     // Support reading TypeScript and JavaScript files. See: https://github.com/TypeStrong/ts-loader
@@ -62,14 +63,13 @@ const browserConfig: Configuration = {
         'extension.web': './src/extension.web.ts',
         // 'test/suite/index': './src/web/test/suite/index.ts',
     },
-    output: {
-        ...nodeConfig.output,
-        path: path.join(projectRoot, './dist/web'),
-        devtoolModuleFilenameTemplate: '../../[resource-path]',
-    },
     resolve: {
         ...nodeConfig.resolve,
         mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
+        fallback: {
+            // eslint-disable-next-line unicorn/prefer-module
+            util: require.resolve('util'),
+        },
     },
     plugins: [
         new ProvidePlugin({
