@@ -11,6 +11,11 @@
             "request": "launch",
             "runtimeExecutable": "${execPath}",
             "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+            "skipFiles": [
+                "${workspaceFolder}/node_modules/*",
+                "<node_internals>/**",
+            ],
             "preLaunchTask": "npm: watch",
         },
         {
@@ -22,7 +27,25 @@
                 "--extensionDevelopmentPath=${workspaceFolder}",
                 "--extensionDevelopmentKind=web",
             ],
-            "outFiles": ["${workspaceFolder}/dist/web/**/*.js"],
+            "skipFiles": [
+                "${workspaceFolder}/node_modules/*",
+                "<node_internals>/**",
+            ],
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+            "preLaunchTask": "npm: watch",
+            "sourceMaps": true,
+        },
+        {
+            "name": "Extension Tests",
+            "type": "extensionHost",
+            "debugWebWorkerHost": true,
+            "request": "launch",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}",
+                "--extensionDevelopmentKind=web",
+                "--extensionTestsPath=${workspaceFolder}/node/test/index",
+            ],
+            "outFiles": ["${workspaceFolder}/dist/node/test/**/*.js"],
             "preLaunchTask": "npm: watch",
         },
     ],

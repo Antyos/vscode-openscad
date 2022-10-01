@@ -11,7 +11,7 @@
         },
         {
             "type": "npm",
-            "script": "compile",
+            "script": "compile-clean",
             "group": {
                 "kind": "build",
                 "isDefault": true,
