@@ -20,7 +20,7 @@
         },
         {
             "name": "Run Web Extension ",
-            "type": "pwa-extensionHost",
+            "type": "extensionHost",
             "debugWebWorkerHost": true,
             "request": "launch",
             "args": [
