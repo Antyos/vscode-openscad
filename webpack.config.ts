@@ -66,10 +66,6 @@ const browserConfig: Configuration = {
     resolve: {
         ...nodeConfig.resolve,
         mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
-        fallback: {
-            // eslint-disable-next-line unicorn/prefer-module
-            util: require.resolve('util'),
-        },
     },
     plugins: [
         new ProvidePlugin({
