@@ -56,7 +56,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     /** Add a preview to PreviewStore */
     public add(preview: Preview): void {
         this._previews.add(preview);
-        preview.onKilled.subscribe(() => this._previews.delete(preview)); // Auto delete when killed
+        preview.onKilled.push(() => this._previews.delete(preview)); // Auto delete when killed
         this.setAreOpenPreviews(true);
     }
 
@@ -143,7 +143,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
                 // Return promise that resolve the progress bar when the preview is killed
                 const p = new Promise<void>((resolve) => {
-                    preview.onKilled.subscribe(() => resolve());
+                    preview.onKilled.push(() => resolve());
                 });
 
                 return p;

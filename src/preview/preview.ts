@@ -6,7 +6,6 @@
 
 import * as child from 'child_process'; // node:child_process
 import { type } from 'os'; // node:os
-import { ISignal, SignalDispatcher } from 'ste-signals';
 import * as vscode from 'vscode';
 
 import commandExists = require('command-exists');
@@ -28,7 +27,7 @@ export class Preview {
     private readonly _process: child.ChildProcess;
     private readonly _previewType: PreviewType;
     private _isRunning: boolean;
-    private _onKilled = new SignalDispatcher();
+    private _onKilledCallbacks: (() => void)[] = [];
 
     /** Launch an instance of OpenSCAD to prview a file */
     private constructor(
@@ -72,7 +71,10 @@ export class Preview {
                 // console.log(`real stdout: ${stdout}`);    // DEBUG
 
                 this._isRunning = false;
-                this._onKilled.dispatch(); // Dispatch 'onKilled' event
+                // Dispatch 'onKilled' event
+                for (const callback of this._onKilledCallbacks) {
+                    callback();
+                }
             }
         );
 
@@ -104,8 +106,8 @@ export class Preview {
     }
 
     /** On killed handlers */
-    public get onKilled(): ISignal {
-        return this._onKilled.asEvent();
+    public get onKilled() {
+        return this._onKilledCallbacks;
     }
 
     /**
