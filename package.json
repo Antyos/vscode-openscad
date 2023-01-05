@@ -7,7 +7,7 @@
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
     "engines": {
-        "vscode": "^1.63.0"
+        "vscode": "^1.67.0"
     },
     "categories": [
         "Programming Languages",
@@ -379,12 +379,13 @@
         "@types/jsdom": "^16.2.14",
         "@types/mocha": "^9.0.0",
         "@types/node": "^16.11.0",
-        "@types/vscode": "^1.63.0",
+        "@types/vscode": "^1.67.0",
         "@types/webpack-env": "^1.16.3",
         "@typescript-eslint/eslint-plugin": "^5.8.0",
         "@typescript-eslint/parser": "^5.8.0",
         "@vscode/test-electron": "^2.0.1",
         "@vscode/test-web": "^0.0.15",
+        "@vscode/vsce": "^2.16.0",
         "assert": "^2.0.0",
         "del-cli": "^5.0.0",
         "eslint": "^8.5.0",
@@ -402,7 +403,6 @@
         "ts-node": "^10.9.1",
         "typescript": "^4.6.4",
         "util": "^0.12.4",
-        "vsce": "^2.5.3",
         "webpack": "^5.74.0",
         "webpack-cli": "^4.10.0"
     },
