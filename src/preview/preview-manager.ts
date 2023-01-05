@@ -16,6 +16,7 @@ import {
 import { VariableResolver } from 'src/export/variable-resolver';
 import { Preview } from 'src/preview/preview';
 import { PreviewStore } from 'src/preview/preview-store';
+import { OpenscadExecutable, OpenscadExecutableManager } from './openscad-exe';
 
 /** PreviewItems used for `scad.kill` quick pick menu */
 class PreviewItem implements vscode.QuickPickItem {
@@ -49,6 +50,7 @@ export class PreviewManager {
     private previewStore = new PreviewStore();
     private config: ScadConfig = {};
     private variableResolver = new VariableResolver();
+    private openscadExecutableManager = new OpenscadExecutableManager();
 
     // public activate() {}
 
@@ -73,12 +75,23 @@ export class PreviewManager {
             else resource = uri;
 
             // Check if a new preview can be opened
-            if (!this.canOpenNewPreview(resource, arguments_)) return;
+            if (
+                !this.canOpenNewPreview(
+                    this.openscadExecutableManager.executable,
+                    resource,
+                    arguments_
+                )
+            )
+                return;
 
             console.log(`uri: ${resource}`); // DEBUG
 
             // Create and add new OpenSCAD preview to PreviewStore
-            this.previewStore.createAndAdd(resource, arguments_);
+            this.previewStore.createAndAdd(
+                this.openscadExecutableManager.executable,
+                resource,
+                arguments_
+            );
         }
     }
 
@@ -170,11 +183,22 @@ export class PreviewManager {
             arguments_.push('-o', filePath); // Filename for export
 
             // Check if a new preview can be opened
-            if (!this.canOpenNewPreview(resource, arguments_)) return;
+            if (
+                !this.canOpenNewPreview(
+                    this.openscadExecutableManager.executable,
+                    resource,
+                    arguments_
+                )
+            )
+                return;
 
             console.log(`uri: ${resource}`); // DEBUG
 
-            this.previewStore.createAndAdd(resource, arguments_);
+            this.previewStore.createAndAdd(
+                this.openscadExecutableManager.executable,
+                resource,
+                arguments_
+            );
         }
     }
 
@@ -269,11 +293,7 @@ export class PreviewManager {
             'export.useAutoNamingInSaveDialogues'
         );
 
-        // Only update openscad path if the path value changes
-        if (this.config.lastOpenscadPath !== this.config.openscadPath) {
-            this.config.lastOpenscadPath = this.config.openscadPath; // Set last path
-            Preview.setScadPath(this.config.openscadPath); // Update path
-        }
+        this.openscadExecutableManager.updateScadPath(this.config.openscadPath);
 
         // Set the max previews
         this.previewStore.maxPreviews = this.config.maxInstances
@@ -335,16 +355,22 @@ export class PreviewManager {
 
     /** Returns if the current URI with arguments (output Y/N) can be opened */
     private canOpenNewPreview(
+        openscadExecutable: OpenscadExecutable | undefined,
         resource: vscode.Uri,
         arguments_?: string[]
-    ): boolean {
+    ): openscadExecutable is OpenscadExecutable {
         // Make sure path to openscad.exe is valid
-        if (!Preview.isValidScadPath) {
+        if (!openscadExecutable) {
+            // Error message for default
+            const openscadPath =
+                this.config.openscadPath ??
+                this.openscadExecutableManager.getDefaultPathByPlatform();
+
             console.error(
-                `Path to openscad command is invalid: "${Preview.scadPath}"`
+                `Path to openscad command is invalid: "${openscadPath}"`
             ); // DEBUG
             vscode.window.showErrorMessage(
-                `Cannot find the command: "${Preview.scadPath}". Make sure OpenSCAD is installed. You may need to specify the installation path under \`Settings > OpenSCAD > Launch Path\``
+                `Cannot find the command: "${openscadPath}". Make sure OpenSCAD is installed. You may need to specify the installation path under \`Settings > OpenSCAD > Launch Path\``
             );
             return false;
         }

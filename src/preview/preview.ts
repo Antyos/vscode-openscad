@@ -5,24 +5,14 @@
  *----------------------------------------------------------------------------*/
 
 import * as child from 'child_process'; // node:child_process
-import { type } from 'os'; // node:os
 import * as vscode from 'vscode';
 
-import commandExists = require('command-exists');
-
-const pathByPlatform = {
-    Linux: 'openscad',
-    Darwin: '/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD',
-    Windows_NT: 'C:\\Program Files\\Openscad\\openscad.exe',
-};
+import { OpenscadExecutable } from './openscad-exe';
 
 export type PreviewType = 'view' | 'output';
 
 /** Open an instance of OpenSCAD to preview a file */
 export class Preview {
-    // Paths
-    private static _scadPath: string;
-    private static _isValidScadPath = false;
     private readonly _fileUri: vscode.Uri;
     private readonly _process: child.ChildProcess;
     private readonly _previewType: PreviewType;
@@ -30,25 +20,32 @@ export class Preview {
     private _onKilledCallbacks: (() => void)[] = [];
 
     /** Launch an instance of OpenSCAD to prview a file */
-    private constructor(
+    constructor(
+        private readonly openscadExecutable: OpenscadExecutable,
         fileUri: vscode.Uri,
         previewType?: PreviewType,
-        arguments_?: string[] | undefined
+        arguments_: string[] = []
     ) {
         // Set local arguments
         this._fileUri = fileUri;
-        this._previewType = previewType ? previewType : 'view';
+        this._previewType =
+            previewType ??
+            arguments_?.some((item) => ['-o', '--o'].includes(item))
+                ? 'output'
+                : 'view';
 
         // Prepend arguments to path if they exist
-        const commandArguments: string[] = arguments_
-            ? [...arguments_, this._fileUri.fsPath]
-            : [this._fileUri.fsPath];
+        const commandArguments: string[] = [
+            ...this.openscadExecutable.arguments_,
+            ...arguments_,
+            this._fileUri.fsPath,
+        ];
 
         console.log(`commangArgs: ${commandArguments}`); // DEBUG
 
         // New process
         this._process = child.execFile(
-            Preview._scadPath,
+            this.openscadExecutable.filePath,
             commandArguments,
             (error, stdout, stderr) => {
                 // If there's an error
@@ -110,61 +107,7 @@ export class Preview {
         return this._onKilledCallbacks;
     }
 
-    /**
-     * Static factory method. Create new preview child process Needed to make
-     * sure path to `openscad.exe` is defined.
-     */
-    public static create(
-        resource: vscode.Uri,
-        previewType?: PreviewType,
-        arguments_?: string[]
-    ): Preview | undefined {
-        // Error checking
-        // Make sure scad path is defined
-        if (!Preview._isValidScadPath) {
-            console.error('OpenSCAD path is undefined in config');
-            vscode.window.showErrorMessage('OpenSCAD path does not exist.');
-            return undefined;
-        }
-
-        // If previewType is undefined, automatically assign it based on arguemnts
-        if (!previewType)
-            previewType = arguments_?.some((item) =>
-                ['-o', '--o'].includes(item)
-            )
-                ? 'output'
-                : 'view';
-
-        // New file
-        return new Preview(resource, previewType, arguments_);
-    }
-
-    /** Used to set the path to `openscad.exe` on the system. Necessary to open
-     *  children.
-     */
-    public static setScadPath(scadPath?: string): void {
-        // Set OpenSCAD path if specified; otherwise use system default
-        Preview._scadPath = scadPath
-            ? scadPath
-            : pathByPlatform[type() as keyof typeof pathByPlatform];
-
-        console.log(`Path: '${Preview._scadPath}'`); // DEBUG
-
-        // Verify 'openscad' command is valid
-        Preview._isValidScadPath = false; // Set to false until can test if the command exists
-        commandExists(Preview._scadPath, (error: null, exists: boolean) => {
-            Preview._isValidScadPath = exists;
-        });
-    }
-
     public get previewType(): PreviewType {
         return this._previewType;
-    }
-
-    public static get scadPath(): string {
-        return Preview._scadPath;
-    }
-    public static get isValidScadPath(): boolean {
-        return Preview._isValidScadPath;
     }
 }

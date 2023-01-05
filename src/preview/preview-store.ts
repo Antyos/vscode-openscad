@@ -7,6 +7,7 @@
 import { basename } from 'path'; // node:path
 import * as vscode from 'vscode';
 
+import { OpenscadExecutable } from './openscad-exe';
 import { Preview, PreviewType } from './preview';
 
 /** Container of several Preview */
@@ -62,6 +63,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
     /** Create new preview (if not one with same uri) and then add it. */
     public createAndAdd(
+        openscadExecutable: OpenscadExecutable,
         uri: vscode.Uri,
         arguments_?: string[]
     ): Preview | undefined {
@@ -69,9 +71,12 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
         // Check there's not an existing preview of same type (can view and export same file)
         if (this.get(uri, previewType) === undefined) {
-            const newPreview = Preview.create(uri, previewType, arguments_);
-
-            if (!newPreview) return undefined;
+            const newPreview = new Preview(
+                openscadExecutable,
+                uri,
+                previewType,
+                arguments_
+            );
 
             this.add(newPreview);
             if (newPreview.previewType === 'output')
