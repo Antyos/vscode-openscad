@@ -8,7 +8,7 @@ import { basename } from 'path'; // node:path
 import * as vscode from 'vscode';
 
 import { OpenscadExecutable } from './openscad-exe';
-import { Preview, PreviewType } from './preview';
+import { Preview } from './preview';
 
 /** Container of several Preview */
 export class PreviewStore /* extends vscode.Disposable */ {
@@ -33,8 +33,8 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     /** Create a new PreviewStore with a max number of previews */
-    public constructor(maxPreviews?: number) {
-        this._maxPreviews = maxPreviews ? maxPreviews : 0;
+    public constructor(maxPreviews = 0) {
+        this._maxPreviews = maxPreviews;
         this.setAreOpenPreviews(false);
     }
 
@@ -42,12 +42,9 @@ export class PreviewStore /* extends vscode.Disposable */ {
      * Find a resource in the PreviewStore by uri
      * @returns {Preview | undefined} Preview if found, otherwise undefined
      */
-    public get(
-        resource: vscode.Uri,
-        previewType?: PreviewType
-    ): Preview | undefined {
+    public get(resource: vscode.Uri, hasGui?: boolean): Preview | undefined {
         for (const preview of this._previews) {
-            if (preview.matchUri(resource, previewType)) {
+            if (preview.match(resource, hasGui)) {
                 return preview;
             }
         }
@@ -67,24 +64,24 @@ export class PreviewStore /* extends vscode.Disposable */ {
         uri: vscode.Uri,
         arguments_?: string[]
     ): Preview | undefined {
-        const previewType = PreviewStore.getPreviewType(arguments_);
+        const hasGui = PreviewStore.hasGui(arguments_);
 
-        // Check there's not an existing preview of same type (can view and export same file)
-        if (this.get(uri, previewType) === undefined) {
-            const newPreview = new Preview(
-                openscadExecutable,
-                uri,
-                previewType,
-                arguments_
-            );
-
-            this.add(newPreview);
-            if (newPreview.previewType === 'output')
-                this.makeExportProgressBar(newPreview);
-
-            return newPreview;
+        // Don't create a new preview if we already have one
+        if (this.get(uri, hasGui)) {
+            return undefined;
         }
-        return undefined;
+
+        const preview = new Preview(
+            openscadExecutable,
+            uri,
+            hasGui,
+            arguments_
+        );
+
+        this.add(preview);
+        if (!preview.hasGui) this.makeExportProgressBar(preview);
+
+        return preview;
     }
 
     /** Delete and dispose of a preview. */
@@ -156,11 +153,9 @@ export class PreviewStore /* extends vscode.Disposable */ {
         );
     }
 
-    /** Returns the preview type based on the arguments supplied. */
-    public static getPreviewType(arguments_?: string[]): 'output' | 'view' {
-        return arguments_?.some((item) => ['-o', '--o'].includes(item))
-            ? 'output'
-            : 'view';
+    /** True if '-o' or '--o' (output) are not in the arguments list */
+    public static hasGui(arguments_?: string[]): boolean {
+        return !arguments_?.some((item) => ['-o', '--o'].includes(item));
     }
 
     /** Returns size (length) of PreviewStore. */

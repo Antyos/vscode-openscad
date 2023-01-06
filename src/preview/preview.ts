@@ -9,36 +9,27 @@ import * as vscode from 'vscode';
 
 import { OpenscadExecutable } from './openscad-exe';
 
-export type PreviewType = 'view' | 'output';
-
 /** Open an instance of OpenSCAD to preview a file */
 export class Preview {
-    private readonly _fileUri: vscode.Uri;
     private readonly _process: child.ChildProcess;
-    private readonly _previewType: PreviewType;
     private _isRunning: boolean;
     private _onKilledCallbacks: (() => void)[] = [];
 
     /** Launch an instance of OpenSCAD to prview a file */
     constructor(
         private readonly openscadExecutable: OpenscadExecutable,
-        fileUri: vscode.Uri,
-        previewType?: PreviewType,
+        public readonly uri: vscode.Uri,
+        public readonly hasGui: boolean,
         arguments_: string[] = []
     ) {
         // Set local arguments
-        this._fileUri = fileUri;
-        this._previewType =
-            previewType ??
-            arguments_?.some((item) => ['-o', '--o'].includes(item))
-                ? 'output'
-                : 'view';
+        this.uri = uri;
 
         // Prepend arguments to path if they exist
         const commandArguments: string[] = [
             ...this.openscadExecutable.arguments_,
             ...arguments_,
-            this._fileUri.fsPath,
+            this.uri.fsPath,
         ];
 
         console.log(`commangArgs: ${commandArguments}`); // DEBUG
@@ -86,28 +77,19 @@ export class Preview {
     }
 
     /** Returns if the given Uri is equivalent to the preview's Uri */
-    public matchUri(uri: vscode.Uri, previewType?: PreviewType): boolean {
+    public match(uri: vscode.Uri, hasGui?: boolean): boolean {
         return (
-            this._fileUri.toString() === uri.toString() &&
-            this._previewType === (previewType ? previewType : 'view')
+            this.uri.toString() === uri.toString() &&
+            (hasGui === undefined || this.hasGui === hasGui)
         );
     }
 
-    /** Get Uri of file in preview */
-    public get uri(): vscode.Uri {
-        return this._fileUri;
-    }
-
-    public get isRunning(): boolean {
+    public get isRunning() {
         return this._isRunning;
     }
 
     /** On killed handlers */
     public get onKilled() {
         return this._onKilledCallbacks;
-    }
-
-    public get previewType(): PreviewType {
-        return this._previewType;
     }
 }

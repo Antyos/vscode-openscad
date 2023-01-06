@@ -26,9 +26,7 @@ class PreviewItem implements vscode.QuickPickItem {
 
     constructor(public preview: Preview) {
         const fileName = path.basename(preview.uri.fsPath);
-        this.label =
-            (preview.previewType === 'output' ? 'Exporting: ' : '') +
-            (fileName ? fileName : ''); // Remove path before filename
+        this.label = (!preview.hasGui ? 'Exporting: ' : '') + fileName; // Remove path before filename
         this.description = preview.uri.path.slice(1); // Remove first '/'
         this.uri = preview.uri;
     }
@@ -388,12 +386,7 @@ export class PreviewManager {
         }
 
         // Make sure file is not already open
-        else if (
-            this.previewStore.get(
-                resource,
-                PreviewStore.getPreviewType(arguments_)
-            ) !== undefined
-        ) {
+        if (this.previewStore.get(resource, PreviewStore.hasGui(arguments_))) {
             console.log(`File is already open: "${resource.fsPath}"`);
             vscode.window.showInformationMessage(
                 `${path.basename(resource.fsPath)} is already open: "${
@@ -401,6 +394,7 @@ export class PreviewManager {
                 }"`
             );
             return false;
-        } else return true;
+        }
+        return true;
     }
 }
