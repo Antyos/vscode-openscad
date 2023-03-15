@@ -190,7 +190,7 @@ export class PreviewManager {
             )
                 return;
 
-            console.log(`uri: ${resource}`); // DEBUG
+            console.log(`Export uri: ${resource}`); // DEBUG
 
             this.previewStore.createAndAdd(
                 this.openscadExecutableManager.executable,
@@ -276,6 +276,7 @@ export class PreviewManager {
     ): void {
         // Update configuration
         this.config.openscadPath = config.get<string>('launchPath');
+        this.config.launchArgs = config.get<string[]>('launchArgs');
         this.config.maxInstances = config.get<number>('maxInstances');
         this.config.showKillMessage = config.get<boolean>('showKillMessage');
         this.config.preferredExportFileExtension = config.get<string>(
@@ -291,12 +292,31 @@ export class PreviewManager {
             'export.useAutoNamingInSaveDialogues'
         );
 
-        this.openscadExecutableManager.updateScadPath(this.config.openscadPath);
+        console.log(this.config.launchArgs);
 
+        if (this.config.launchArgs !== undefined) {
+            Promise.all(
+                this.config.launchArgs?.map(async (item) =>
+                    this.variableResolver.resolveString(
+                        item,
+                        (await this.getActiveEditorUri()) ?? vscode.Uri.file('')
+                    )
+                )
+            ).then((newArguments) => {
+                console.log(`newArgs: ${newArguments}`);
+                this.openscadExecutableManager.updateScadPath(
+                    this.config.openscadPath,
+                    newArguments
+                );
+            });
+        } else {
+            this.openscadExecutableManager.updateScadPath(
+                this.config.openscadPath,
+                this.config.launchArgs
+            );
+        }
         // Set the max previews
-        this.previewStore.maxPreviews = this.config.maxInstances
-            ? this.config.maxInstances
-            : 0;
+        this.previewStore.maxPreviews = this.config.maxInstances ?? 0;
     }
 
     /** Gets the uri of the active editor */
@@ -316,10 +336,10 @@ export class PreviewManager {
                 filters: { 'OpenSCAD Designs': ['scad'] },
             });
             // If user saved, set `resource` otherwise, return
-            return savedUri ? savedUri : undefined;
+            return savedUri;
         }
         // If document is already saved, set `resource`
-        else return editor.document.uri;
+        return editor.document.uri;
     }
 
     /** Prompts user for export name and location */
