@@ -360,9 +360,7 @@ export class PreviewManager {
         // Make sure path to openscad.exe is valid
         if (!openscadExecutable) {
             // Error message for default
-            const openscadPath =
-                this.config.openscadPath ??
-                this.openscadExecutableManager.getDefaultPathByPlatform();
+            const openscadPath = this.openscadExecutableManager.getPath();
 
             console.error(
                 `Path to openscad command is invalid: "${openscadPath}"`

@@ -48,8 +48,9 @@ export class OpenscadExecutableManager {
         return output.trim().match(/version (\S+)/)?.[1];
     }
 
-    /** Used to set the path to `openscad.exe` on the system. Necessary to open
-     *  children.
+    /** Set the path to `openscad.exe` on the system.
+     *
+     * Note: Must be called before opening children.
      */
     public async updateScadPath(
         newOpenscadPath?: string,
@@ -67,9 +68,7 @@ export class OpenscadExecutableManager {
         this.openscadExecutable = undefined;
 
         // Use platform default if not specified
-        const openscadPath =
-            this.openscadPath ??
-            pathByPlatform[type() as keyof typeof pathByPlatform];
+        const openscadPath = this.getPath();
 
         console.log(`Path: '${openscadPath}'`); // DEBUG
 
@@ -90,13 +89,17 @@ export class OpenscadExecutableManager {
         });
     }
 
-    // ! This may cause an error if a preview is launched before the exe has been checked
+    /** A valid openscad executable or undefined */
     public get executable() {
         return this.openscadExecutable;
     }
 
-    // ! REMOVE ME
-    public getDefaultPathByPlatform() {
-        return pathByPlatform[type() as keyof typeof pathByPlatform];
+    /** The current path the manager is looking for openscad at. Not guaranteed
+     * to be valid. */
+    public getPath() {
+        return (
+            this.openscadPath ??
+            pathByPlatform[type() as keyof typeof pathByPlatform]
+        );
     }
 }
