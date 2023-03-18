@@ -294,27 +294,10 @@ export class PreviewManager {
 
         console.log(this.config.launchArgs);
 
-        if (this.config.launchArgs !== undefined) {
-            Promise.all(
-                this.config.launchArgs?.map(async (item) =>
-                    this.variableResolver.resolveString(
-                        item,
-                        (await this.getActiveEditorUri()) ?? vscode.Uri.file('')
-                    )
-                )
-            ).then((newArguments) => {
-                console.log(`newArgs: ${newArguments}`);
-                this.openscadExecutableManager.updateScadPath(
-                    this.config.openscadPath,
-                    newArguments
-                );
-            });
-        } else {
-            this.openscadExecutableManager.updateScadPath(
-                this.config.openscadPath,
-                this.config.launchArgs
-            );
-        }
+        this.openscadExecutableManager.updateScadPath(
+            this.config.openscadPath,
+            this.config.launchArgs
+        );
         // Set the max previews
         this.previewStore.maxPreviews = this.config.maxInstances ?? 0;
     }
