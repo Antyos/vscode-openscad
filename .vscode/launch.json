@@ -10,7 +10,10 @@
             "type": "extensionHost",
             "request": "launch",
             "runtimeExecutable": "${execPath}",
-            "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+            "args": [
+                "--disable-extensions",
+                "--extensionDevelopmentPath=${workspaceFolder}",
+            ],
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
             "skipFiles": [
                 "${workspaceFolder}/node_modules/*",
@@ -19,11 +22,12 @@
             "preLaunchTask": "npm: watch",
         },
         {
-            "name": "Run Web Extension ",
+            "name": "Run Web Extension",
             "type": "extensionHost",
             "debugWebWorkerHost": true,
             "request": "launch",
             "args": [
+                "--disable-extensions",
                 "--extensionDevelopmentPath=${workspaceFolder}",
                 "--extensionDevelopmentKind=web",
             ],
@@ -41,6 +45,7 @@
             "debugWebWorkerHost": true,
             "request": "launch",
             "args": [
+                "--disable-extensions",
                 "--extensionDevelopmentPath=${workspaceFolder}",
                 "--extensionDevelopmentKind=web",
                 "--extensionTestsPath=${workspaceFolder}/node/test/index",
