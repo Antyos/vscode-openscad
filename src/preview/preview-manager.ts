@@ -10,8 +10,8 @@ import * as vscode from 'vscode';
 import { ScadConfig } from 'src/config';
 import {
     ExportExtensionsForSave,
-    ExportFileExtensions,
-    TExportFileExtensions,
+    ExportFileExtension,
+    ExportFileExtensionList,
 } from 'src/export/export-file-extensions';
 import { VariableResolver } from 'src/export/variable-resolver';
 import { Preview } from 'src/preview/preview';
@@ -97,10 +97,10 @@ export class PreviewManager {
     public async exportFile(
         mainUri?: vscode.Uri,
         allUris?: vscode.Uri[],
-        fileExtension?: TExportFileExtensions | 'auto',
+        fileExtension?: ExportFileExtension | 'auto',
         useSaveDialogue = false
     ): Promise<void> {
-        let exportExtension: TExportFileExtensions; // File extension for export
+        let exportExtension: ExportFileExtension; // File extension for export
 
         // If file extension is not provided, prompt user
         if (
@@ -110,19 +110,19 @@ export class PreviewManager {
         ) {
             // Show quick pick menu to prompt user for file extension
             const pick = await vscode.window.showQuickPick(
-                ExportFileExtensions,
+                ExportFileExtensionList,
                 {
                     placeHolder: 'Select file extension for export',
                 }
             );
 
-            if (pick) exportExtension = <TExportFileExtensions>pick;
+            if (pick) exportExtension = <ExportFileExtension>pick;
             // If user selected a file, cast and set exportExt
             else return; // Still no file extension, return
         }
         // Get file extension from config
         else if (fileExtension === 'auto') {
-            exportExtension = <TExportFileExtensions>(
+            exportExtension = <ExportFileExtension>(
                 this.config.preferredExportFileExtension
             );
         }
@@ -328,7 +328,7 @@ export class PreviewManager {
     /** Prompts user for export name and location */
     private async promptForExport(
         resource: vscode.Uri,
-        exportExtension: TExportFileExtensions = 'stl',
+        exportExtension: ExportFileExtension = 'stl',
         pattern: string = this.variableResolver.defaultPattern
     ): Promise<vscode.Uri | undefined> {
         // Replace the `.scad` file extrension with the preferred type (or default to stl)

@@ -4,24 +4,8 @@
  * Contains types and objects relating to exportable file types
  *----------------------------------------------------------------------------*/
 
-/** Avaiable file extensions for export */
-export type TExportFileExtensions =
-    | 'stl'
-    | 'off'
-    | 'amf'
-    | '3mf'
-    | 'csg'
-    | 'dxf'
-    | 'svg'
-    | 'png'
-    | 'echo'
-    | 'ast'
-    | 'term'
-    | 'nef3'
-    | 'nefdbg';
-
 /** List of all file exportable extensions */
-export const ExportFileExtensions: TExportFileExtensions[] = [
+export const ExportFileExtensionList = [
     'stl',
     'off',
     'amf',
@@ -35,7 +19,10 @@ export const ExportFileExtensions: TExportFileExtensions[] = [
     'term',
     'nef3',
     'nefdbg',
-];
+] as const;
+
+/** Avaiable file extensions for export */
+export type ExportFileExtension = typeof ExportFileExtensionList[number];
 
 /** File types used in save dialogue */
 export const ExportExtensionsForSave = {
