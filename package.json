@@ -2,7 +2,7 @@
     "name": "openscad",
     "displayName": "OpenSCAD",
     "description": "OpenSCAD highlighting, snippets, and more for VSCode!",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "publisher": "Antyos",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
@@ -217,8 +217,18 @@
                 "openscad.launchPath": {
                     "type": "string",
                     "default": "",
+                    "order": 0,
                     "markdownDescription": "Command to launch `openscad`. Either the path to the openscad executable, or just \"`openscad`\" (no quotes) if the executable is in the path. If left blank, it will use the default path for your system noted below:\n- Windows: `C:\\Program Files\\Openscad\\openscad.exe`\n  - _Note:_ Must specify path to `openscad.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)",
                     "scope": "machine-overridable"
+                },
+                "openscad.launchArgs": {
+                    "type": "array",
+                    "order": 1,
+                    "description": "Extra arguments to pass to the openscad executable when launching. Useful for package managers like Flatpak.",
+                    "scope": "machine-overridable",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "openscad.maxInstances": {
                     "type": "number",

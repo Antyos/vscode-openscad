@@ -7,7 +7,7 @@
 /** Extension config values */
 export interface ScadConfig {
     openscadPath?: string;
-    lastOpenscadPath?: string;
+    launchArgs?: string[];
     maxInstances?: number;
     showKillMessage?: boolean;
     preferredExportFileExtension?: string;

@@ -26,7 +26,7 @@ export class VariableResolver {
     // private static readonly VARIABLE_REGEXP_SINGLE = /\$\{(.*?)\}/; // Unused
     private static readonly VERSION_FORMAT = /\${#}/g;
 
-    private readonly _variables: string[] = [
+    private readonly _variables = [
         'workspaceFolder',
         'workspaceFolderBasename',
         'file',
@@ -39,7 +39,7 @@ export class VariableResolver {
         'exportExtension',
         '#',
         'noMatch',
-    ];
+    ] as const;
 
     // Default naming pattern
     private readonly _defaultPattern =
@@ -137,13 +137,13 @@ export class VariableResolver {
 
         switch (variable) {
             case 'workspaceFolder':
-                return workspaceFolder || match;
+                return workspaceFolder ?? match;
             case 'workspaceFolderBasename':
-                return path.basename(workspaceFolder || '') || match;
+                return path.basename(workspaceFolder ?? '') ?? match;
             case 'file':
                 return resource.fsPath;
             case 'relativeFile':
-                return path.relative(workspaceFolder || '', resource.fsPath);
+                return path.relative(workspaceFolder ?? '', resource.fsPath);
             case 'relativeFileDirname':
                 return path.basename(path.dirname(resource.fsPath));
             case 'fileBasename':
@@ -155,7 +155,7 @@ export class VariableResolver {
             case 'fileExtname':
                 return path.extname(resource.fsPath);
             case 'exportExtension':
-                return exportExtension ? exportExtension : match;
+                return exportExtension ?? match;
             // We will evaluate the number later
             case '#':
             default:
