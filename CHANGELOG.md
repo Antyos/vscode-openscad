@@ -1,5 +1,21 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- `openscad.launchArgs` configuration. Fixes [#36](https://github.com/Antyos/vscode-openscad/issues/36).
+
+#### Web extension
+
+VSCode OpenSCAD can now run as a web extension!
+
+- Syntax highlighting and OpenSCAD cheatsheet are available when using VS Code
+  for the web
+- Preview- and export- related commands are not available when running as a web
+  extension. Attempting to run these commands will display a popup notification
+  that the commands are disabled when running as a web extension.
+
 ## [[1.1.1](https://github.com/Antyos/vscode-openscad/releases/tag/v1.1.1)] - (2021-06-07)
 
 ### Changed
@@ -122,7 +138,7 @@ _See PR [#14](https://github.com/Antyos/vscode-openscad/pull/14) and PR [#15](ht
     - By default, it is visible whenever a `.scad` file is in an open tab
 - Extension Configurations:
     - `openscad.cheatsheet.displayInStatusBar`: When the "Open Cheatsheet" button should be displaying in the status bar
-        - Known bug: When set to `openDoc`, the status bar icon won't _initially_ show up until viewing a `.scad` file, even if one is open in another tab.
+        - Known bug: When set to `openDoc`, the status bar icon won't *initially* show up until viewing a `.scad` file, even if one is open in another tab.
     - `openscad.cheatsheet.colorScheme`: The color scheme used for the cheatsheet. Default uses VSCode's current theme for colors, but the original color scheme is available if desired.
         - `openscad.cheatsheet.openToSide`: Open the cheatsheet in the current column or beside the current column
 
