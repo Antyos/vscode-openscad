@@ -224,7 +224,7 @@
                 "openscad.launchArgs": {
                     "type": "array",
                     "order": 1,
-                    "description": "Extra arguments to pass to the openscad executable when launching. Useful for package managers like Flatpak or Docker.",
+                    "description": "Extra arguments to pass to the openscad executable when launching. Useful for package managers like Flatpak.",
                     "scope": "machine-overridable",
                     "items": {
                         "type": "string"
