@@ -195,7 +195,11 @@
                 "extensions": [
                     ".scad"
                 ],
-                "configuration": "./language-configuration.json"
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./media/openscad.svg",
+                    "dark": "./media/openscad.svg"
+                }
             }
         ],
         "snippets": [
