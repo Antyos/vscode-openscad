@@ -6,7 +6,7 @@ specifiers:
   '@types/jsdom': ^16.2.15
   '@types/mocha': ^9.1.1
   '@types/node': ^16.18.16
-  '@types/vscode': ^1.76.0
+  '@types/vscode': ^1.67.0
   '@types/webpack-env': ^1.18.0
   '@typescript-eslint/eslint-plugin': ^5.55.0
   '@typescript-eslint/parser': ^5.55.0
@@ -47,7 +47,7 @@ devDependencies:
   '@types/jsdom': 16.2.15
   '@types/mocha': 9.1.1
   '@types/node': 16.18.16
-  '@types/vscode': 1.76.0
+  '@types/vscode': 1.67.0
   '@types/webpack-env': 1.18.0
   '@typescript-eslint/eslint-plugin': 5.55.0_342y7v4tc7ytrrysmit6jo4wri
   '@typescript-eslint/parser': 5.55.0_vgl77cfdswitgr47lm5swmv43m
@@ -552,8 +552,8 @@ packages:
     resolution: {integrity: sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==}
     dev: true
 
-  /@types/vscode/1.76.0:
-    resolution: {integrity: sha512-CQcY3+Fe5hNewHnOEAVYj4dd1do/QHliXaknAEYSXx2KEHUzFibDZSKptCon+HPgK55xx20pR+PBJjf0MomnBA==}
+  /@types/vscode/1.67.0:
+    resolution: {integrity: sha512-GH8BDf8cw9AC9080uneJfulhSa7KHSMI2s/CyKePXoGNos9J486w2V4YKoeNUqIEkW4hKoEAWp6/cXTwyGj47g==}
     dev: true
 
   /@types/webpack-env/1.18.0:

@@ -393,7 +393,7 @@
         "@types/jsdom": "^16.2.15",
         "@types/mocha": "^9.1.1",
         "@types/node": "^16.18.16",
-        "@types/vscode": "^1.76.0",
+        "@types/vscode": "^1.67.0",
         "@types/webpack-env": "^1.18.0",
         "@typescript-eslint/eslint-plugin": "^5.55.0",
         "@typescript-eslint/parser": "^5.55.0",
