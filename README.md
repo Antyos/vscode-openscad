@@ -106,8 +106,8 @@ I made this extension because I like OpenSCAD and there wasn't any language supp
 If you would like to contribute, here's what you can do:
 
 1. Fork the repository: <https://github.com/Antyos/vscode-openscad.git>
-2. Run `npm ci` to download node modules (without updating `package-lock.json`)
-3. If running the extension in debug mode, make sure to rename `.vscode/launch.template.json` to `.vscode/launch.json`
+2. Install [pnpm](https://pnpm.io/installation)
+3. Run `pnpm install` to download node modules
 4. Make changes
 5. Submit a pull request!
 
