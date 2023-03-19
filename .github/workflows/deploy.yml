@@ -50,7 +50,7 @@ jobs:
 
       - name: Package extension .vsix
         id: packageExtension
-        uses: HaaLeo/publish-vscode-extension@v1.2
+        uses: HaaLeo/publish-vscode-extension@v1.2.0
         with:
           pat: stub
           dryRun: true
