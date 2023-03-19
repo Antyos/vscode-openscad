@@ -15,6 +15,11 @@ VSCode OpenSCAD can now run as a web extension!
 - Preview- and export- related commands are not available when running as a web
   extension. Attempting to run these commands will display a popup notification
   that the commands are disabled when running as a web extension.
+## Unreleased
+
+### Fixed
+
+- Syntax highlighting for `$vpf` (See PR[#35](https://github.com/Antyos/vscode-openscad/pull/35)). Thanks [atnbueno](https://github.com/atnbueno)
 
 ## [[1.1.1](https://github.com/Antyos/vscode-openscad/releases/tag/v1.1.1)] - (2021-06-07)
 
