@@ -1,14 +1,25 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es6",
-		"outDir": "out",
-		"sourceMap": true,
-		"strict": true,
-		"rootDir": "src"
-	},
-	"exclude": [
-		"node_modules", 
-		".vscode-test"
-	]
+    "compilerOptions": {
+        "target": "ES2020",
+        "lib": ["ES2020"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "dist",
+        "strict": true,
+        "sourceMap": true,
+        "rootDir": "src",
+        "baseUrl": ".",
+        "paths": {
+            "src/*": ["./src/*"],
+        },
+        "composite": true,
+    },
+    "exclude": [
+        //
+        "node_modules",
+        ".vscode-test",
+        ".vscode-test-web",
+        "webpack.config.ts", // Without this, ts complains not all source files are included
+        "dist",
+    ],
 }

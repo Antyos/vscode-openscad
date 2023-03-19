@@ -1,6 +1,7 @@
 # VSCode workspace files
 .vscode/**
 .vscode-test/**
+.vscode-test-web/**
 
 # Gitignore
 .gitignore
@@ -15,6 +16,9 @@ tsconfig.json
 .prettierrc.json
 .prettierignore
 
+# Webpack
+webpack.config.js
+
 # Typescript files
 src/
 out/*.js.map
@@ -24,9 +28,6 @@ test/
 
 # Ignore source files for images
 media/icons/source/**
-
-# Icon theme is currently unsupported
-scad-icon-theme.json
 
 # Ignore yaml-tmlanguage files (only used for dev)
 syntaxes/*.yaml-tmLanguage

@@ -2,12 +2,12 @@
     "name": "openscad",
     "displayName": "OpenSCAD",
     "description": "OpenSCAD highlighting, snippets, and more for VSCode!",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "publisher": "Antyos",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
     "engines": {
-        "vscode": "^1.44.0"
+        "vscode": "^1.67.0"
     },
     "categories": [
         "Programming Languages",
@@ -38,7 +38,8 @@
         "onCommand:openscad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
-    "main": "./out/extension.js",
+    "main": "./dist/extension.node.js",
+    "browser": "./dist/extension.web.js",
     "contributes": {
         "commands": [
             {
@@ -110,19 +111,19 @@
             "editor/title": [
                 {
                     "command": "openscad.preview",
-                    "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu",
+                    "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu && !virtualWorkspace",
                     "group": "navigation@-1.2"
                 },
                 {
                     "command": "openscad.autoKill",
                     "alt": "openscad.kill",
-                    "when": "editorLangId == scad && config.openscad.interface.showKillIconInEditorTitleMenu",
+                    "when": "editorLangId == scad && config.openscad.interface.showKillIconInEditorTitleMenu && !virtualWorkspace",
                     "group": "navigation@-1.3"
                 },
                 {
                     "command": "openscad.exportByConfig",
                     "alt": "openscad.exportWithSaveDialogue",
-                    "when": "editorLangId == scad && config.openscad.interface.showExportIconInEditorTitleMenu",
+                    "when": "editorLangId == scad && config.openscad.interface.showExportIconInEditorTitleMenu && !virtualWorkspace",
                     "group": "navigation@-1.1"
                 }
             ],
@@ -194,7 +195,11 @@
                 "extensions": [
                     ".scad"
                 ],
-                "configuration": "./language-configuration.json"
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./media/openscad.svg",
+                    "dark": "./media/openscad.svg"
+                }
             }
         ],
         "snippets": [
@@ -216,8 +221,18 @@
                 "openscad.launchPath": {
                     "type": "string",
                     "default": "",
+                    "order": 0,
                     "markdownDescription": "Command to launch `openscad`. Either the path to the openscad executable, or just \"`openscad`\" (no quotes) if the executable is in the path. If left blank, it will use the default path for your system noted below:\n- Windows: `C:\\Program Files\\Openscad\\openscad.exe`\n  - _Note:_ Must specify path to `openscad.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)",
                     "scope": "machine-overridable"
+                },
+                "openscad.launchArgs": {
+                    "type": "array",
+                    "order": 1,
+                    "description": "Extra arguments to pass to the openscad executable when launching. Useful for package managers like Flatpak.",
+                    "scope": "machine-overridable",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "openscad.maxInstances": {
                     "type": "number",
@@ -359,33 +374,55 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
+        "test-web": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --extensionTestsPath=dist/web/test/suite/index.js",
+        "pretest": "npm run compile-web",
+        "vscode:prepublish": "npm run package",
         "lint": "eslint -c .eslintrc.json --ext .ts src",
         "format": "prettier --config .prettierrc.json --write ./src/**/*.ts && eslint -c .eslintrc.json --ext .ts src --fix",
-        "watch": "tsc -watch -p ./",
-        "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json"
+        "clean": "del-cli dist",
+        "compile": "webpack",
+        "compile-clean": "npm run clean && npm run compile",
+        "watch": "webpack --watch",
+        "package": "webpack --mode production --devtool hidden-source-map",
+        "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json",
+        "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ."
     },
     "devDependencies": {
         "@types/command-exists": "^1.2.0",
-        "@types/jsdom": "^16.2.10",
-        "@types/node": "^12.12.6",
-        "@types/vscode": "^1.44.0",
-        "@typescript-eslint/eslint-plugin": "^4.26.0",
-        "@typescript-eslint/parser": "^4.26.0",
-        "eslint": "^7.27.0",
-        "eslint-config-prettier": "^7.2.0",
-        "eslint-config-vscode-ext": "^1.0.0",
-        "eslint-plugin-prettier": "^3.4.0",
-        "js-yaml": "^3.14.1",
-        "prettier": "^2.3.0",
-        "typescript": "^3.9.9",
-        "vsce": "^1.88.0"
+        "@types/glob": "^7.2.0",
+        "@types/jsdom": "^16.2.14",
+        "@types/mocha": "^9.0.0",
+        "@types/node": "^16.11.0",
+        "@types/vscode": "^1.67.0",
+        "@types/webpack-env": "^1.16.3",
+        "@typescript-eslint/eslint-plugin": "^5.8.0",
+        "@typescript-eslint/parser": "^5.8.0",
+        "@vscode/test-electron": "^2.0.1",
+        "@vscode/test-web": "^0.0.15",
+        "@vscode/vsce": "^2.16.0",
+        "assert": "^2.0.0",
+        "del-cli": "^5.0.0",
+        "eslint": "^8.5.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-config-vscode-ext": "^1.1.0",
+        "eslint-plugin-import": "^2.25.3",
+        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-simple-import-sort": "^7.0.0",
+        "eslint-plugin-unicorn": "^39.0.0",
+        "js-yaml": "^4.1.0",
+        "mocha": "^9.1.3",
+        "prettier": "^2.5.1",
+        "process": "^0.11.10",
+        "ts-loader": "^9.4.1",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.6.4",
+        "util": "^0.12.4",
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0"
     },
     "dependencies": {
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^4.0.0",
-        "jsdom": "^16.6.0",
-        "ste-signals": "^1.7.3"
+        "node-html-parser": "^6.1.1"
     }
 }

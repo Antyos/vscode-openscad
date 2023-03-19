@@ -1,10 +1,10 @@
 # Generated code
 node_modules/
 out/
+dist/
 
 # Workspace settings
-.vscode/*
-!.vscode/*.template.json
+.vscode/settings.json
 
 # Secret files
 **/secret
