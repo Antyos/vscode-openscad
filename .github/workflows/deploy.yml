@@ -46,11 +46,11 @@ jobs:
 
       # Check (and update if necessary) package.json version
       - name: Check package version
-        uses: technote-space/package-version-check-action@v1.5.2
+        uses: technote-space/package-version-check-action@v1.9.2
 
       - name: Package extension .vsix
         id: packageExtension
-        uses: HaaLeo/publish-vscode-extension@v1.2.0
+        uses: HaaLeo/publish-vscode-extension@v1.3.0
         with:
           pat: stub
           dryRun: true
@@ -87,5 +87,5 @@ jobs:
         uses: HaaLeo/publish-vscode-extension@v1
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
-          extensionFile: ${{ steps.build.outputs.vsixPath }}
+          extensionFile: ${{ needs.build.outputs.vsixPath }}
           registryUrl: https://marketplace.visualstudio.com
