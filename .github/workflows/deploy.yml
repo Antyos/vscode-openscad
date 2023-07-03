@@ -54,6 +54,7 @@ jobs:
         with:
           pat: stub
           dryRun: true
+          dependencies: false
 
       - name: Upload extension artifact
         uses: actions/upload-artifact@v2
