@@ -59,7 +59,7 @@ jobs:
       - name: Upload extension artifact
         uses: actions/upload-artifact@v3
         with:
-          name: extension-vsix
+          name: openscad-vsix
           path: ${{ steps.packageExtension.outputs.vsixPath }}
 
   deploy:
@@ -67,10 +67,17 @@ jobs:
     needs: [build]
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
+      - uses: actions/checkout@v3
+      - name: Download artifact
+        id: download
+        uses: actions/download-artifact@v3
+        with:
+          name: openscad-vsix
+
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: ${{ needs.build.outputs.vsixPath }}
+          artifacts: ${{ steps.download.outputs.download-path }}
 
       # Pulbish to Open VSX Registry
       - name: Publish to Open VSX Registry
@@ -78,7 +85,7 @@ jobs:
         id: publishToOpenVSX
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
-          extensionFile: ${{ needs.build.outputs.vsixPath }}
+          extensionFile: ${{ steps.download.outputs.download-path }}
           registryUrl: https://open-vsx.org
 
       # Publish to VS Marketplace
@@ -86,5 +93,5 @@ jobs:
         uses: HaaLeo/publish-vscode-extension@v1
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
-          extensionFile: ${{ needs.build.outputs.vsixPath }}
+          extensionFile: ${{ steps.download.outputs.download-path }}
           registryUrl: https://marketplace.visualstudio.com
