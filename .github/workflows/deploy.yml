@@ -2,14 +2,10 @@
 # Based on: https://github.com/HaaLeo/publish-vscode-extension
 name: Build and deploy Extension
 
-on:
-  # Run when new version ('v*') tag is created
-  push:
-    tags:
-      - "v*"
+on: [push, pull_request]
 
 env:
-  NODE_VERSION: '14.x'
+  NODE_VERSION: '16.x'
 
 jobs:
   build:
@@ -17,35 +13,65 @@ jobs:
     outputs:
       vsixPath: ${{ steps.packageExtension.outputs.vsixPath }}
     steps:
-      - uses: actions/checkout@v2.4
-      - uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: Install npm packages
-        run: npm ci
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
 
       # Check (and update if necessary) package.json version
       - name: Check package version
-        uses: technote-space/package-version-check-action@v1.5.2
-      
+        uses: technote-space/package-version-check-action@v1.9.2
+
       - name: Package extension .vsix
         id: packageExtension
-        uses: HaaLeo/publish-vscode-extension@v1
+        uses: HaaLeo/publish-vscode-extension@v1.3.0
         with:
           pat: stub
           dryRun: true
+          dependencies: false
 
       - name: Upload extension artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: extension-vsix
           path: ${{ steps.packageExtension.outputs.vsixPath }}
-      
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [ build ]
+    needs: [build]
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: ${{ needs.build.outputs.vsixPath }}
+
       # Pulbish to Open VSX Registry
       - name: Publish to Open VSX Registry
         uses: HaaLeo/publish-vscode-extension@v1
@@ -54,11 +80,11 @@ jobs:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           extensionFile: ${{ needs.build.outputs.vsixPath }}
           registryUrl: https://open-vsx.org
-      
+
       # Publish to VS Marketplace
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v1
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
-          extensionFile: ${{ steps.build.outputs.vsixPath }}
+          extensionFile: ${{ needs.build.outputs.vsixPath }}
           registryUrl: https://marketplace.visualstudio.com
