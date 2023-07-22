@@ -70,8 +70,6 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
           artifacts: ${{ needs.build.outputs.vsixPath }}
 
       # Pulbish to Open VSX Registry
