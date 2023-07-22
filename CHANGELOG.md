@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [[1.2.0](https://github.com/Antyos/vscode-openscad/releases/tag/v1.1.1)] - (2023-07-22)
+
 ### Added
 
 - `openscad.launchArgs` configuration. Fixes [#36](https://github.com/Antyos/vscode-openscad/issues/36).
@@ -15,11 +17,14 @@ VSCode OpenSCAD can now run as a web extension!
 - Preview- and export- related commands are not available when running as a web
   extension. Attempting to run these commands will display a popup notification
   that the commands are disabled when running as a web extension.
-## Unreleased
 
 ### Fixed
 
 - Syntax highlighting for `$vpf` (See PR[#35](https://github.com/Antyos/vscode-openscad/pull/35)). Thanks [atnbueno](https://github.com/atnbueno)
+
+### Development
+
+- Migrated to PNPM for package management. (See PR[#46](https://github.com/Antyos/vscode-openscad/pull/46)).
 
 ## [[1.1.1](https://github.com/Antyos/vscode-openscad/releases/tag/v1.1.1)] - (2021-06-07)
 
@@ -49,7 +54,7 @@ VSCode OpenSCAD can now run as a web extension!
 - Reformatred all code according to styles set by ESLint and Prettier
 
 <!-- markdownlint-disable-next-line MD036 -->
-_See PR [#14](https://github.com/Antyos/vscode-openscad/pull/14) and PR [#15](https://github.com/Antyos/vscode-openscad/pull/15) for details on the above_
+*See PR [#14](https://github.com/Antyos/vscode-openscad/pull/14) and PR [#15](https://github.com/Antyos/vscode-openscad/pull/15) for details on the above*
 
 ## [[1.0.2](https://github.com/Antyos/vscode-openscad/releases/tag/v1.0.2)] - (2020-12-09)
 
