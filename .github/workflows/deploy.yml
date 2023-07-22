@@ -57,7 +57,7 @@ jobs:
           dependencies: false
 
       - name: Upload extension artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: extension-vsix
           path: ${{ steps.packageExtension.outputs.vsixPath }}
