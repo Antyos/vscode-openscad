@@ -57,6 +57,8 @@ export class Cheatsheet {
                 // Disable scripts
                 // (defaults to false, but no harm in explcit declaration)
                 enableScripts: false,
+                // Enable search tool
+                enableFindWidget: true,
             } // Webview options
         );
 
