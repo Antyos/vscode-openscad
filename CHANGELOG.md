@@ -2,12 +2,14 @@
 
 ## [Unreleased]
 
+## [[1.2.1](https://github.com/Antyos/vscode-openscad/releases/tag/v1.2.1)] - (2023-07-26)
+
 ### Added
 
 - Find widget in Cheatsheet. Fixes [#42](https://github.com/Antyos/vscode-openscad/issues/42) (See
   PR[#47](https://github.com/Antyos/vscode-openscad/pull/47)). Thanks [Duckapple](https://github.com/Duckapple)
 
-## [[1.2.0\](https://github.com/Antyos/vscode-openscad/releases/tag/v1.2.0)] - (2023-07-22)
+## [[1.2.0](https://github.com/Antyos/vscode-openscad/releases/tag/v1.2.0)] - (2023-07-22)
 
 ### Added
 
