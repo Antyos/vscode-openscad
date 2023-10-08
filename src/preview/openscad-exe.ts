@@ -98,7 +98,7 @@ export class OpenscadExecutableManager {
      * to be valid. */
     public getPath() {
         return (
-            this.openscadPath ??
+            this.openscadPath ||
             pathByPlatform[type() as keyof typeof pathByPlatform]
         );
     }
