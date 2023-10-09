@@ -7,7 +7,7 @@
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
     "engines": {
-        "vscode": "^1.67.0"
+        "vscode": "^1.75.0"
     },
     "categories": [
         "Programming Languages",
@@ -26,16 +26,7 @@
         "url": "https://github.com/Antyos/vscode-openscad"
     },
     "activationEvents": [
-        "onLanguage:scad",
         "workspaceContains:**/*.scad",
-        "onCommand:openscad.preview",
-        "onCommand:openscad.kill",
-        "onCommand:openscad.autoKill",
-        "onCommand:openscad.killAll",
-        "onCommand:openscad.exportByType",
-        "onCommand:openscad.exportByConfig",
-        "onCommand:openscad.exportWithSaveDialogue",
-        "onCommand:openscad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
     "main": "./dist/extension.node.js",
