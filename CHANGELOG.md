@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [[1.2.2](htts://github.com/Antyos/vscode-openscad/releases/tag/v1.2.2)] - (2023-10-09)
+
 ### Added
 
 - Implemented logging-service.ts based on the one found in the prettier/prettier-vscode. This should make it easier for troubleshooting issues in the future.
