@@ -84,7 +84,9 @@ export class PreviewStore /* extends vscode.Disposable */ {
         );
 
         this.add(preview);
-        if (!preview.hasGui) this.makeExportProgressBar(preview);
+        if (!preview.hasGui) {
+            this.makeExportProgressBar(preview);
+        }
 
         return preview;
     }
@@ -92,10 +94,11 @@ export class PreviewStore /* extends vscode.Disposable */ {
     /** Delete and dispose of a preview. */
     public delete(preview: Preview, informUser?: boolean): void {
         preview.dispose();
-        if (informUser)
+        if (informUser) {
             vscode.window.showInformationMessage(
                 `Killed: ${basename(preview.uri.fsPath)}`
             );
+        }
         this._previews.delete(preview);
 
         if (this.size === 0) {
@@ -107,10 +110,11 @@ export class PreviewStore /* extends vscode.Disposable */ {
     public deleteAll(informUser?: boolean): void {
         for (const preview of this._previews) {
             preview.dispose();
-            if (informUser)
+            if (informUser) {
                 vscode.window.showInformationMessage(
                     `Killed: ${basename(preview.uri.fsPath)}`
                 );
+            }
         }
         this._previews.clear();
 
@@ -149,11 +153,9 @@ export class PreviewStore /* extends vscode.Disposable */ {
                 });
 
                 // Return promise that resolve the progress bar when the preview is killed
-                const p = new Promise<void>((resolve) => {
+                return new Promise<void>((resolve) => {
                     preview.onKilled.push(() => resolve());
                 });
-
-                return p;
             }
         );
     }

@@ -74,7 +74,9 @@ export class Preview {
 
     /** Kill child process */
     public dispose(): void {
-        if (this._isRunning) this._process.kill();
+        if (this._isRunning) {
+            this._process.kill();
+        }
         // this._isRunning = false;
     }
 

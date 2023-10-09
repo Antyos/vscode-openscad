@@ -77,13 +77,17 @@ export class OpenscadExecutableManager {
 
         // TODO: Replace with something less nested
         commandExists(openscadPath, async (error: null, exists: boolean) => {
-            if (!exists) return;
+            if (!exists) {
+                return;
+            }
             const version = await this.getOpenscadVersion(
                 openscadPath,
                 this.arguments_
             );
             // Should we throw an error here?
-            if (!version) return;
+            if (!version) {
+                return;
+            }
             this.openscadExecutable = {
                 version: version,
                 filePath: openscadPath,
