@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+### Added
+
+- Implemented logging-service.ts based on the one found in the prettier/prettier-vscode. This should make it easier for troubleshooting issues in the future.
+- `openscad.showOutput` command to display the output channel.
+- `openscad.logLevel` configuration to set the output channel log level.
+
+### Fixed
+
+- Bug with `openscad.launchPath` using an empty value. Should help with
+  [#49](https://github.com/Antyos/vscode-openscad/issues/49) and
+  [#50](https://github.com/Antyos/vscode-openscad/issues/50)
+
 ## [[1.2.1](https://github.com/Antyos/vscode-openscad/releases/tag/v1.2.1)] - (2023-07-26)
 
 ### Added
