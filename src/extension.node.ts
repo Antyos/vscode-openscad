@@ -95,7 +95,7 @@ export function activate(context: vscode.ExtensionContext): void {
         Cheatsheet.onDidChangeConfiguration(config); // Update the cheatsheet with new config
         previewManager.onDidChangeConfiguration(config); // Update launcher with new config
         loggingService.logDebug('Config change!');
-        loggingService.setOutputLevel(config.get('logLevel') ?? 'None');
+        loggingService.setOutputLevel(config.get('logLevel') ?? 'NONE');
     }
 }
 

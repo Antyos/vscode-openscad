@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext): void {
                 loggingService.setOutputLevel(
                     vscode.workspace
                         .getConfiguration('openscad')
-                        .get('logLevel') ?? 'None'
+                        .get('logLevel') ?? 'NONE'
                 );
             }
         })

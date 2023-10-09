@@ -254,11 +254,11 @@
                     "default": "INFO",
                     "description": "Log level to output to OpenSCAD output channel.",
                     "enum": [
-                        "Debug",
-                        "Info",
-                        "Warn",
-                        "Error",
-                        "None"
+                        "DEBUG",
+                        "INFO",
+                        "WARN",
+                        "ERROR",
+                        "NONE"
                     ]
                 },
                 "openscad.export.preferredExportFileExtension": {

@@ -1,11 +1,11 @@
 import { window } from 'vscode';
 
 const LOG_LEVEL = {
-    DEBUG: 'Debug',
-    INFO: 'Info',
-    WARN: 'Warn',
-    ERROR: 'Error',
-    NONE: 'None',
+    DEBUG: 'DEBUG',
+    INFO: 'INFO',
+    WARN: 'WARN',
+    ERROR: 'ERROR',
+    NONE: 'NONE',
 } as const;
 
 type ObjectValues<T> = T[keyof T];
