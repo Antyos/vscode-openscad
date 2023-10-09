@@ -14,9 +14,13 @@ import {
     ExportFileExtensionList,
 } from 'src/export/export-file-extensions';
 import { VariableResolver } from 'src/export/variable-resolver';
+import { LoggingService } from 'src/logging-service';
+import {
+    OpenscadExecutable,
+    OpenscadExecutableManager,
+} from 'src/preview/openscad-exe';
 import { Preview } from 'src/preview/preview';
 import { PreviewStore } from 'src/preview/preview-store';
-import { OpenscadExecutable, OpenscadExecutableManager } from './openscad-exe';
 
 /** PreviewItems used for `scad.kill` quick pick menu */
 class PreviewItem implements vscode.QuickPickItem {
@@ -45,10 +49,10 @@ const mNoPreviews = new MessageItem('No open previews');
 
 /** Manager of multiple Preview objects */
 export class PreviewManager {
-    private previewStore = new PreviewStore();
+    private previewStore: PreviewStore;
     private config: ScadConfig = {};
-    private variableResolver = new VariableResolver();
-    private openscadExecutableManager = new OpenscadExecutableManager();
+    private variableResolver: VariableResolver;
+    private openscadExecutableManager: OpenscadExecutableManager;
 
     // public activate() {}
 
@@ -61,7 +65,9 @@ export class PreviewManager {
         for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
             let resource: vscode.Uri;
 
-            // console.log(`openFile: { main: ${mainUri}, all: ${allUris}, args: ${args}}`);   // DEBUG
+            this.loggingService.logDebug(
+                `openFile: { main: ${mainUri}, all: ${allUris}, args: ${arguments_}}`
+            ); // DEBUG
 
             // If uri not given, try opening activeTextEditor
             if (!(uri instanceof vscode.Uri)) {
@@ -82,7 +88,7 @@ export class PreviewManager {
             )
                 return;
 
-            console.log(`uri: ${resource}`); // DEBUG
+            this.loggingService.logDebug(`uri: ${resource}`); // DEBUG
 
             // Create and add new OpenSCAD preview to PreviewStore
             this.previewStore.createAndAdd(
@@ -190,7 +196,7 @@ export class PreviewManager {
             )
                 return;
 
-            console.log(`Export uri: ${resource}`); // DEBUG
+            this.loggingService.logInfo(`Export uri: ${resource}`);
 
             this.previewStore.createAndAdd(
                 this.openscadExecutableManager.executable,
@@ -253,7 +259,7 @@ export class PreviewManager {
     public killAll(): void {
         // Check that there are open previews
         if (this.previewStore.size <= 0) {
-            console.error('No open previews');
+            this.loggingService.logError('No open previews');
             vscode.window.showInformationMessage('No open previews.');
             return;
         }
@@ -263,7 +269,13 @@ export class PreviewManager {
     }
 
     /** Constructor */
-    public constructor() {
+
+    public constructor(private loggingService: LoggingService) {
+        this.previewStore = new PreviewStore(this.loggingService);
+        this.variableResolver = new VariableResolver(this.loggingService);
+        this.openscadExecutableManager = new OpenscadExecutableManager(
+            this.loggingService
+        );
         // Load configutation
         this.onDidChangeConfiguration(
             vscode.workspace.getConfiguration('openscad')
@@ -292,7 +304,7 @@ export class PreviewManager {
             'export.useAutoNamingInSaveDialogues'
         );
 
-        console.log(this.config.launchArgs);
+        this.loggingService.logDebug('Launch args:', this.config.launchArgs);
 
         this.openscadExecutableManager.updateScadPath(
             this.config.openscadPath,
@@ -342,7 +354,7 @@ export class PreviewManager {
             : path.join(path.dirname(resource.fsPath), fileName); // Full file path
         const resourceNewExtension = vscode.Uri.file(filePath); // Resource URI with new file extension
 
-        console.log(`Opening Save Dialogue to: ${filePath}`);
+        this.loggingService.logDebug(`Opening Save Dialogue to: ${filePath}`);
 
         // Open save dialogue
         const savedUri = await vscode.window.showSaveDialog({
@@ -365,9 +377,9 @@ export class PreviewManager {
             // Error message for default
             const openscadPath = this.openscadExecutableManager.getPath();
 
-            console.error(
+            this.loggingService.logError(
                 `Path to openscad command is invalid: "${openscadPath}"`
-            ); // DEBUG
+            );
             vscode.window.showErrorMessage(
                 `Cannot find the command: "${openscadPath}". Make sure OpenSCAD is installed. You may need to specify the installation path under \`Settings > OpenSCAD > Launch Path\``
             );
@@ -379,7 +391,9 @@ export class PreviewManager {
             this.previewStore.size >= this.previewStore.maxPreviews &&
             this.previewStore.maxPreviews > 0
         ) {
-            console.error('Max number of OpenSCAD previews already open.'); // DEBUG
+            this.loggingService.logError(
+                'Max number of OpenSCAD previews already open.'
+            );
             vscode.window.showErrorMessage(
                 'Max number of OpenSCAD previews already open. Try increasing the max instances in the config.'
             );
@@ -388,7 +402,9 @@ export class PreviewManager {
 
         // Make sure file is not already open
         if (this.previewStore.get(resource, PreviewStore.hasGui(arguments_))) {
-            console.log(`File is already open: "${resource.fsPath}"`);
+            this.loggingService.logInfo(
+                `File is already open: "${resource.fsPath}"`
+            );
             vscode.window.showInformationMessage(
                 `${path.basename(resource.fsPath)} is already open: "${
                     resource.fsPath

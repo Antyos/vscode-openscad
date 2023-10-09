@@ -8,6 +8,7 @@
 import * as vscode from 'vscode';
 
 import { Cheatsheet } from 'src/cheatsheet/cheatsheet-panel';
+import { LoggingService } from './logging-service';
 
 /**
  * Register a command that is not supported in VS Code web.
@@ -26,13 +27,29 @@ function unsupportedWebCommand(commandId: string): vscode.Disposable {
 
 /** Called when extension is activated */
 export function activate(context: vscode.ExtensionContext): void {
-    console.log('Activating openscad extension');
+    const loggingService = new LoggingService();
+
+    loggingService.logInfo('Activating openscad extension');
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeConfiguration((event) => {
+            if (event.affectsConfiguration('openscad.logLevel')) {
+                loggingService.setOutputLevel(
+                    vscode.workspace
+                        .getConfiguration('openscad')
+                        .get('logLevel') ?? 'None'
+                );
+            }
+        })
+    );
 
     // Register commands
     const commands = [
         vscode.commands.registerCommand(Cheatsheet.csCommandId, () =>
             Cheatsheet.createOrShowPanel(context.extensionUri)
         ),
+        vscode.commands.registerCommand('openscad.showOutput', () => {
+            loggingService.show();
+        }),
         unsupportedWebCommand('openscad.preview'),
         unsupportedWebCommand('openscad.exportByType'),
         unsupportedWebCommand('openscad.exportByConfig'),
@@ -62,7 +79,7 @@ export function activate(context: vscode.ExtensionContext): void {
                 webviewPanel: vscode.WebviewPanel,
                 state: unknown
             ) {
-                console.log(`Got state: ${state}`);
+                loggingService.logInfo(`Got webview state: ${state}`);
                 Cheatsheet.revive(webviewPanel, context.extensionUri);
             },
         });

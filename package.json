@@ -105,6 +105,11 @@
                     "light": "./media/icons/export-light.svg",
                     "dark": "./media/icons/export-dark.svg"
                 }
+            },
+            {
+                "command": "openscad.showOutput",
+                "title": "Show OpenSCAD output channel",
+                "category": "OpenSCAD"
             }
         ],
         "menus": {
@@ -243,6 +248,18 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Show message when a preview is killed."
+                },
+                "openscad.logLevel": {
+                    "type": "string",
+                    "default": "INFO",
+                    "description": "Log level to output to OpenSCAD output channel.",
+                    "enum": [
+                        "Debug",
+                        "Info",
+                        "Warn",
+                        "Error",
+                        "None"
+                    ]
                 },
                 "openscad.export.preferredExportFileExtension": {
                     "type": "string",
