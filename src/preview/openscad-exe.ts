@@ -9,6 +9,7 @@ import { type } from 'os'; // node:os
 import { promisify } from 'util';
 
 import commandExists = require('command-exists');
+import { LoggingService } from 'src/logging-service';
 
 const execFile = promisify(child.execFile);
 
@@ -30,6 +31,8 @@ export class OpenscadExecutableManager {
     private openscadExecutable?: OpenscadExecutable;
     private openscadPath?: string;
     private arguments_: string[] = [];
+
+    public constructor(private loggingService: LoggingService) {}
 
     private async getOpenscadVersion(
         openscadPath: string,
@@ -70,7 +73,7 @@ export class OpenscadExecutableManager {
         // Use platform default if not specified
         const openscadPath = this.getPath();
 
-        console.log(`Path: '${openscadPath}'`); // DEBUG
+        this.loggingService.logInfo(`Using OpenSCAD path: '${openscadPath}'`);
 
         // TODO: Replace with something less nested
         commandExists(openscadPath, async (error: null, exists: boolean) => {
@@ -86,6 +89,10 @@ export class OpenscadExecutableManager {
                 filePath: openscadPath,
                 arguments_: this.arguments_,
             };
+            this.loggingService.logDebug(
+                'Using OpenSCAD:',
+                this.openscadExecutable
+            );
         });
     }
 

@@ -7,6 +7,7 @@
 import { basename } from 'path'; // node:path
 import * as vscode from 'vscode';
 
+import { LoggingService } from 'src/logging-service';
 import { OpenscadExecutable } from './openscad-exe';
 import { Preview } from './preview';
 
@@ -33,7 +34,10 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     /** Create a new PreviewStore with a max number of previews */
-    public constructor(maxPreviews = 0) {
+    public constructor(
+        private readonly loggingService: LoggingService,
+        maxPreviews = 0
+    ) {
         this._maxPreviews = maxPreviews;
         this.setAreOpenPreviews(false);
     }
@@ -72,6 +76,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
         }
 
         const preview = new Preview(
+            this.loggingService,
             openscadExecutable,
             uri,
             hasGui,
@@ -139,7 +144,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
                 // Cancel export
                 token.onCancellationRequested(() => {
-                    console.log('Canceled Export');
+                    this.loggingService.logInfo('Canceled Export');
                     this.delete(preview);
                 });
 

@@ -7,7 +7,8 @@
 import * as child from 'child_process'; // node:child_process
 import * as vscode from 'vscode';
 
-import { OpenscadExecutable } from './openscad-exe';
+import { LoggingService } from 'src/logging-service';
+import { OpenscadExecutable } from 'src/preview/openscad-exe';
 
 /** Open an instance of OpenSCAD to preview a file */
 export class Preview {
@@ -17,6 +18,7 @@ export class Preview {
 
     /** Launch an instance of OpenSCAD to prview a file */
     constructor(
+        private readonly loggingService: LoggingService,
         private readonly openscadExecutable: OpenscadExecutable,
         public readonly uri: vscode.Uri,
         public readonly hasGui: boolean,
@@ -32,7 +34,7 @@ export class Preview {
             this.uri.fsPath,
         ];
 
-        console.log(`commangArgs: ${commandArguments}`); // DEBUG
+        this.loggingService.logDebug(`commandArgs: ${commandArguments}`); // DEBUG
 
         // New process
         this._process = child.execFile(
@@ -41,8 +43,8 @@ export class Preview {
             (error, stdout, stderr) => {
                 // If there's an error
                 if (error) {
-                    // console.error(`exec error: ${error}`);
-                    console.error(`stderr: ${stderr}`); // DEBUG
+                    // this.loggingService.logError(`exec error: ${error}`);
+                    this.loggingService.logError(`stderr: ${stderr}`); // DEBUG
                     vscode.window.showErrorMessage(stderr); // Display error message
                 }
                 // No error
@@ -51,12 +53,12 @@ export class Preview {
                     // If there is no error, assume stderr should be treated as stdout
                     // For more info. see: https://github.com/openscad/openscad/issues/3358
                     const message = stdout || stderr;
-                    console.log(`stdout: ${message}`); // DEBUG
+                    this.loggingService.logDebug(`stdout: ${message}`); // DEBUG
 
                     vscode.window.showInformationMessage(message); // Display info
                 }
 
-                // console.log(`real stdout: ${stdout}`);    // DEBUG
+                // this.loggingService.logDebug(`real stdout: ${stdout}`);    // DEBUG
 
                 this._isRunning = false;
                 // Dispatch 'onKilled' event

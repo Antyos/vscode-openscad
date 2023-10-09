@@ -169,7 +169,7 @@ export class CheatsheetContent {
             )
             .then((uint8array) => {
                 const fileContent = new TextDecoder().decode(uint8array);
-                // console.log(fileContent.toString());
+                // this.loggingService.logDebug(fileContent.toString());
                 return parse(fileContent.toString());
             });
 
