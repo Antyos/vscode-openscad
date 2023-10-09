@@ -9,6 +9,7 @@ import { type } from 'os'; // node:os
 import { promisify } from 'util';
 
 import commandExists = require('command-exists');
+import { LoggingService } from 'src/logging-service';
 
 const execFile = promisify(child.execFile);
 
@@ -30,6 +31,8 @@ export class OpenscadExecutableManager {
     private openscadExecutable?: OpenscadExecutable;
     private openscadPath?: string;
     private arguments_: string[] = [];
+
+    public constructor(private loggingService: LoggingService) {}
 
     private async getOpenscadVersion(
         openscadPath: string,
@@ -70,22 +73,30 @@ export class OpenscadExecutableManager {
         // Use platform default if not specified
         const openscadPath = this.getPath();
 
-        console.log(`Path: '${openscadPath}'`); // DEBUG
+        this.loggingService.logInfo(`Using OpenSCAD path: '${openscadPath}'`);
 
         // TODO: Replace with something less nested
         commandExists(openscadPath, async (error: null, exists: boolean) => {
-            if (!exists) return;
+            if (!exists) {
+                return;
+            }
             const version = await this.getOpenscadVersion(
                 openscadPath,
                 this.arguments_
             );
             // Should we throw an error here?
-            if (!version) return;
+            if (!version) {
+                return;
+            }
             this.openscadExecutable = {
                 version: version,
                 filePath: openscadPath,
                 arguments_: this.arguments_,
             };
+            this.loggingService.logDebug(
+                'Using OpenSCAD:',
+                this.openscadExecutable
+            );
         });
     }
 
@@ -98,7 +109,7 @@ export class OpenscadExecutableManager {
      * to be valid. */
     public getPath() {
         return (
-            this.openscadPath ??
+            this.openscadPath ||
             pathByPlatform[type() as keyof typeof pathByPlatform]
         );
     }

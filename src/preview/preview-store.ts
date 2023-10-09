@@ -7,6 +7,7 @@
 import { basename } from 'path'; // node:path
 import * as vscode from 'vscode';
 
+import { LoggingService } from 'src/logging-service';
 import { OpenscadExecutable } from './openscad-exe';
 import { Preview } from './preview';
 
@@ -33,7 +34,10 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     /** Create a new PreviewStore with a max number of previews */
-    public constructor(maxPreviews = 0) {
+    public constructor(
+        private readonly loggingService: LoggingService,
+        maxPreviews = 0
+    ) {
         this._maxPreviews = maxPreviews;
         this.setAreOpenPreviews(false);
     }
@@ -72,6 +76,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
         }
 
         const preview = new Preview(
+            this.loggingService,
             openscadExecutable,
             uri,
             hasGui,
@@ -79,7 +84,9 @@ export class PreviewStore /* extends vscode.Disposable */ {
         );
 
         this.add(preview);
-        if (!preview.hasGui) this.makeExportProgressBar(preview);
+        if (!preview.hasGui) {
+            this.makeExportProgressBar(preview);
+        }
 
         return preview;
     }
@@ -87,10 +94,11 @@ export class PreviewStore /* extends vscode.Disposable */ {
     /** Delete and dispose of a preview. */
     public delete(preview: Preview, informUser?: boolean): void {
         preview.dispose();
-        if (informUser)
+        if (informUser) {
             vscode.window.showInformationMessage(
                 `Killed: ${basename(preview.uri.fsPath)}`
             );
+        }
         this._previews.delete(preview);
 
         if (this.size === 0) {
@@ -102,10 +110,11 @@ export class PreviewStore /* extends vscode.Disposable */ {
     public deleteAll(informUser?: boolean): void {
         for (const preview of this._previews) {
             preview.dispose();
-            if (informUser)
+            if (informUser) {
                 vscode.window.showInformationMessage(
                     `Killed: ${basename(preview.uri.fsPath)}`
                 );
+            }
         }
         this._previews.clear();
 
@@ -139,16 +148,14 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
                 // Cancel export
                 token.onCancellationRequested(() => {
-                    console.log('Canceled Export');
+                    this.loggingService.logInfo('Canceled Export');
                     this.delete(preview);
                 });
 
                 // Return promise that resolve the progress bar when the preview is killed
-                const p = new Promise<void>((resolve) => {
+                return new Promise<void>((resolve) => {
                     preview.onKilled.push(() => resolve());
                 });
-
-                return p;
             }
         );
     }

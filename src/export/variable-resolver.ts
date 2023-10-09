@@ -14,6 +14,8 @@ import { platform } from 'os'; // node:os
 import * as path from 'path'; // node:path
 import * as vscode from 'vscode';
 
+import { LoggingService } from 'src/logging-service';
+
 /** Get file name without extension */
 export function fileBasenameNoExtension(uri: vscode.Uri): string {
     return path.basename(uri.fsPath, path.extname(uri.fsPath));
@@ -47,7 +49,7 @@ export class VariableResolver {
     private readonly _isWindows: boolean;
     // private _config: ScadConfig;
 
-    constructor() {
+    constructor(private loggingService: LoggingService) {
         // this._config = config
         this._isWindows = platform() === 'win32';
     }
@@ -58,7 +60,7 @@ export class VariableResolver {
         resource: vscode.Uri,
         exportExtension?: string
     ): Promise<string> {
-        // console.log(`resolveString pattern: ${pattern}`); // DEBUG
+        // this.loggingService.logDebug(`resolveString pattern: ${pattern}`); // DEBUG
 
         // Replace all variable pattern matches '${VAR_NAME}'
         const replaced = pattern.replace(
@@ -78,7 +80,7 @@ export class VariableResolver {
         // Get dynamic version number
         const version = await this.getVersionNumber(replaced, resource);
 
-        console.log(`Version number: ${version}`);
+        this.loggingService.logDebug(`Version number: ${version}`);
 
         // Cases for version number
         switch (version) {
@@ -108,10 +110,10 @@ export class VariableResolver {
 
     /** Tests all variables */
     public testVars(resource: vscode.Uri): void {
-        console.log('Testing evaluateSingleVariable()...');
+        this.loggingService.logDebug('Testing evaluateSingleVariable()...');
 
         for (const variable of this._variables) {
-            console.log(
+            this.loggingService.logDebug(
                 `${variable} : ${this.evaluateSingleVariable(
                     '${' + variable + '}',
                     variable,
@@ -200,7 +202,10 @@ export class VariableResolver {
             fs.readdir(fileDirectory, (error, files) => {
                 // Error; Return -2 (dir read error)
                 if (error) {
-                    console.error(error);
+                    this.loggingService.logError(
+                        'Cannot read directory: ',
+                        error
+                    );
                     reject(-2); // File read error
                 }
 
@@ -211,13 +216,13 @@ export class VariableResolver {
                     })
                 );
 
-                // console.log(`Last version: ${lastVersion}`); // DEBUG
+                // this.loggingService.logDebug(`Last version: ${lastVersion}`); // DEBUG
 
                 resolve(lastVersion);
             });
         });
 
-        // console.log(`Version num: ${versionNum}`);   // DEBUG
+        // this.loggingService.logDebug(`Version num: ${versionNum}`);   // DEBUG
 
         // Return next version
         return versionNumber < 0 ? versionNumber : versionNumber + 1;
