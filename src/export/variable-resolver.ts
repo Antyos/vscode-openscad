@@ -136,11 +136,14 @@ export class VariableResolver {
         const workspaceFolder =
             vscode.workspace.getWorkspaceFolder(resource)?.uri.fsPath;
 
+        // Note the ':' after 'date'
         if (variable.startsWith('date:')) {
             return this.evaluateDateTime(variable);
         }
 
         switch (variable) {
+            case 'date':
+                return luxon.DateTime.now().toISODate();
             case 'workspaceFolder':
                 return workspaceFolder ?? match;
             case 'workspaceFolderBasename':
