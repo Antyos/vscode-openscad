@@ -192,7 +192,9 @@ export class VariableResolver {
         resource: vscode.Uri
     ): Promise<number> {
         // No version number in string: return -1
-        if (!VariableResolver.VERSION_FORMAT.test(pattern)) return -1;
+        if (!VariableResolver.VERSION_FORMAT.test(pattern)) {
+            return -1;
+        }
 
         // Replace the number placeholder with a regex number capture pattern
         // Regexp is case insensitive if OS is Windows
