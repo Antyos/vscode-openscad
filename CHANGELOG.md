@@ -4,8 +4,15 @@
 
 ### Added
 
-- `openscad.autoNamingExport` now supports date time variables in the format of:
-  `${date:TEMPLATE}`. Fixes: [#55](https://github.com/Antyos/vscode-openscad/issues/55).
+- `openscad.autoNamingFormat` now supports date time variables. Use `${date}`
+  for an ISO 8601 date string or use a custom format with: `${date:TEMPLATE}`
+  according to [Luxon tokens](https://moment.github.io/luxon/#/formatting?id=consider-alternatives).
+  Fixes: [#55](https://github.com/Antyos/vscode-openscad/issues/55).
+
+### Fixed
+
+- Auto versioning started at "-Infinity" instead of "1" for a folder without
+  siimilarly named files.
 
 ## [[1.2.2](htts://github.com/Antyos/vscode-openscad/releases/tag/v1.2.2)] - (2023-10-09)
 
