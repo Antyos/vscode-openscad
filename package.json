@@ -399,6 +399,7 @@
         "@types/command-exists": "^1.2.0",
         "@types/glob": "^7.2.0",
         "@types/jsdom": "^16.2.15",
+        "@types/luxon": "^3.4.0",
         "@types/mocha": "^9.1.1",
         "@types/node": "^16.18.16",
         "@types/vscode": "^1.67.0",
@@ -431,6 +432,7 @@
     "dependencies": {
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^4.0.0",
+        "luxon": "^3.4.4",
         "node-html-parser": "^6.1.5"
     }
 }

@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- `openscad.autoNamingExport` now supports date time variables in the format of:
+  `${date:TEMPLATE}`. Fixes: [#55](https://github.com/Antyos/vscode-openscad/issues/55).
+
 ## [[1.2.2](htts://github.com/Antyos/vscode-openscad/releases/tag/v1.2.2)] - (2023-10-09)
 
 ### Added

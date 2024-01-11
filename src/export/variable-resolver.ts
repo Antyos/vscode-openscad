@@ -10,6 +10,7 @@
 
 import escapeStringRegexp = require('escape-string-regexp');
 import * as fs from 'fs'; // node:fs
+import * as luxon from 'luxon';
 import { platform } from 'os'; // node:os
 import * as path from 'path'; // node:path
 import * as vscode from 'vscode';
@@ -66,14 +67,12 @@ export class VariableResolver {
         const replaced = pattern.replace(
             VariableResolver.VARIABLE_REGEXP,
             (match: string, variable: string) => {
-                const resolvedValue = this.evaluateSingleVariable(
+                return this.evaluateSingleVariable(
                     match,
                     variable,
                     resource,
                     exportExtension
                 );
-
-                return resolvedValue;
             }
         );
 
@@ -137,6 +136,10 @@ export class VariableResolver {
         const workspaceFolder =
             vscode.workspace.getWorkspaceFolder(resource)?.uri.fsPath;
 
+        if (variable.startsWith('date:')) {
+            return this.evaluateDateTime(variable);
+        }
+
         switch (variable) {
             case 'workspaceFolder':
                 return workspaceFolder ?? match;
@@ -163,6 +166,21 @@ export class VariableResolver {
             default:
                 return match;
         }
+    }
+
+    /** Return the current date formatted according to the Luxon format
+     *  specified in the 'date:FORMAT' input string.
+     *
+     * Note: The 'date:' prefix is removed before formatting, and any '/' or ':'
+     * in the evaluated date string is replaced with '_'.
+     *
+     * See: https://moment.github.io/luxon/#/formatting?id=table-of-tokens
+     */
+    private evaluateDateTime(variable: string): string {
+        const dateTemplate = variable.split(':')[1];
+        const dateString = luxon.DateTime.now().toFormat(dateTemplate);
+        // Replace invalid characters with '_' (e.g. '/' or ':')
+        return dateString.replace(/[/:]/, '_');
     }
 
     /** Evaluate version number in format '${#}' */
