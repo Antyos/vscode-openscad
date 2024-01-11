@@ -230,16 +230,17 @@ export class VariableResolver {
                     reject(-2); // File read error
                 }
 
-                // Get all the files that match the pattern (with different version numbers)
-                const lastVersion = Math.max(
-                    ...files.map((fileName) => {
-                        return Number(patternAsRegexp.exec(fileName)?.[1] || 0);
-                    })
-                );
+                // Get all the files that match the pattern (with different
+                // version numbers)
+                const fileVersions = files.map((fileName) => {
+                    return Number(patternAsRegexp.exec(fileName)?.[1] ?? 0);
+                });
 
-                // this.loggingService.logDebug(`Last version: ${lastVersion}`); // DEBUG
+                if (fileVersions.length === 0) {
+                    resolve(-3);
+                }
 
-                resolve(lastVersion);
+                resolve(Math.max(...fileVersions));
             });
         });
 
