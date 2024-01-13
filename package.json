@@ -276,7 +276,7 @@
                 "openscad.export.autoNamingFormat": {
                     "type": "string",
                     "default": "${fileBasenameNoExtension}.${exportExtension}",
-                    "markdownDescription": "The default format pattern to name exported files. Based on variables used in `tasks.json`. For a full list of variables, see the wiki page [here](https://github.com/Antyos/vscode-openscad/wiki/Auto-Exporting). Commonly used variables include:\n- `${workspaceFolder}` - The path of the folder open in VS Code\n- `${fileBasenameNoExtension}` - The current opened file's basename with no file extension\n- `${exportExtension}` - The file extension used in the export\n- `${#}` - Auto versioning placeholder. Starts at '1' and increments each time you export a file. Prevents accidental overrides.\n\nNote: If the path is not specified absolutely, the extension assumes it starts in the location of the `.scad` file being exported."
+                    "markdownDescription": "The default format pattern to name exported files. Based on variables used in `tasks.json`. For a full list of variables, see the wiki page [here](https://github.com/Antyos/vscode-openscad/wiki/Auto-Exporting). Commonly used variables include:\n- `${workspaceFolder}` - The path of the folder open in VS Code\n- `${fileBasenameNoExtension}` - The current opened file's basename with no file extension\n- `${exportExtension}` - The file extension used in the export\n- `${#}` - Auto versioning placeholder. Starts at '1' and increments each time you export a file. Prevents accidental overrides.\n- `${date}` - Date placeholder. Defaults to ISO 8601 formatting. Specify a custom format with `${date:FORMAT}` using [Luxon tokens](https://moment.github.io/luxon/#/formatting?id=consider-alternatives)\n\nNote: If the path is not specified absolutely, the extension assumes it starts in the location of the `.scad` file being exported."
                 },
                 "openscad.export.useAutoNamingExport": {
                     "type": "boolean",
@@ -399,6 +399,7 @@
         "@types/command-exists": "^1.2.0",
         "@types/glob": "^7.2.0",
         "@types/jsdom": "^16.2.15",
+        "@types/luxon": "^3.4.0",
         "@types/mocha": "^9.1.1",
         "@types/node": "^16.18.16",
         "@types/vscode": "^1.67.0",
@@ -431,6 +432,7 @@
     "dependencies": {
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^4.0.0",
+        "luxon": "^3.4.4",
         "node-html-parser": "^6.1.5"
     }
 }

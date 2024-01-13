@@ -10,6 +10,7 @@
 
 import escapeStringRegexp = require('escape-string-regexp');
 import * as fs from 'fs'; // node:fs
+import * as luxon from 'luxon';
 import { platform } from 'os'; // node:os
 import * as path from 'path'; // node:path
 import * as vscode from 'vscode';
@@ -66,14 +67,12 @@ export class VariableResolver {
         const replaced = pattern.replace(
             VariableResolver.VARIABLE_REGEXP,
             (match: string, variable: string) => {
-                const resolvedValue = this.evaluateSingleVariable(
+                return this.evaluateSingleVariable(
                     match,
                     variable,
                     resource,
                     exportExtension
                 );
-
-                return resolvedValue;
             }
         );
 
@@ -137,7 +136,14 @@ export class VariableResolver {
         const workspaceFolder =
             vscode.workspace.getWorkspaceFolder(resource)?.uri.fsPath;
 
+        // Note the ':' after 'date'
+        if (variable.startsWith('date:')) {
+            return this.evaluateDateTime(variable);
+        }
+
         switch (variable) {
+            case 'date':
+                return luxon.DateTime.now().toISODate();
             case 'workspaceFolder':
                 return workspaceFolder ?? match;
             case 'workspaceFolderBasename':
@@ -165,13 +171,30 @@ export class VariableResolver {
         }
     }
 
+    /** Return the current date formatted according to the Luxon format
+     *  specified in the 'date:FORMAT' input string.
+     *
+     * Note: The 'date:' prefix is removed before formatting, and any '/' or ':'
+     * in the evaluated date string is replaced with '_'.
+     *
+     * See: https://moment.github.io/luxon/#/formatting?id=table-of-tokens
+     */
+    private evaluateDateTime(variable: string): string {
+        const dateTemplate = variable.split(':')[1];
+        const dateString = luxon.DateTime.now().toFormat(dateTemplate);
+        // Replace invalid characters with '_' (e.g. '/' or ':')
+        return dateString.replace(/[/:]/, '_');
+    }
+
     /** Evaluate version number in format '${#}' */
     private async getVersionNumber(
         pattern: string,
         resource: vscode.Uri
     ): Promise<number> {
         // No version number in string: return -1
-        if (!VariableResolver.VERSION_FORMAT.test(pattern)) return -1;
+        if (!VariableResolver.VERSION_FORMAT.test(pattern)) {
+            return -1;
+        }
 
         // Replace the number placeholder with a regex number capture pattern
         // Regexp is case insensitive if OS is Windows
@@ -209,16 +232,17 @@ export class VariableResolver {
                     reject(-2); // File read error
                 }
 
-                // Get all the files that match the pattern (with different version numbers)
-                const lastVersion = Math.max(
-                    ...files.map((fileName) => {
-                        return Number(patternAsRegexp.exec(fileName)?.[1] || 0);
-                    })
-                );
+                // Get all the files that match the pattern (with different
+                // version numbers)
+                const fileVersions = files.map((fileName) => {
+                    return Number(patternAsRegexp.exec(fileName)?.[1] ?? 0);
+                });
 
-                // this.loggingService.logDebug(`Last version: ${lastVersion}`); // DEBUG
+                if (fileVersions.length === 0) {
+                    resolve(-3);
+                }
 
-                resolve(lastVersion);
+                resolve(Math.max(...fileVersions));
             });
         });
 
