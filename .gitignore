@@ -2,6 +2,7 @@
 node_modules/
 out/
 dist/
+tsconfig.tsbuildinfo
 
 # Workspace settings
 .vscode/settings.json
