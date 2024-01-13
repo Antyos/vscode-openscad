@@ -103,6 +103,30 @@ export class PreviewManager {
         }
     }
 
+    private async getExportExtension(
+        fileExtension?: ExportFileExtension | 'auto'
+    ): Promise<ExportFileExtension | undefined> {
+        // If file extension is not provided, prompt user
+        const promptForFileExtension =
+            !fileExtension ||
+            (fileExtension === 'auto' &&
+                this.config.preferredExportFileExtension === 'none');
+        if (promptForFileExtension) {
+            const pick = await vscode.window.showQuickPick(
+                ExportFileExtensionList,
+                { placeHolder: 'Select file extension for export' }
+            );
+            return <ExportFileExtension | undefined>pick;
+        }
+        // Get file extension from config
+        else if (fileExtension === 'auto') {
+            return <ExportFileExtension>(
+                this.config.preferredExportFileExtension
+            );
+        }
+        return fileExtension;
+    }
+
     /** Export file */
     public async exportFile(
         mainUri?: vscode.Uri,
@@ -110,113 +134,94 @@ export class PreviewManager {
         fileExtension?: ExportFileExtension | 'auto',
         useSaveDialogue = false
     ): Promise<void> {
-        let exportExtension: ExportFileExtension; // File extension for export
-
-        // If file extension is not provided, prompt user
-        if (
-            !fileExtension ||
-            (fileExtension === 'auto' &&
-                this.config.preferredExportFileExtension === 'none')
-        ) {
-            // Show quick pick menu to prompt user for file extension
-            const pick = await vscode.window.showQuickPick(
-                ExportFileExtensionList,
-                {
-                    placeHolder: 'Select file extension for export',
-                }
-            );
-
-            if (pick) {
-                exportExtension = <ExportFileExtension>pick;
-            } else {
-                return;
-            } // Still no file extension, return
+        const exportExtension = await this.getExportExtension(fileExtension);
+        if (!exportExtension) {
+            return;
         }
-        // Get file extension from config
-        else if (fileExtension === 'auto') {
-            exportExtension = <ExportFileExtension>(
-                this.config.preferredExportFileExtension
-            );
-        } else {
-            exportExtension = fileExtension;
-        }
-
-        // Iterate through uris
+        // Iterate through uris. As a vscode action, may be given multiple uris
+        // or just one
         for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
             let resource: vscode.Uri;
-            let filePath: string;
-            const arguments_: string[] = [];
-
             // If uri not given, try opening activeTextEditor
             if (!(uri instanceof vscode.Uri)) {
                 const newUri = await this.getActiveEditorUri();
-                if (newUri) {
-                    resource = newUri;
-                } else {
-                    return;
+                if (!newUri) {
+                    continue;
                 }
+                resource = newUri;
             } else {
                 resource = uri;
             }
+            await this.exportSingleFile(
+                resource,
+                exportExtension,
+                useSaveDialogue
+            );
+        }
+    }
 
-            // Open save dialogue
-            if (useSaveDialogue || !this.config.useAutoNamingExport) {
-                // Pattern for URI used in save dialogue
-                const pattern = this.config.useAutoNamingInSaveDialogues
-                    ? this.config.autoNamingFormat
-                    : this.variableResolver.defaultPattern;
-                // Get Uri from save dialogue prompt
-                const newUri = await this.promptForExport(
-                    resource,
-                    exportExtension,
-                    pattern
-                );
-
-                // If valid, set filePath. Otherwise, return
-                if (newUri) {
-                    filePath = newUri.fsPath;
-                } else {
-                    return;
-                }
-            }
-            // Use config for auto generation of filename
-            else {
-                // Filename for export
-                const fileName = await this.variableResolver.resolveString(
-                    this.config.autoNamingFormat,
-                    resource,
-                    exportExtension
-                );
-                // Set full file path; Make sure fileName is not already an absolute path
-                filePath = path.isAbsolute(fileName)
-                    ? fileName
-                    : path.join(path.dirname(resource.fsPath), fileName);
-            }
-
-            // this.variableResolver.testVars(resource);   // TESTING / DEBUG
-
-            // Set arguments
-            arguments_.push('-o', filePath); // Filename for export
-
-            // Check if a new preview can be opened
-            if (
-                !this.canOpenNewPreview(
-                    this.openscadExecutableManager.executable,
-                    resource,
-                    arguments_
-                )
-            ) {
+    private async exportSingleFile(
+        resource: vscode.Uri,
+        exportExtension: ExportFileExtension,
+        useSaveDialogue: boolean
+    ): Promise<void> {
+        let filePath: string;
+        const arguments_: string[] = [];
+        // Open save dialogue
+        if (useSaveDialogue || !this.config.useAutoNamingExport) {
+            // Pattern for URI used in save dialogue
+            const exportNameFormat = this.config.useAutoNamingInSaveDialogues
+                ? this.config.autoNamingFormat
+                : this.variableResolver.defaultPattern;
+            // Get Uri from save dialogue prompt
+            const newUri = await this.promptForExport(
+                resource,
+                exportExtension,
+                exportNameFormat
+            );
+            // If valid, set filePath. Otherwise, return
+            if (!newUri) {
                 return;
             }
+            filePath = newUri.fsPath;
+        }
+        // Use config for auto generation of filename
+        else {
+            // Filename for export
+            const fileName = await this.variableResolver.resolveString(
+                this.config.autoNamingFormat,
+                resource,
+                exportExtension
+            );
+            // Set full file path; Make sure fileName is not already an absolute path
+            filePath = path.isAbsolute(fileName)
+                ? fileName
+                : path.join(path.dirname(resource.fsPath), fileName);
+        }
 
-            this.loggingService.logInfo(`Export uri: ${resource}`);
+        // this.variableResolver.testVars(resource);   // TESTING / DEBUG
 
-            this.previewStore.createAndAdd(
+        // Set arguments
+        arguments_.push('-o', filePath); // Filename for export
+
+        // Check if a new preview can be opened
+        if (
+            !this.canOpenNewPreview(
                 this.openscadExecutableManager.executable,
                 resource,
                 arguments_
-            );
+            )
+        ) {
+            return;
         }
+
+        this.loggingService.logInfo(`Export uri: ${resource}`);
+
+        this.previewStore.createAndAdd(
+            this.openscadExecutableManager.executable,
+            resource,
+            arguments_
+        );
     }
 
     /** Prompt user for instances to kill */
@@ -238,18 +243,18 @@ export class PreviewManager {
         const menuItems: (PreviewItem | MessageItem)[] = [];
         menuItems.push(this.previewStore.size > 0 ? mKillAll : mNoPreviews); // Push MessageItem depending on num open previews
 
+        // Populate quickpick list with open previews
         for (const preview of this.previewStore) {
             menuItems.push(new PreviewItem(preview));
-        } // Populate quickpick list with open previews
+        }
 
         // Get from user
         const selected = await vscode.window.showQuickPick(menuItems, {
             placeHolder: 'Select open preview to kill',
         });
-
         if (!selected) {
             return;
-        } // Return if selected is undefined
+        }
 
         // Check for message item
         if (selected instanceof MessageItem) {
@@ -338,34 +343,34 @@ export class PreviewManager {
             return undefined;
         }
 
+        // If document is already saved, set `resource`
+        if (!editor.document.isUntitled) {
+            return editor.document.uri;
+        }
         // Make user save their document before previewing if it is untitled
         // TODO: Consider implementing as virtual (or just temp) document in the future
-        if (editor.document.isUntitled) {
-            vscode.window.showInformationMessage(
-                'Save untitled document before previewing'
-            );
-            // Prompt save window
-            return await vscode.window.showSaveDialog({
-                defaultUri: editor.document.uri,
-                filters: { 'OpenSCAD Designs': ['scad'] },
-            });
-        }
-        // If document is already saved, set `resource`
-        return editor.document.uri;
+        vscode.window.showInformationMessage(
+            'Save untitled document before previewing'
+        );
+        // Prompt save window
+        return await vscode.window.showSaveDialog({
+            defaultUri: editor.document.uri,
+            filters: { 'OpenSCAD Designs': ['scad'] },
+        });
     }
 
     /** Prompts user for export name and location */
     private async promptForExport(
         resource: vscode.Uri,
         exportExtension: ExportFileExtension = 'stl',
-        pattern: string = this.variableResolver.defaultPattern
+        exportNameFormat: string = this.variableResolver.defaultPattern
     ): Promise<vscode.Uri | undefined> {
         // Replace the `.scad` file extrension with the preferred type (or default to stl)
         const fileName = await this.variableResolver.resolveString(
-            pattern,
+            exportNameFormat,
             resource,
             exportExtension
-        ); // Filename for export
+        );
         const filePath = path.isAbsolute(fileName)
             ? fileName
             : path.join(path.dirname(resource.fsPath), fileName); // Full file path
