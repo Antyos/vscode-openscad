@@ -44,9 +44,6 @@ export class VariableResolver {
         'noMatch',
     ] as const;
 
-    // Default naming pattern
-    private readonly _defaultPattern =
-        '${fileBasenameNoExtension}.${exportExtension}';
     private readonly _isWindows: boolean;
     // private _config: ScadConfig;
 
@@ -57,7 +54,7 @@ export class VariableResolver {
 
     /** Resolve variables in string given a file URI */
     public async resolveString(
-        pattern: string = this._defaultPattern,
+        pattern: string,
         resource: vscode.Uri,
         exportExtension?: string
     ): Promise<string> {
@@ -252,9 +249,5 @@ export class VariableResolver {
         return versionNumber < 0 ? versionNumber : versionNumber + 1;
 
         // Consider adding case for MAX_SAFE_NUMBER (despite it's unlikeliness)
-    }
-
-    public get defaultPattern(): string {
-        return this._defaultPattern;
     }
 }

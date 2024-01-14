@@ -21,3 +21,19 @@ export interface ScadConfig {
     openToSide?: string;
     logLevel?: LogLevel;
 }
+
+// Reflects the defaults configuration in package.json
+export const DEFAULT_CONFIG: Required<ScadConfig> = {
+    openscadPath: '',
+    launchArgs: [],
+    maxInstances: 0,
+    showKillMessage: true,
+    logLevel: 'INFO',
+    preferredExportFileExtension: 'stl',
+    exportNameFormat: '${fileBasenameNoExtension}.${exportExtension}',
+    skipSaveDialog: false,
+    saveDialogExportNameFormat: '',
+    displayInStatusBar: 'openDoc',
+    colorScheme: 'auto',
+    openToSide: 'beside',
+} as const;
