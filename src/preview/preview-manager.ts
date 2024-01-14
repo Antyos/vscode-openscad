@@ -4,6 +4,7 @@
  * Class for adding / removing OpenSCAD previews to a previewStore
  *----------------------------------------------------------------------------*/
 
+import * as fs from 'fs'; // node:fs
 import * as path from 'path'; // node:path
 import * as vscode from 'vscode';
 
@@ -167,18 +168,17 @@ export class PreviewManager {
     ): Promise<void> {
         let filePath: string;
         const arguments_: string[] = [];
+        const exportNameFormat =
+            (await this.getFileExportNameFormat(resource)) ||
+            this.config.exportNameFormat ||
+            DEFAULT_CONFIG.exportNameFormat;
         // Open save dialogue
         if (useSaveDialogue || !this.config.skipSaveDialog) {
-            // Pattern for URI used in save dialogue
-            const saveDialogExportNameFormat =
-                this.config.saveDialogExportNameFormat ||
-                this.config.exportNameFormat ||
-                DEFAULT_CONFIG.exportNameFormat;
             // Get Uri from save dialogue prompt
             const newUri = await this.promptForExport(
                 resource,
                 exportExtension,
-                saveDialogExportNameFormat
+                this.config.saveDialogExportNameFormat || exportNameFormat
             );
             // If valid, set filePath. Otherwise, return
             if (!newUri) {
@@ -190,7 +190,7 @@ export class PreviewManager {
         else {
             // Filename for export
             const fileName = await this.variableResolver.resolveString(
-                this.config.exportNameFormat || DEFAULT_CONFIG.exportNameFormat,
+                exportNameFormat,
                 resource,
                 exportExtension
             );
@@ -223,6 +223,40 @@ export class PreviewManager {
             resource,
             arguments_
         );
+    }
+
+    private async getFileExportNameFormat(
+        resource: vscode.Uri
+    ): Promise<string | undefined> {
+        // Scan the file for the exportNameFormat
+        const exportNameFormatPattern = /\/\/\s*exportNameFormat\s*=\s*(.*)/;
+        const exportNameFormatPromise = new Promise<string | undefined>(
+            (resolve, reject) => {
+                fs.readFile(
+                    resource.fsPath,
+                    'utf-8',
+                    (error: NodeJS.ErrnoException | null, data: string) => {
+                        if (error) {
+                            reject(error);
+                        }
+                        const match = exportNameFormatPattern.exec(data);
+                        resolve(match?.[1]);
+                    }
+                );
+            }
+        );
+        try {
+            const exportNameFormat = await exportNameFormatPromise;
+            if (exportNameFormat) {
+                this.loggingService.logInfo(
+                    `Using file exportNameFormat override: ${exportNameFormat}`
+                );
+            }
+            return exportNameFormat;
+        } catch (error) {
+            this.loggingService.logWarning('Error reading file: ', error);
+        }
+        return;
     }
 
     /** Prompt user for instances to kill */
