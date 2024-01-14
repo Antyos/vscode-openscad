@@ -335,6 +335,42 @@ export class PreviewManager {
         );
         // Set the max previews
         this.previewStore.maxPreviews = this.config.maxInstances ?? 0;
+
+        // Convert deprecated configuration to current configuration. Only use
+        // the deprecated configs if they are present and the current config is
+        // the default.
+        const autoNamingFormat = config.get<string>('export.autoNamingFormat');
+        if (
+            autoNamingFormat !== undefined &&
+            this.config.exportNameFormat === DEFAULT_CONFIG.exportNameFormat
+        ) {
+            this.config.exportNameFormat = autoNamingFormat;
+        }
+
+        const useAutoNamingExport = config.get<boolean>(
+            'export.useAutoNamingExport'
+        );
+        if (
+            useAutoNamingExport !== undefined &&
+            this.config.skipSaveDialog === DEFAULT_CONFIG.skipSaveDialog
+        ) {
+            this.config.skipSaveDialog = useAutoNamingExport;
+        }
+
+        // To preserve original behavior, use default exportNameFormat in save
+        // dialogs only if the user had previously specified not to use
+        // autonamingFormatting in save dialogs
+        const useAutoNamingInSaveDialogues = config.get<boolean>(
+            'export.useAutoNamingInSaveDialogues'
+        );
+        if (
+            useAutoNamingInSaveDialogues === false &&
+            this.config.saveDialogExportNameFormat ===
+                DEFAULT_CONFIG.saveDialogExportNameFormat
+        ) {
+            this.config.saveDialogExportNameFormat =
+                DEFAULT_CONFIG.exportNameFormat;
+        }
     }
 
     /** Gets the uri of the active editor */
@@ -363,8 +399,8 @@ export class PreviewManager {
     /** Prompts user for export name and location */
     private async promptForExport(
         resource: vscode.Uri,
-        exportExtension: ExportFileExtension = 'stl',
-        exportNameFormat: string = this.variableResolver.defaultPattern
+        exportExtension: ExportFileExtension,
+        exportNameFormat: string
     ): Promise<vscode.Uri | undefined> {
         // Replace the `.scad` file extrension with the preferred type (or default to stl)
         const fileName = await this.variableResolver.resolveString(
