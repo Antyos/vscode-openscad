@@ -7,7 +7,7 @@
 import * as path from 'path'; // node:path
 import * as vscode from 'vscode';
 
-import { ScadConfig } from 'src/config';
+import { DEFAULT_CONFIG, ScadConfig } from 'src/config';
 import {
     ExportExtensionsForSave,
     ExportFileExtension,
@@ -168,16 +168,17 @@ export class PreviewManager {
         let filePath: string;
         const arguments_: string[] = [];
         // Open save dialogue
-        if (useSaveDialogue || !this.config.useAutoNamingExport) {
+        if (useSaveDialogue || !this.config.skipSaveDialog) {
             // Pattern for URI used in save dialogue
-            const exportNameFormat = this.config.useAutoNamingInSaveDialogues
-                ? this.config.autoNamingFormat
-                : this.variableResolver.defaultPattern;
+            const saveDialogExportNameFormat =
+                this.config.saveDialogExportNameFormat ||
+                this.config.exportNameFormat ||
+                DEFAULT_CONFIG.exportNameFormat;
             // Get Uri from save dialogue prompt
             const newUri = await this.promptForExport(
                 resource,
                 exportExtension,
-                exportNameFormat
+                saveDialogExportNameFormat
             );
             // If valid, set filePath. Otherwise, return
             if (!newUri) {
@@ -189,7 +190,7 @@ export class PreviewManager {
         else {
             // Filename for export
             const fileName = await this.variableResolver.resolveString(
-                this.config.autoNamingFormat,
+                this.config.exportNameFormat || DEFAULT_CONFIG.exportNameFormat,
                 resource,
                 exportExtension
             );
@@ -316,14 +317,14 @@ export class PreviewManager {
         this.config.preferredExportFileExtension = config.get<string>(
             'export.preferredExportFileExtension'
         );
-        this.config.autoNamingFormat = config.get<string>(
-            'export.autoNamingFormat'
+        this.config.exportNameFormat = config.get<string>(
+            'export.exportNameFormat'
         );
-        this.config.useAutoNamingExport = config.get<boolean>(
-            'export.useAutoNamingExport'
+        this.config.skipSaveDialog = config.get<boolean>(
+            'export.skipSaveDialog'
         );
-        this.config.useAutoNamingInSaveDialogues = config.get<boolean>(
-            'export.useAutoNamingInSaveDialogues'
+        this.config.saveDialogExportNameFormat = config.get<string>(
+            'export.saveDialogExportNameFormat'
         );
 
         this.loggingService.logDebug('Launch args:', this.config.launchArgs);

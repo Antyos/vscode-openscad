@@ -13,9 +13,9 @@ export interface ScadConfig {
     maxInstances?: number;
     showKillMessage?: boolean;
     preferredExportFileExtension?: string;
-    autoNamingFormat?: string;
-    useAutoNamingExport?: boolean;
-    useAutoNamingInSaveDialogues?: boolean;
+    exportNameFormat?: string;
+    skipSaveDialog?: boolean;
+    saveDialogExportNameFormat?: string;
     displayInStatusBar?: string;
     colorScheme?: string;
     openToSide?: string;
