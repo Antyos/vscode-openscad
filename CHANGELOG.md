@@ -2,17 +2,35 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Configurations (See PR [#58](https://github.com/Antyos/vscode-openscad/pull/58))
+    | Old | New |
+    | --- | --- |
+    | `openscad.export.autoNamingFormat` | `openscad.export.exportNameFormat` |
+    | `openscad.export.useAutoNamingExport`  |  `openscad.export.skipSaveDialog`  |
+    | `openscad.export.useAutoNamingInSaveDialogues` | `openscad.export.saveDialogExportNameFormat` |
+
 ### Added
 
-- `openscad.autoNamingFormat` now supports date time variables. Use `${date}`
+- Override `openscad.export.exportNameFormat` on a per-file basis. (See [#58](https://github.com/Antyos/vscode-openscad/issues/58))
+- `openscad.export.exportNameFormat` now supports date time variables. Use `${date}`
   for an ISO 8601 date string or use a custom format with: `${date:TEMPLATE}`
   according to [Luxon tokens](https://moment.github.io/luxon/#/formatting?id=consider-alternatives).
+  (See PR [#57](https://github.com/Antyos/vscode-openscad/issues/57))
   Fixes: [#55](https://github.com/Antyos/vscode-openscad/issues/55).
 
 ### Fixed
 
 - Auto versioning started at "-Infinity" instead of "1" for a folder without
   siimilarly named files.
+
+### Deprecated
+
+- Configurations:
+    - `openscad.export.autoNamingFormat`
+    - `openscad.export.useAutoNamingExport`
+    - `openscad.export.useAutoNamingInSaveDialogues`
 
 ## [[1.2.2](htts://github.com/Antyos/vscode-openscad/releases/tag/v1.2.2)] - (2023-10-09)
 
