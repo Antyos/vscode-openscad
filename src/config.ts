@@ -36,4 +36,4 @@ export const DEFAULT_CONFIG: Required<ScadConfig> = {
     displayInStatusBar: 'openDoc',
     colorScheme: 'auto',
     openToSide: 'beside',
-} as const;
+};
