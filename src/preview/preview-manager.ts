@@ -176,9 +176,9 @@ export class PreviewManager {
         if (useSaveDialogue || !this.config.skipSaveDialog) {
             // Get Uri from save dialogue prompt
             const newUri = await this.promptForExport(
+                this.config.saveDialogExportNameFormat || exportNameFormat,
                 resource,
-                exportExtension,
-                this.config.saveDialogExportNameFormat || exportNameFormat
+                exportExtension
             );
             // If valid, set filePath. Otherwise, return
             if (!newUri) {
@@ -432,9 +432,9 @@ export class PreviewManager {
 
     /** Prompts user for export name and location */
     private async promptForExport(
+        exportNameFormat: string,
         resource: vscode.Uri,
-        exportExtension: ExportFileExtension,
-        exportNameFormat: string
+        exportExtension: ExportFileExtension
     ): Promise<vscode.Uri | undefined> {
         // Replace the `.scad` file extrension with the preferred type (or default to stl)
         const fileName = await this.variableResolver.resolveString(
