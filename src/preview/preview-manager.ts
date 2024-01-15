@@ -378,6 +378,12 @@ export class PreviewManager {
             autoNamingFormat !== undefined &&
             this.config.exportNameFormat === DEFAULT_CONFIG.exportNameFormat
         ) {
+            this.loggingService.logWarning(
+                '`openscad.export.autoNamingFormat` is deprecated. Use `openscad.export.exportNameFormat` instead. See: [#58](https://github.com/Antyos/vscode-openscad/pull/58) for more information.'
+            );
+            vscode.window.showWarningMessage(
+                '`openscad.export.autoNamingFormat` is deprecated. Use `openscad.export.exportNameFormat` instead. See: [#58](https://github.com/Antyos/vscode-openscad/pull/58) for more information.'
+            );
             this.config.exportNameFormat = autoNamingFormat;
         }
 
@@ -388,6 +394,12 @@ export class PreviewManager {
             useAutoNamingExport !== undefined &&
             this.config.skipSaveDialog === DEFAULT_CONFIG.skipSaveDialog
         ) {
+            this.loggingService.logWarning(
+                '`openscad.export.useAutoNamingExport` is deprecated. Use `openscad.export.skipSaveDialog` instead. See: [#58](https://github.com/Antyos/vscode-openscad/pull/58) for more information'
+            );
+            vscode.window.showWarningMessage(
+                '`openscad.export.useAutoNamingExport` is deprecated. Use `openscad.export.skipSaveDialog` instead. See: [#58](https://github.com/Antyos/vscode-openscad/pull/58) for more information'
+            );
             this.config.skipSaveDialog = useAutoNamingExport;
         }
 
@@ -402,6 +414,12 @@ export class PreviewManager {
             this.config.saveDialogExportNameFormat ===
                 DEFAULT_CONFIG.saveDialogExportNameFormat
         ) {
+            this.loggingService.logWarning(
+                '`openscad.export.useAutoNamingInSaveDialogues` is deprecated. Use `openscad.export.saveDialogExportNameFormat` instead. See: [#58](https://github.com/Antyos/vscode-openscad/pull/58) for more information'
+            );
+            vscode.window.showWarningMessage(
+                '`openscad.export.useAutoNamingInSaveDialogues` is deprecated. Use `openscad.export.saveDialogExportNameFormat` instead. See: [#58](https://github.com/Antyos/vscode-openscad/pull/58) for more information'
+            );
             this.config.saveDialogExportNameFormat =
                 DEFAULT_CONFIG.exportNameFormat;
         }
