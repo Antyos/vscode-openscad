@@ -8,66 +8,7 @@
   "name": "OpenSCAD",
   "patterns": [
     {
-      "name": "comment.block.scad",
-      "match": "((?:/\\*)(?:\\*)?(?!\\/))(.*?)(\\*/)",
-      "captures": {
-        "1": {
-          "name": "punctuation.definition.comment.begin.scad"
-        },
-        "2": {
-          "patterns": [
-            {
-              "begin": "\\[",
-              "end": "\\]",
-              "name": "keyword.other.customizer.scad"
-            }
-          ]
-        },
-        "3": {
-          "name": "punctuation.definition.comment.end.scad"
-        }
-      }
-    },
-    {
-      "name": "comment.line.double-slash.scad",
-      "match": "(?x)\n  (?<=\\S\\s*)\n  (\\/\\/\\s*)\n  (\n    \\[(?:\n        (?:-?\\d+(?:.\\d)*)(?:\\s*:\\s*-?\\d+(?:.\\d)*){0,2} |\n        (?:(?:[^:,]+:)?[^:,]+,)*(?:(?:[^:,]+:)?[^:,]+)\n      )\n    \\]\n  )\n  [ \\t]*$\\n?",
-      "captures": {
-        "1": {
-          "name": "punctuation.definition.comment.scad"
-        },
-        "2": {
-          "name": "keyword.other.customizer.scad"
-        }
-      }
-    },
-    {
-      "name": "comment.block.documentation.scad",
-      "begin": "/\\*\\*(?!/)",
-      "captures": {
-        "0": {
-          "name": "punctuation.definition.comment.scad"
-        }
-      },
-      "end": "\\*/"
-    },
-    {
-      "name": "comment.block.scad",
-      "begin": "/\\*",
-      "captures": {
-        "0": {
-          "name": "punctuation.definition.comment.scad"
-        }
-      },
-      "end": "\\*/"
-    },
-    {
-      "name": "comment.line.double-slash.scad",
-      "match": "(//).*$\\n?",
-      "captures": {
-        "1": {
-          "name": "punctuation.definition.comment.scad"
-        }
-      }
+      "include": "#comments"
     },
     {
       "name": "invalid.string.quoted.single.scad",
@@ -364,6 +305,45 @@
         }
       ]
     },
+    "comments": {
+      "patterns": [
+        {
+          "include": "#export_name_format"
+        },
+        {
+          "include": "#customizer_comments"
+        },
+        {
+          "name": "comment.block.documentation.scad",
+          "begin": "/\\*\\*(?!/)",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.scad"
+            }
+          },
+          "end": "\\*/"
+        },
+        {
+          "name": "comment.block.scad",
+          "begin": "/\\*",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.scad"
+            }
+          },
+          "end": "\\*/"
+        },
+        {
+          "name": "comment.line.double-slash.scad",
+          "match": "(//).*$\\n?",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.comment.scad"
+            }
+          }
+        }
+      ]
+    },
     "constants": {
       "patterns": [
         {
@@ -383,6 +363,63 @@
           "match": "\\bPI\\b"
         }
       ]
+    },
+    "customizer_comments": {
+      "patterns": [
+        {
+          "name": "comment.block.scad",
+          "match": "((?:/\\*)(?:\\*)?(?!\\/))(.*?)(\\*/)",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.comment.begin.scad"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "begin": "\\[",
+                  "end": "\\]",
+                  "name": "keyword.other.customizer.scad"
+                }
+              ]
+            },
+            "3": {
+              "name": "punctuation.definition.comment.end.scad"
+            }
+          }
+        },
+        {
+          "name": "comment.line.double-slash.scad",
+          "match": "(?x)\n  (?<=\\S\\s*)\n  (\\/\\/\\s*)\n  (\n    \\[(?:\n        (?:-?\\d+(?:.\\d)*)(?:\\s*:\\s*-?\\d+(?:.\\d)*){0,2} |\n        (?:(?:[^:,]+:)?[^:,]+,)*(?:(?:[^:,]+:)?[^:,]+)\n      )\n    \\]\n  )\n  [ \\t]*$\\n?",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.comment.scad"
+            },
+            "2": {
+              "name": "keyword.other.customizer.scad"
+            }
+          }
+        }
+      ]
+    },
+    "export_name_format": {
+      "name": "comment.line.double-slash.scad",
+      "match": "(\\/\\/\\s*)(exportNameFormat)\\s*=\\s*(.*)",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.scad"
+        },
+        "2": {
+          "name": "keyword.other.config.exportNameFormat.scad"
+        },
+        "3": {
+          "patterns": [
+            {
+              "match": "\\$\\{\\w+\\}",
+              "name": "constant.character.format.exportNameFormat.scad"
+            }
+          ]
+        }
+      }
     },
     "function_builtin": {
       "patterns": [

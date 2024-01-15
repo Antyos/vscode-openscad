@@ -182,6 +182,7 @@ repository:
 
   comments:
     patterns:
+    - include: '#export_name_format'
     - include: '#customizer_comments'
     - name: comment.block.documentation.scad
       begin: /\*\*(?!/)
@@ -241,6 +242,18 @@ repository:
       captures:
         '1': {name: punctuation.definition.comment.scad}
         '2': {name: keyword.other.customizer.scad}
+
+  export_name_format:
+    name: comment.line.double-slash.scad
+    match: (\/\/\s*)(exportNameFormat)\s*=\s*(.*)
+    captures:
+      '1': {name: punctuation.definition.comment.scad}
+      '2': {name: keyword.other.config.exportNameFormat.scad}
+      '3':
+        patterns:
+        - match: \$\{\w+\}
+          name: constant.character.format.exportNameFormat.scad
+  
   function_builtin:
     patterns:
     - name: support.function.scad
