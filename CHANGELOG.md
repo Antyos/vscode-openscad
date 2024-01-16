@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [[1.3.0](htts://github.com/Antyos/vscode-openscad/releases/tag/v1.3.0)]
+
 ### Changed
 
 - Configurations (See PR [#58](https://github.com/Antyos/vscode-openscad/pull/58))
