@@ -414,7 +414,7 @@
         "3": {
           "patterns": [
             {
-              "match": "\\$\\{\\w+\\}",
+              "match": "\\$\\{[\\w#]+(:.*?)?\\}",
               "name": "constant.character.format.exportNameFormat.scad"
             }
           ]
