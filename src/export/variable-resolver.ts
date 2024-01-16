@@ -163,7 +163,9 @@ export class VariableResolver {
                 return exportExtension ?? match;
             // We will evaluate the number later
             case '#':
+                return match;
             default:
+                this.loggingService.logWarning(`Unknown variable: ${match}`);
                 return match;
         }
     }
