@@ -5,55 +5,7 @@ foldingStopMarker: \*\*/|^\s*\}
 keyEquivalent: ^~S
 name: OpenSCAD
 patterns:
-# Customizer section header (single line block comment)
-- name: comment.block.scad
-  match: ((?:/\*)(?:\*)?(?!\/))(.*?)(\*/)
-  captures:
-    '1': {name: punctuation.definition.comment.begin.scad}
-    '2': 
-      patterns:
-      - begin: '\['
-        end: '\]'
-        name: keyword.other.customizer.scad
-    '3': {name: punctuation.definition.comment.end.scad}
-
-# Single line comment with customizer syntax
-# Can match: [10], [10:20], [-10:0.2:10], [foo, bar, baz], [10:S, 20:M, 30:L], [S:Small, M:Medium, L:Large]
-- name: comment.line.double-slash.scad
-  match: |-
-    (?x)
-      (?<=\S\s*)
-      (\/\/\s*)
-      (
-        \[(?:
-            (?:-?\d+(?:.\d)*)(?:\s*:\s*-?\d+(?:.\d)*){0,2} |
-            (?:(?:[^:,]+:)?[^:,]+,)*(?:(?:[^:,]+:)?[^:,]+)
-          )
-        \]
-      )
-      [ \t]*$\n?
-  captures:
-    '1': {name: punctuation.definition.comment.scad}
-    '2': {name: keyword.other.customizer.scad}
-
-# Comments
-- name: comment.block.documentation.scad
-  begin: /\*\*(?!/)
-  captures:
-    '0': {name: punctuation.definition.comment.scad}
-  end: \*/
-
-- name: comment.block.scad
-  begin: /\*
-  captures:
-    '0': {name: punctuation.definition.comment.scad}
-  end: \*/
-
-- name: comment.line.double-slash.scad
-  match: (//).*$\n?
-  captures:
-    '1': {name: punctuation.definition.comment.scad}
-
+- include: '#comments'
 # Strings
 - name: invalid.string.quoted.single.scad
   begin: ''''
@@ -207,7 +159,7 @@ patterns:
 
 repository:
   brace_block:
-    name: meta.block.scad 
+    name: meta.block.scad
     begin: '\{'
     end: '\}'
     beginCaptures:
@@ -218,7 +170,7 @@ repository:
     - include: $self
 
   bracket_block:
-    name: meta.block.scad 
+    name: meta.block.scad
     begin: '\['
     end: '\]'
     beginCaptures:
@@ -227,6 +179,25 @@ repository:
       '0': {name: punctuation.section.block.end.bracket.square.scad}
     patterns:
     - include: $self
+
+  comments:
+    patterns:
+    - include: '#export_name_format'
+    - include: '#customizer_comments'
+    - name: comment.block.documentation.scad
+      begin: /\*\*(?!/)
+      captures:
+        '0': {name: punctuation.definition.comment.scad}
+      end: \*/
+    - name: comment.block.scad
+      begin: /\*
+      captures:
+        '0': {name: punctuation.definition.comment.scad}
+      end: \*/
+    - name: comment.line.double-slash.scad
+      match: (//).*$\n?
+      captures:
+        '1': {name: punctuation.definition.comment.scad}
 
   constants:
     patterns:
@@ -238,6 +209,50 @@ repository:
       match: '\bundef\b'
     - name: constant.language.pi.scad
       match: '\bPI\b'
+  
+  customizer_comments:
+    patterns:
+    # Customizer section header (single line block comment)
+    - name: comment.block.scad
+      match: ((?:/\*)(?:\*)?(?!\/))(.*?)(\*/)
+      captures:
+        '1': {name: punctuation.definition.comment.begin.scad}
+        '2':
+          patterns:
+          - begin: '\['
+            end: '\]'
+            name: keyword.other.customizer.scad
+        '3': {name: punctuation.definition.comment.end.scad}
+
+    # Single line comment with customizer syntax
+    # Can match: [10], [10:20], [-10:0.2:10], [foo, bar, baz], [10:S, 20:M, 30:L], [S:Small, M:Medium, L:Large]
+    - name: comment.line.double-slash.scad
+      match: |-
+        (?x)
+          (?<=\S\s*)
+          (\/\/\s*)
+          (
+            \[(?:
+                (?:-?\d+(?:.\d)*)(?:\s*:\s*-?\d+(?:.\d)*){0,2} |
+                (?:(?:[^:,]+:)?[^:,]+,)*(?:(?:[^:,]+:)?[^:,]+)
+              )
+            \]
+          )
+          [ \t]*$\n?
+      captures:
+        '1': {name: punctuation.definition.comment.scad}
+        '2': {name: keyword.other.customizer.scad}
+
+  export_name_format:
+    name: comment.line.double-slash.scad
+    match: (\/\/\s*)(exportNameFormat)\s*=\s*(.*)
+    captures:
+      '1': {name: punctuation.definition.comment.scad}
+      '2': {name: keyword.other.config.exportNameFormat.scad}
+      '3':
+        patterns:
+        - match: \$\{\w+\}
+          name: constant.character.format.exportNameFormat.scad
   
   function_builtin:
     patterns:

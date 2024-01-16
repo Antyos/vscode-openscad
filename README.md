@@ -78,11 +78,9 @@ For more information, see: [Using an external Editor with OpenSCAD](https://en.w
 
 ## To-Do
 
-- Add OpenSCAD logo for `.scad` file extensions once that becomes a feature in VSCode. See [microsoft/vscode#14662](https://github.com/microsoft/vscode/issues/14662).
 - Add to syntax highlighting
 - Auto-naming export
     - Include ${var:x} in export format
-    - Add "export" line in .scad file to override export filename settings on per-file basis
     - Add configurable export map for each file format
     - Launch file with args (get user input for args)
 - Add snippets for common things in the OpenSCAD cheat sheet

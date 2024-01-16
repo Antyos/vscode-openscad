@@ -1,4 +1,5 @@
 // Test file for general highlighting
+// exportNameFormat=${filenameNoExtension}.${exportExtension}
 include <file1.scad>;
 use <file2.scad>;
 

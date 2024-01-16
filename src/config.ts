@@ -13,11 +13,27 @@ export interface ScadConfig {
     maxInstances?: number;
     showKillMessage?: boolean;
     preferredExportFileExtension?: string;
-    autoNamingFormat?: string;
-    useAutoNamingExport?: boolean;
-    useAutoNamingInSaveDialogues?: boolean;
+    exportNameFormat?: string;
+    skipSaveDialog?: boolean;
+    saveDialogExportNameFormat?: string;
     displayInStatusBar?: string;
     colorScheme?: string;
     openToSide?: string;
     logLevel?: LogLevel;
 }
+
+// Reflects the defaults configuration in package.json
+export const DEFAULT_CONFIG: Required<ScadConfig> = {
+    openscadPath: '',
+    launchArgs: [],
+    maxInstances: 0,
+    showKillMessage: true,
+    logLevel: 'INFO',
+    preferredExportFileExtension: 'stl',
+    exportNameFormat: '${fileBasenameNoExtension}.${exportExtension}',
+    skipSaveDialog: false,
+    saveDialogExportNameFormat: '',
+    displayInStatusBar: 'openDoc',
+    colorScheme: 'auto',
+    openToSide: 'beside',
+};
