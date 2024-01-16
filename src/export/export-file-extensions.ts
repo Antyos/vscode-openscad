@@ -22,7 +22,7 @@ export const ExportFileExtensionList = [
 ] as const;
 
 /** Avaiable file extensions for export */
-export type ExportFileExtension = typeof ExportFileExtensionList[number];
+export type ExportFileExtension = (typeof ExportFileExtensionList)[number];
 
 /** File types used in save dialogue */
 export const ExportExtensionsForSave = {

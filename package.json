@@ -274,19 +274,31 @@
                     "markdownDescription": "Preferred file extension to use when exporting using the **Export Model** button in the editor title bar. Set to `none` to select the file extension each time."
                 },
                 "openscad.export.autoNamingFormat": {
+                    "type": "deprecated",
+                    "deprecationMessage": "Please use `openscad.export.exportNameFormat` instead."
+                },
+                "openscad.export.exportNameFormat": {
                     "type": "string",
                     "default": "${fileBasenameNoExtension}.${exportExtension}",
-                    "markdownDescription": "The default format pattern to name exported files. Based on variables used in `tasks.json`. For a full list of variables, see the wiki page [here](https://github.com/Antyos/vscode-openscad/wiki/Auto-Exporting). Commonly used variables include:\n- `${workspaceFolder}` - The path of the folder open in VS Code\n- `${fileBasenameNoExtension}` - The current opened file's basename with no file extension\n- `${exportExtension}` - The file extension used in the export\n- `${#}` - Auto versioning placeholder. Starts at '1' and increments each time you export a file. Prevents accidental overrides.\n- `${date}` - Date placeholder. Defaults to ISO 8601 formatting. Specify a custom format with `${date:FORMAT}` using [Luxon tokens](https://moment.github.io/luxon/#/formatting?id=consider-alternatives)\n\nNote: If the path is not specified absolutely, the extension assumes it starts in the location of the `.scad` file being exported."
+                    "markdownDescription": "The default format pattern to name exported files. Based on variables used in `tasks.json`. For a full list of variables, see the wiki page [here](https://github.com/Antyos/vscode-openscad/wiki/Auto-Exporting). Commonly used variables include:\n- `${workspaceFolder}` - The path of the folder open in VS Code\n- `${fileBasenameNoExtension}` - The current opened file's basename with no file extension\n- `${exportExtension}` - The file extension used in the export\n- `${#}` - Auto versioning placeholder. Starts at '1' and increments each time you export a file. Prevents accidental overrides.\n- `${date}` - Date placeholder. Defaults to ISO 8601 formatting. Specify a custom format with `${date:FORMAT}` using [Luxon tokens](https://moment.github.io/luxon/#/formatting?id=consider-alternatives)\n\nThis option can be overriden on a per-file basis by specifying a comment: `// exportExtension=${fileBasenameNoExtension}.${exportExtension}`\nNote: If the path is not specified absolutely, the extension assumes it starts in the location of the `.scad` file being exported."
                 },
                 "openscad.export.useAutoNamingExport": {
+                    "type": "deprecated",
+                    "deprecationMessage": "Please use `openscad.export.skipSaveDialog` instead."
+                },
+                "openscad.export.skipSaveDialog": {
                     "type": "boolean",
                     "default": false,
-                    "markdownDescription": "When enabled, the standard action of **Export Model** will automatically choose a name based on the configuration `openscad.export.autoNamingFormat` and export without a save dialogue.\n\nNote that when this option is enabled, the save dialogue can still be opened by `alt + clicking` the **Export Model** button. Also, the save dialogue can always be accessed by running **Export Model with Save Dialogue** through the command palette."
+                    "markdownDescription": "When enabled, the standard action of **Export Model** will automatically choose a name based on the configuration `openscad.export.exportNameFormat` and export without a save dialog.\n\nNote that when this option is enabled, the save dialogue can still be opened by `alt + clicking` the **Export Model** button. Also, the save dialog can always be accessed by running **Export Model with Save Dialog** through the command palette."
                 },
                 "openscad.export.useAutoNamingInSaveDialogues": {
-                    "type": "boolean",
-                    "default": false,
-                    "markdownDescription": "The default name of to-be exported files in save dialouges will be generated according to the config of `openscad.export.autoNamingFormat` instead of using the original filename."
+                    "type": "deprecated",
+                    "deprecationMessage": "Please use `openscad.export.saveDialogExportNameFormat` instead."
+                },
+                "openscad.export.saveDialogExportNameFormat": {
+                    "type": "string",
+                    "default": "",
+                    "markdownDescription": "The default name of to-be exported files in save dialogs. Defaults to `openscad.export.exportNameFormat` if left blank."
                 },
                 "openscad.interface.showPreviewIconInEditorTitleMenu": {
                     "type": "boolean",
