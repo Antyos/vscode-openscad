@@ -16,7 +16,7 @@
 - Override `openscad.export.exportNameFormat` on a per-file basis. (See [#58](https://github.com/Antyos/vscode-openscad/issues/58))
 - `openscad.export.exportNameFormat` now supports date time variables. Use `${date}`
   for an ISO 8601 date string or use a custom format with: `${date:TEMPLATE}`
-  according to [Luxon tokens](https://moment.github.io/luxon/#/formatting?id=consider-alternatives).
+  according to [Luxon tokens](https://moment.github.io/luxon/#/formatting?id=table-of-tokens).
   (See PR [#57](https://github.com/Antyos/vscode-openscad/issues/57))
   Fixes: [#55](https://github.com/Antyos/vscode-openscad/issues/55).
 
@@ -27,7 +27,7 @@
 
 ### Deprecated
 
-- Configurations:
+- Configurations (See PR [#58](https://github.com/Antyos/vscode-openscad/pull/58))
     - `openscad.export.autoNamingFormat`
     - `openscad.export.useAutoNamingExport`
     - `openscad.export.useAutoNamingInSaveDialogues`
