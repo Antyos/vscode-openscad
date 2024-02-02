@@ -376,6 +376,7 @@ export class PreviewManager {
         const autoNamingFormat = config.get<string>('export.autoNamingFormat');
         if (
             autoNamingFormat !== undefined &&
+            autoNamingFormat !== null &&
             this.config.exportNameFormat === DEFAULT_CONFIG.exportNameFormat
         ) {
             this.loggingService.logWarning(
@@ -392,6 +393,7 @@ export class PreviewManager {
         );
         if (
             useAutoNamingExport !== undefined &&
+            useAutoNamingExport !== null &&
             this.config.skipSaveDialog === DEFAULT_CONFIG.skipSaveDialog
         ) {
             this.loggingService.logWarning(
