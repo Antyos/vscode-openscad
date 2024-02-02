@@ -2,7 +2,16 @@
 
 ## [Unreleased]
 
-## [[1.3.0](htts://github.com/Antyos/vscode-openscad/releases/tag/v1.3.0)]
+## [[1.3.1](htts://github.com/Antyos/vscode-openscad/releases/tag/v1.3.1)] - (2024-02-01)
+
+### Fixed
+
+- Fixed incorrect display of deprecation warnings related to
+  [#58](https://github.com/Antyos/vscode-openscad/pull/58).
+  (See PR[#61](https://github.com/Antyos/vscode-openscad/pull/35)).
+  Thanks [bluekeyes](https://github.com/bluekeyes).
+
+## [[1.3.0](htts://github.com/Antyos/vscode-openscad/releases/tag/v1.3.0)] - (2023-01-16)
 
 ### Changed
 
@@ -15,7 +24,7 @@
 
 ### Added
 
-- Override `openscad.export.exportNameFormat` on a per-file basis. (See [#58](https://github.com/Antyos/vscode-openscad/issues/58))
+- Override `openscad.export.exportNameFormat` on a per-file basis. (See [#58](https://github.com/Antyos/vscode-openscad/pull/58))
 - `openscad.export.exportNameFormat` now supports date time variables. Use `${date}`
   for an ISO 8601 date string or use a custom format with: `${date:TEMPLATE}`
   according to [Luxon tokens](https://moment.github.io/luxon/#/formatting?id=table-of-tokens).
