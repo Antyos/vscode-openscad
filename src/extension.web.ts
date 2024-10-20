@@ -10,6 +10,9 @@ import * as vscode from 'vscode';
 import { Cheatsheet } from 'src/cheatsheet/cheatsheet-panel';
 import { LoggingService } from './logging-service';
 
+const extensionName = process.env.EXTENSION_NAME || 'antyos.openscad';
+const extensionVersion = process.env.EXTENSION_VERSION || '0.0.0';
+
 /**
  * Register a command that is not supported in VS Code web.
  * The command will display an error message.
@@ -29,7 +32,7 @@ function unsupportedWebCommand(commandId: string): vscode.Disposable {
 export function activate(context: vscode.ExtensionContext): void {
     const loggingService = new LoggingService();
 
-    loggingService.logInfo('Activating openscad extension');
+    loggingService.logInfo(`Activating ${extensionName} v${extensionVersion}`);
     context.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration((event) => {
             if (event.affectsConfiguration('openscad.logLevel')) {
