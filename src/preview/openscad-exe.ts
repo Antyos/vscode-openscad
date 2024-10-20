@@ -57,7 +57,8 @@ export class OpenscadExecutableManager {
      */
     public async updateScadPath(
         newOpenscadPath?: string,
-        newArguments: string[] = []
+        newArguments: string[] = [],
+        skipLaunchPathValidation = false
     ): Promise<void> {
         if (
             newOpenscadPath === this.openscadPath &&
@@ -83,9 +84,12 @@ export class OpenscadExecutableManager {
                 this.loggingService.logWarning(
                     `'${openscadPath}' is not a valid path or command.`
                 );
-                return;
+                if (!skipLaunchPathValidation) {
+                    return;
+                }
+                this.loggingService.logInfo('Skipping OpenSCAD path check.');
             }
-            const version = await this.getOpenscadVersion(
+            let version = await this.getOpenscadVersion(
                 openscadPath,
                 this.arguments_
             );
@@ -94,7 +98,11 @@ export class OpenscadExecutableManager {
                 this.loggingService.logWarning(
                     `Unable to determine OpenSCAD version with 'openscad --version'.`
                 );
-                return;
+                if (!skipLaunchPathValidation) {
+                    return;
+                }
+                this.loggingService.logInfo('Skipping OpenSCAD version check.');
+                version = 'unknown';
             }
             this.openscadExecutable = {
                 version: version,

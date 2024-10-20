@@ -230,6 +230,12 @@
                         "type": "string"
                     }
                 },
+                "openscad.experimental.skipLaunchPathValidation": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "*WARNING: Do not enable this unles you know what you are doing.*\n\nSkip validation of the `openscad.launchPath` setting. Use this if you are sure the path is correct but it is not being accepted. This may occur if you are using a openscad executable which does not output a version when calling `openscad --version`.",
+                    "scope": "machine-overridable"
+                },
                 "openscad.maxInstances": {
                     "type": "number",
                     "default": 0,
