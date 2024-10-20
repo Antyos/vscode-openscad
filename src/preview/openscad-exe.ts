@@ -73,11 +73,16 @@ export class OpenscadExecutableManager {
         // Use platform default if not specified
         const openscadPath = this.getPath();
 
-        this.loggingService.logInfo(`Using OpenSCAD path: '${openscadPath}'`);
+        this.loggingService.logInfo(
+            `Checking OpenSCAD path: '${openscadPath}'`
+        );
 
         // TODO: Replace with something less nested
         commandExists(openscadPath, async (error: null, exists: boolean) => {
             if (!exists) {
+                this.loggingService.logWarning(
+                    `'${openscadPath}' is not a valid path or command.`
+                );
                 return;
             }
             const version = await this.getOpenscadVersion(
@@ -86,6 +91,9 @@ export class OpenscadExecutableManager {
             );
             // Should we throw an error here?
             if (!version) {
+                this.loggingService.logWarning(
+                    `Unable to determine OpenSCAD version with 'openscad --version'.`
+                );
                 return;
             }
             this.openscadExecutable = {
@@ -93,7 +101,7 @@ export class OpenscadExecutableManager {
                 filePath: openscadPath,
                 arguments_: this.arguments_,
             };
-            this.loggingService.logDebug(
+            this.loggingService.logInfo(
                 'Using OpenSCAD:',
                 this.openscadExecutable
             );
