@@ -3,7 +3,9 @@
 import * as path from 'node:path';
 import { Configuration, EnvironmentPlugin, ProvidePlugin } from 'webpack';
 
-import extensionPackage from './package.json';
+// This doesn't work if it's not a require()
+// eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module
+const extensionPackage = require('./package.json');
 
 // eslint-disable-next-line unicorn/prefer-module
 const projectRoot = __dirname;
