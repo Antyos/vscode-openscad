@@ -9,6 +9,8 @@ import { type } from 'os'; // node:os
 import { promisify } from 'util';
 
 import commandExists = require('command-exists');
+import { realpath } from 'fs/promises';
+
 import { LoggingService } from 'src/logging-service';
 
 const execFile = promisify(child.execFile);
@@ -78,42 +80,56 @@ export class OpenscadExecutableManager {
             `Checking OpenSCAD path: '${openscadPath}'`
         );
 
-        // TODO: Replace with something less nested
-        commandExists(openscadPath, async (error: null, exists: boolean) => {
-            if (!exists) {
-                this.loggingService.logWarning(
-                    `'${openscadPath}' is not a valid path or command.`
-                );
-                if (!skipLaunchPathValidation) {
-                    return;
-                }
-                this.loggingService.logInfo('Skipping OpenSCAD path check.');
-            }
-            let version = await this.getOpenscadVersion(
-                openscadPath,
-                this.arguments_
-            );
-            // Should we throw an error here?
-            if (!version) {
-                this.loggingService.logWarning(
-                    `Unable to determine OpenSCAD version with 'openscad --version'.`
-                );
-                if (!skipLaunchPathValidation) {
-                    return;
-                }
-                this.loggingService.logInfo('Skipping OpenSCAD version check.');
-                version = 'unknown';
-            }
-            this.openscadExecutable = {
-                version: version,
-                filePath: openscadPath,
-                arguments_: this.arguments_,
-            };
+        const realOpenscadPath = await realpath(openscadPath);
+        if (realOpenscadPath !== openscadPath) {
             this.loggingService.logInfo(
-                'Using OpenSCAD:',
-                this.openscadExecutable
+                `Configured path is a link. Using resolved path: '${realOpenscadPath}'`
             );
-        });
+        }
+
+        // TODO: Replace with something less nested
+        commandExists(
+            realOpenscadPath,
+            async (error: null, exists: boolean) => {
+                if (!exists) {
+                    this.loggingService.logWarning(
+                        `'${realOpenscadPath}' is not a valid path or command.`
+                    );
+                    if (!skipLaunchPathValidation) {
+                        return;
+                    }
+                    this.loggingService.logInfo(
+                        'Skipping OpenSCAD path check.'
+                    );
+                }
+                let version = await this.getOpenscadVersion(
+                    realOpenscadPath,
+                    this.arguments_
+                );
+                // Should we throw an error here?
+                if (!version) {
+                    this.loggingService.logWarning(
+                        `Unable to determine OpenSCAD version with 'openscad --version'.`
+                    );
+                    if (!skipLaunchPathValidation) {
+                        return;
+                    }
+                    this.loggingService.logInfo(
+                        'Skipping OpenSCAD version check.'
+                    );
+                    version = 'unknown';
+                }
+                this.openscadExecutable = {
+                    version: version,
+                    filePath: realOpenscadPath,
+                    arguments_: this.arguments_,
+                };
+                this.loggingService.logInfo(
+                    'Using OpenSCAD:',
+                    this.openscadExecutable
+                );
+            }
+        );
     }
 
     /** A valid openscad executable or undefined */
