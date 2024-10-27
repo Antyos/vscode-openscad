@@ -40,17 +40,24 @@ export class OpenscadExecutableManager {
         openscadPath: string,
         arguments_: string[] = []
     ): Promise<string | undefined> {
-        const { stdout, stderr } = await execFile(openscadPath, [
-            ...arguments_,
-            '--version',
-        ]);
+        try {
+            const { stdout, stderr } = await execFile(openscadPath, [
+                ...arguments_,
+                '--version',
+            ]);
 
-        // For some reason, OpenSCAD seems to use stderr for all console output...
-        // If there is no error, assume stderr should be treated as stdout
-        // For more info. see: https://github.com/openscad/openscad/issues/3358
-        const output = stdout || stderr;
+            // For some reason, OpenSCAD seems to use stderr for all console output...
+            // If there is no error, assume stderr should be treated as stdout
+            // For more info. see: https://github.com/openscad/openscad/issues/3358
+            const output = stdout || stderr;
 
-        return output.trim().match(/version (\S+)/)?.[1];
+            return output.trim().match(/version (\S+)/)?.[1];
+        } catch (error) {
+            this.loggingService.logError(
+                `Error getting OpenSCAD version: ${error}`
+            );
+            return undefined;
+        }
     }
 
     /** Set the path to `openscad.exe` on the system.
