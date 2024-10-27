@@ -19,6 +19,7 @@ export class Preview {
     /** Launch an instance of OpenSCAD to prview a file */
     constructor(
         private readonly loggingService: LoggingService,
+        private readonly context: vscode.ExtensionContext,
         private readonly openscadExecutable: OpenscadExecutable,
         public readonly uri: vscode.Uri,
         public readonly hasGui: boolean,
@@ -40,6 +41,7 @@ export class Preview {
         this._process = child.execFile(
             this.openscadExecutable.filePath,
             commandArguments,
+            { cwd: this.context.extensionPath.toString() },
             (error, stdout, stderr) => {
                 // If there's an error
                 if (error) {

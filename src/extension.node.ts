@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext): void {
     loggingService.logInfo(`Activating ${extensionName} v${extensionVersion}`);
 
     /** New launch object */
-    const previewManager = new PreviewManager(loggingService);
+    const previewManager = new PreviewManager(loggingService, context);
 
     // Register commands
     const commands = [
@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor),
         vscode.workspace.onDidChangeConfiguration(onDidChangeConfiguration)
     );
-    onDidChangeConfiguration();
+    // onDidChangeConfiguration();
 
     // Update status bar item once at start
     Cheatsheet.updateStatusBar();

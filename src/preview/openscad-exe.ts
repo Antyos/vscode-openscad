@@ -10,6 +10,7 @@ import { promisify } from 'util';
 
 import commandExists = require('command-exists');
 import { realpath } from 'fs/promises';
+import { ExtensionContext } from 'vscode';
 
 import { LoggingService } from 'src/logging-service';
 
@@ -34,17 +35,21 @@ export class OpenscadExecutableManager {
     private openscadPath?: string;
     private arguments_: string[] = [];
 
-    public constructor(private loggingService: LoggingService) {}
+    public constructor(
+        private readonly loggingService: LoggingService,
+        private readonly context: ExtensionContext
+    ) {}
 
     private async getOpenscadVersion(
         openscadPath: string,
         arguments_: string[] = []
     ): Promise<string | undefined> {
         try {
-            const { stdout, stderr } = await execFile(openscadPath, [
-                ...arguments_,
-                '--version',
-            ]);
+            const { stdout, stderr } = await execFile(
+                openscadPath,
+                [...arguments_, '--version'],
+                { cwd: this.context.extensionPath.toString() }
+            );
 
             // For some reason, OpenSCAD seems to use stderr for all console output...
             // If there is no error, assume stderr should be treated as stdout

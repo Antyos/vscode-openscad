@@ -327,11 +327,15 @@ export class PreviewManager {
 
     /** Constructor */
 
-    public constructor(private loggingService: LoggingService) {
-        this.previewStore = new PreviewStore(this.loggingService);
+    public constructor(
+        private loggingService: LoggingService,
+        private context: vscode.ExtensionContext
+    ) {
+        this.previewStore = new PreviewStore(this.loggingService, this.context);
         this.variableResolver = new VariableResolver(this.loggingService);
         this.openscadExecutableManager = new OpenscadExecutableManager(
-            this.loggingService
+            this.loggingService,
+            this.context
         );
         // Load configutation
         this.onDidChangeConfiguration(
