@@ -44,7 +44,9 @@ export class Preview {
                 // If there's an error
                 if (error) {
                     // this.loggingService.logError(`exec error: ${error}`);
-                    this.loggingService.logError(`stderr: ${stderr}`); // DEBUG
+                    this.loggingService.logError(
+                        `OpenSCAD exited with the error: ${stderr}`
+                    );
                     vscode.window.showErrorMessage(stderr); // Display error message
                 }
                 // No error
@@ -53,7 +55,9 @@ export class Preview {
                     // If there is no error, assume stderr should be treated as stdout
                     // For more info. see: https://github.com/openscad/openscad/issues/3358
                     const message = stdout || stderr;
-                    this.loggingService.logDebug(`stdout: ${message}`); // DEBUG
+                    this.loggingService.logDebug(
+                        `OpenSCAD exited with the following message: ${message}`
+                    );
 
                     vscode.window.showInformationMessage(message); // Display info
                 }
