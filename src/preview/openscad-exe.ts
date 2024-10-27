@@ -81,62 +81,69 @@ export class OpenscadExecutableManager {
         this.openscadExecutable = undefined;
 
         // Use platform default if not specified
-        const openscadPath = this.getPath();
+        let openscadPath = this.getPath();
 
         this.loggingService.logInfo(
             `Checking OpenSCAD path: '${openscadPath}'`
         );
 
-        const realOpenscadPath = await realpath(openscadPath);
-        if (realOpenscadPath !== openscadPath) {
-            this.loggingService.logInfo(
-                `Configured path is a link. Using resolved path: '${realOpenscadPath}'`
-            );
+        // Resolve potential symlinks
+        try {
+            const newPath = await realpath(openscadPath);
+            if (newPath !== openscadPath) {
+                this.loggingService.logInfo(
+                    `Configured path is a link. Using resolved path: '${openscadPath}'`
+                );
+                openscadPath = newPath;
+            }
+        } catch (error) {
+            // An ENOENT error (Error No Entity) is expected if openscadPath is
+            // invalid and is ok. Otherwise, throw the error
+            if (
+                !(error instanceof Error) ||
+                !('code' in error) ||
+                error.code !== 'ENOENT'
+            ) {
+                throw error;
+            }
         }
 
         // TODO: Replace with something less nested
-        commandExists(
-            realOpenscadPath,
-            async (error: null, exists: boolean) => {
-                if (!exists) {
-                    this.loggingService.logWarning(
-                        `'${realOpenscadPath}' is not a valid path or command.`
-                    );
-                    if (!skipLaunchPathValidation) {
-                        return;
-                    }
-                    this.loggingService.logInfo(
-                        'Skipping OpenSCAD path check.'
-                    );
-                }
-                let version = await this.getOpenscadVersion(
-                    realOpenscadPath,
-                    this.arguments_
+        commandExists(openscadPath, async (error: null, exists: boolean) => {
+            if (!exists) {
+                this.loggingService.logWarning(
+                    `'${openscadPath}' is not a valid path or command.`
                 );
-                // Should we throw an error here?
-                if (!version) {
-                    this.loggingService.logWarning(
-                        `Unable to determine OpenSCAD version with 'openscad --version'.`
-                    );
-                    if (!skipLaunchPathValidation) {
-                        return;
-                    }
-                    this.loggingService.logInfo(
-                        'Skipping OpenSCAD version check.'
-                    );
-                    version = 'unknown';
+                if (!skipLaunchPathValidation) {
+                    return;
                 }
-                this.openscadExecutable = {
-                    version: version,
-                    filePath: realOpenscadPath,
-                    arguments_: this.arguments_,
-                };
-                this.loggingService.logInfo(
-                    'Using OpenSCAD:',
-                    this.openscadExecutable
-                );
+                this.loggingService.logInfo('Skipping OpenSCAD path check.');
             }
-        );
+            let version = await this.getOpenscadVersion(
+                openscadPath,
+                this.arguments_
+            );
+            // Should we throw an error here?
+            if (!version) {
+                this.loggingService.logWarning(
+                    `Unable to determine OpenSCAD version with 'openscad --version'.`
+                );
+                if (!skipLaunchPathValidation) {
+                    return;
+                }
+                this.loggingService.logInfo('Skipping OpenSCAD version check.');
+                version = 'unknown';
+            }
+            this.openscadExecutable = {
+                version: version,
+                filePath: openscadPath,
+                arguments_: this.arguments_,
+            };
+            this.loggingService.logInfo(
+                'Using OpenSCAD:',
+                this.openscadExecutable
+            );
+        });
     }
 
     /** A valid openscad executable or undefined */
