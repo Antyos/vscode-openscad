@@ -35,7 +35,9 @@ export class Preview {
             this.uri.fsPath,
         ];
 
-        this.loggingService.logDebug(`commandArgs: ${commandArguments}`); // DEBUG
+        this.loggingService.logDebug(
+            `Executing with args: ${commandArguments}`
+        );
 
         // New process
         this._process = child.execFile(
@@ -47,7 +49,8 @@ export class Preview {
                 if (error) {
                     // this.loggingService.logError(`exec error: ${error}`);
                     this.loggingService.logError(
-                        `OpenSCAD exited with the error: ${stderr}`
+                        `OpenSCAD exited with the error code: ${error}.`,
+                        stderr
                     );
                     vscode.window.showErrorMessage(stderr); // Display error message
                 }
@@ -60,11 +63,10 @@ export class Preview {
                     this.loggingService.logDebug(
                         `OpenSCAD exited with the following message: ${message}`
                     );
-
-                    vscode.window.showInformationMessage(message); // Display info
+                    vscode.window.showInformationMessage(message);
                 }
 
-                // this.loggingService.logDebug(`real stdout: ${stdout}`);    // DEBUG
+                // this.loggingService.logDebug(`real stdout: ${stdout}`);
 
                 this._isRunning = false;
                 // Dispatch 'onKilled' event
