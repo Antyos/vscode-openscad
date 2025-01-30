@@ -10,6 +10,7 @@ import { LogLevel } from './logging-service';
 export interface ScadConfig {
     openscadPath?: string;
     launchArgs?: string[];
+    skipLaunchPathValidation?: boolean;
     maxInstances?: number;
     showKillMessage?: boolean;
     preferredExportFileExtension?: string;
@@ -25,6 +26,7 @@ export interface ScadConfig {
 // Reflects the defaults configuration in package.json
 export const DEFAULT_CONFIG: Required<ScadConfig> = {
     openscadPath: '',
+    skipLaunchPathValidation: false,
     launchArgs: [],
     maxInstances: 0,
     showKillMessage: true,

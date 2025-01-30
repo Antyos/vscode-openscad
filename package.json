@@ -2,7 +2,7 @@
     "name": "openscad",
     "displayName": "OpenSCAD",
     "description": "OpenSCAD highlighting, snippets, and more for VSCode!",
-    "version": "1.3.1",
+    "version": "1.3.2",
     "publisher": "Antyos",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
@@ -230,6 +230,12 @@
                         "type": "string"
                     }
                 },
+                "openscad.experimental.skipLaunchPathValidation": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "*WARNING: Do not enable this unles you know what you are doing.*\n\nSkip validation of the `openscad.launchPath` setting. Use this if you are sure the path is correct but it is not being accepted. This may occur if you are using a openscad executable which does not output a version when calling `openscad --version`.",
+                    "scope": "machine-overridable"
+                },
                 "openscad.maxInstances": {
                     "type": "number",
                     "default": 0,
@@ -438,8 +444,8 @@
         "ts-node": "^10.9.1",
         "typescript": "^4.9.5",
         "util": "^0.12.5",
-        "webpack": "^5.76.2",
-        "webpack-cli": "^4.10.0"
+        "webpack": "^5.95.0",
+        "webpack-cli": "^5.1.4"
     },
     "dependencies": {
         "command-exists": "^1.2.9",

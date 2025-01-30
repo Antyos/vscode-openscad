@@ -5,7 +5,7 @@ name: Build and deploy Extension
 on: [push, pull_request]
 
 env:
-  NODE_VERSION: '18.x'
+  NODE_VERSION: '20.x'
 
 jobs:
   build:
@@ -14,17 +14,17 @@ jobs:
       vsixName: ${{ steps.packageExtension.outputs.vsixPath }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Get pnpm store directory
@@ -34,7 +34,7 @@ jobs:
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
       - name: Setup pnpm cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -64,14 +64,14 @@ jobs:
 
       - name: Package extension .vsix
         id: packageExtension
-        uses: HaaLeo/publish-vscode-extension@v1.3.0
+        uses: HaaLeo/publish-vscode-extension@v1
         with:
           pat: stub
           dryRun: true
           dependencies: false
 
       - name: Upload extension artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: openscad-vsix
           path: ${{ steps.packageExtension.outputs.vsixPath }}
@@ -81,7 +81,7 @@ jobs:
     needs: [build]
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download artifact
         id: download

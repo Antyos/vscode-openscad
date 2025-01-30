@@ -36,6 +36,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     /** Create a new PreviewStore with a max number of previews */
     public constructor(
         private readonly loggingService: LoggingService,
+        private readonly context: vscode.ExtensionContext,
         maxPreviews = 0
     ) {
         this._maxPreviews = maxPreviews;
@@ -77,6 +78,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
         const preview = new Preview(
             this.loggingService,
+            this.context,
             openscadExecutable,
             uri,
             hasGui,

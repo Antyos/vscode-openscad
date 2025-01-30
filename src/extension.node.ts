@@ -10,14 +10,17 @@ import { Cheatsheet } from 'src/cheatsheet/cheatsheet-panel';
 import { PreviewManager } from 'src/preview/preview-manager';
 import { LoggingService } from './logging-service';
 
+const extensionName = process.env.EXTENSION_NAME || 'antyos.openscad';
+const extensionVersion = process.env.EXTENSION_VERSION || '0.0.0';
+
 /** Called when extension is activated */
 export function activate(context: vscode.ExtensionContext): void {
     const loggingService = new LoggingService();
 
-    loggingService.logInfo('Activating openscad extension');
+    loggingService.logInfo(`Activating ${extensionName} v${extensionVersion}`);
 
     /** New launch object */
-    const previewManager = new PreviewManager(loggingService);
+    const previewManager = new PreviewManager(loggingService, context);
 
     // Register commands
     const commands = [
@@ -63,7 +66,7 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor),
         vscode.workspace.onDidChangeConfiguration(onDidChangeConfiguration)
     );
-    onDidChangeConfiguration();
+    // onDidChangeConfiguration();
 
     // Update status bar item once at start
     Cheatsheet.updateStatusBar();

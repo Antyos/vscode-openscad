@@ -19,6 +19,7 @@ export class Preview {
     /** Launch an instance of OpenSCAD to prview a file */
     constructor(
         private readonly loggingService: LoggingService,
+        private readonly context: vscode.ExtensionContext,
         private readonly openscadExecutable: OpenscadExecutable,
         public readonly uri: vscode.Uri,
         public readonly hasGui: boolean,
@@ -34,17 +35,23 @@ export class Preview {
             this.uri.fsPath,
         ];
 
-        this.loggingService.logDebug(`commandArgs: ${commandArguments}`); // DEBUG
+        this.loggingService.logDebug(
+            `Executing with args: ${commandArguments}`
+        );
 
         // New process
         this._process = child.execFile(
             this.openscadExecutable.filePath,
             commandArguments,
+            { cwd: this.context.extensionPath.toString() },
             (error, stdout, stderr) => {
                 // If there's an error
                 if (error) {
                     // this.loggingService.logError(`exec error: ${error}`);
-                    this.loggingService.logError(`stderr: ${stderr}`); // DEBUG
+                    this.loggingService.logError(
+                        `OpenSCAD exited with the error code: ${error}.`,
+                        stderr
+                    );
                     vscode.window.showErrorMessage(stderr); // Display error message
                 }
                 // No error
@@ -53,12 +60,13 @@ export class Preview {
                     // If there is no error, assume stderr should be treated as stdout
                     // For more info. see: https://github.com/openscad/openscad/issues/3358
                     const message = stdout || stderr;
-                    this.loggingService.logDebug(`stdout: ${message}`); // DEBUG
-
-                    vscode.window.showInformationMessage(message); // Display info
+                    this.loggingService.logDebug(
+                        `OpenSCAD exited with the following message: ${message}`
+                    );
+                    vscode.window.showInformationMessage(message);
                 }
 
-                // this.loggingService.logDebug(`real stdout: ${stdout}`);    // DEBUG
+                // this.loggingService.logDebug(`real stdout: ${stdout}`);
 
                 this._isRunning = false;
                 // Dispatch 'onKilled' event

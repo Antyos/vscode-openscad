@@ -1,7 +1,11 @@
 /// <reference types="node" />
 
 import * as path from 'node:path';
-import { Configuration, ProvidePlugin } from 'webpack';
+import { Configuration, EnvironmentPlugin, ProvidePlugin } from 'webpack';
+
+// This doesn't work if it's not a require()
+// eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module
+const extensionPackage = require('./package.json');
 
 // eslint-disable-next-line unicorn/prefer-module
 const projectRoot = __dirname;
@@ -22,6 +26,12 @@ const nodeConfig: Configuration = {
         libraryTarget: 'commonjs',
         devtoolModuleFilenameTemplate: '../[resource-path]',
     },
+    plugins: [
+        new EnvironmentPlugin({
+            EXTENSION_NAME: `${extensionPackage.publisher}.${extensionPackage.name}`,
+            EXTENSION_VERSION: extensionPackage.version,
+        }),
+    ],
     devtool: 'nosources-source-map',
     // Support reading TypeScript and JavaScript files. See: https://github.com/TypeStrong/ts-loader
     resolve: {

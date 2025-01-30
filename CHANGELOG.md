@@ -1,8 +1,26 @@
 # Changelog
 
-## [Unreleased]
+## [[1.3.2](https://github.com/Antyos/vscode-openscad/releases/tag/v1.3.2)] - (2025-01-30)
 
-## [[1.3.1](htts://github.com/Antyos/vscode-openscad/releases/tag/v1.3.1)] - (2024-02-01)
+### Added
+
+- `openscad.experimental.skipLaunchPathValidation` configuration. (Not an ideal
+  approach, but it should work.)
+- Better logging.
+
+### Fixed
+
+- Errors when validating OpenSCAD executable. (See PR
+  [#69](https://github.com/Antyos/vscode-openscad/pull/69)).
+    - Executable path not considered valid if `openscad --version` does not
+    output to `stdout` (See
+    [#62](https://github.com/Antyos/vscode-openscad/issues/62)).
+        - Enable `openscad.experimental.skipLaunchPathValidation` to bypass the
+        check `openscad --version` check.
+    - Simlink to OpenSCAD executable or VS Code itself not resolving correctly.
+    (See [#68](https://github.com/Antyos/vscode-openscad/issues/68)).
+
+## [[1.3.1](https://github.com/Antyos/vscode-openscad/releases/tag/v1.3.1)] - (2024-02-01)
 
 ### Fixed
 
@@ -16,6 +34,7 @@
 ### Changed
 
 - Configurations (See PR [#58](https://github.com/Antyos/vscode-openscad/pull/58))
+
     | Old | New |
     | --- | --- |
     | `openscad.export.autoNamingFormat` | `openscad.export.exportNameFormat` |
@@ -24,7 +43,8 @@
 
 ### Added
 
-- Override `openscad.export.exportNameFormat` on a per-file basis. (See [#58](https://github.com/Antyos/vscode-openscad/pull/58))
+- Override `openscad.export.exportNameFormat` on a per-file basis. (See PR
+  [#58](https://github.com/Antyos/vscode-openscad/pull/58)).
 - `openscad.export.exportNameFormat` now supports date time variables. Use `${date}`
   for an ISO 8601 date string or use a custom format with: `${date:TEMPLATE}`
   according to [Luxon tokens](https://moment.github.io/luxon/#/formatting?id=table-of-tokens).
@@ -34,7 +54,7 @@
 ### Fixed
 
 - Auto versioning started at "-Infinity" instead of "1" for a folder without
-  siimilarly named files.
+  similarly named files.
 
 ### Deprecated
 

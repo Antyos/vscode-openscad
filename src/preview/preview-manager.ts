@@ -327,11 +327,15 @@ export class PreviewManager {
 
     /** Constructor */
 
-    public constructor(private loggingService: LoggingService) {
-        this.previewStore = new PreviewStore(this.loggingService);
+    public constructor(
+        private loggingService: LoggingService,
+        private context: vscode.ExtensionContext
+    ) {
+        this.previewStore = new PreviewStore(this.loggingService, this.context);
         this.variableResolver = new VariableResolver(this.loggingService);
         this.openscadExecutableManager = new OpenscadExecutableManager(
-            this.loggingService
+            this.loggingService,
+            this.context
         );
         // Load configutation
         this.onDidChangeConfiguration(
@@ -360,12 +364,16 @@ export class PreviewManager {
         this.config.saveDialogExportNameFormat = config.get<string>(
             'export.saveDialogExportNameFormat'
         );
+        this.config.skipLaunchPathValidation = config.get<boolean>(
+            'experimental.skipLaunchPathValidation'
+        );
 
         this.loggingService.logDebug('Launch args:', this.config.launchArgs);
 
         this.openscadExecutableManager.updateScadPath(
             this.config.openscadPath,
-            this.config.launchArgs
+            this.config.launchArgs,
+            this.config.skipLaunchPathValidation
         );
         // Set the max previews
         this.previewStore.maxPreviews = this.config.maxInstances ?? 0;
