@@ -1,5 +1,25 @@
 # Changelog
 
+## [[1.3.2](https://github.com/Antyos/vscode-openscad/releases/tag/v1.3.2)] - (2025-01-30)
+
+### Added
+
+- `openscad.experimental.skipLaunchPathValidation` configuration. (Not an ideal
+  approach, but it should work.)
+- Better logging.
+
+### Fixed
+
+- Errors when validating OpenSCAD executable. (See PR
+  [#69](https://github.com/Antyos/vscode-openscad/pull/69)).
+    - Executable path not considered valid if `openscad --version` does not
+    output to `stdout` (See
+    [#62](https://github.com/Antyos/vscode-openscad/issues/62)).
+        - Enable `openscad.experimental.skipLaunchPathValidation` to bypass the
+        check `openscad --version` check.
+    - Simlink to OpenSCAD executable or VS Code itself not resolving correctly.
+    (See [#68](https://github.com/Antyos/vscode-openscad/issues/68)).
+
 ## [[1.3.1](https://github.com/Antyos/vscode-openscad/releases/tag/v1.3.1)] - (2024-02-01)
 
 ### Fixed
