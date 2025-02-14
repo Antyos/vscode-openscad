@@ -138,13 +138,15 @@ export class Cheatsheet {
 
         // Determine to show cheatsheet status bar icon based on extension config
         switch (Cheatsheet.config.displayInStatusBar) {
-            case 'always':
+            case 'always': {
                 showCsStatusBarItem = true;
                 break;
-            case 'openDoc':
+            }
+            case 'openDoc': {
                 showCsStatusBarItem = Cheatsheet.isAnyOpenDocumentScad();
                 break;
-            case 'activeDoc':
+            }
+            case 'activeDoc': {
                 // Check the languageId of the active text document
                 if (vscode.window.activeTextEditor) {
                     showCsStatusBarItem = Cheatsheet.isDocumentScad(
@@ -152,9 +154,11 @@ export class Cheatsheet {
                     );
                 }
                 break;
-            case 'never':
+            }
+            case 'never': {
                 showCsStatusBarItem = false;
                 break;
+            }
         }
 
         // Show or hide `Open Cheatsheet` button

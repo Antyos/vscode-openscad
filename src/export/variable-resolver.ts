@@ -81,26 +81,30 @@ export class VariableResolver {
         // Cases for version number
         switch (version) {
             // No version number
-            case -1:
+            case -1: {
                 return replaced;
+            }
             // Error while parsing files in export directory
-            case -2:
+            case -2: {
                 vscode.window.showErrorMessage(
                     `Could not read files in directory specified for export`
                 );
                 return replaced;
+            }
             // Create an empty directory; version 1 by default
-            case -3:
+            case -3: {
                 return replaced.replace(
                     VariableResolver.VERSION_FORMAT,
                     String(1)
                 );
-            default:
+            }
+            default: {
                 // Substitute version number
                 return replaced.replace(
                     VariableResolver.VERSION_FORMAT,
                     String(version)
                 );
+            }
         }
     }
 
@@ -139,34 +143,47 @@ export class VariableResolver {
         }
 
         switch (variable) {
-            case 'date':
+            case 'date': {
                 return luxon.DateTime.now().toISODate();
-            case 'workspaceFolder':
+            }
+            case 'workspaceFolder': {
                 return workspaceFolder ?? match;
-            case 'workspaceFolderBasename':
+            }
+            case 'workspaceFolderBasename': {
                 return path.basename(workspaceFolder ?? '') ?? match;
-            case 'file':
+            }
+            case 'file': {
                 return resource.fsPath;
-            case 'relativeFile':
+            }
+            case 'relativeFile': {
                 return path.relative(workspaceFolder ?? '', resource.fsPath);
-            case 'relativeFileDirname':
+            }
+            case 'relativeFileDirname': {
                 return path.basename(path.dirname(resource.fsPath));
-            case 'fileBasename':
+            }
+            case 'fileBasename': {
                 return path.basename(resource.fsPath);
-            case 'fileBasenameNoExtension':
+            }
+            case 'fileBasenameNoExtension': {
                 return fileBasenameNoExtension(resource);
-            case 'fileDirname':
+            }
+            case 'fileDirname': {
                 return path.dirname(resource.fsPath);
-            case 'fileExtname':
+            }
+            case 'fileExtname': {
                 return path.extname(resource.fsPath);
-            case 'exportExtension':
+            }
+            case 'exportExtension': {
                 return exportExtension ?? match;
+            }
             // We will evaluate the number later
-            case '#':
+            case '#': {
                 return match;
-            default:
+            }
+            default: {
                 this.loggingService.logWarning(`Unknown variable: ${match}`);
                 return match;
+            }
         }
     }
 
@@ -199,7 +216,7 @@ export class VariableResolver {
         // Regexp is case insensitive if OS is Windows
         const patternAsRegexp = new RegExp(
             escapeStringRegexp(path.basename(pattern)).replace(
-                '\\$\\{#\\}',
+                String.raw`\$\{#\}`,
                 '([1-9][0-9]*)'
             ),
             this._isWindows ? 'i' : ''

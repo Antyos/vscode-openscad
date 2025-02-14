@@ -19,7 +19,7 @@ const execFile = promisify(child.execFile);
 const pathByPlatform = {
     Linux: 'openscad',
     Darwin: '/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD',
-    Windows_NT: 'C:\\Program Files\\Openscad\\openscad.exe',
+    Windows_NT: String.raw`C:\Program Files\Openscad\openscad.exe`,
 } as const;
 
 export interface OpenscadExecutable {

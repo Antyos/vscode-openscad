@@ -71,15 +71,15 @@ export class PreviewManager {
             ); // DEBUG
 
             // If uri not given, try opening activeTextEditor
-            if (!(uri instanceof vscode.Uri)) {
+            if (uri instanceof vscode.Uri) {
+                resource = uri;
+            } else {
                 const newUri = await this.getActiveEditorUri();
                 if (newUri) {
                     resource = newUri;
                 } else {
                     return;
                 }
-            } else {
-                resource = uri;
             }
 
             // Check if a new preview can be opened
@@ -144,14 +144,14 @@ export class PreviewManager {
         for (const uri of Array.isArray(allUris) ? allUris : [mainUri]) {
             let resource: vscode.Uri;
             // If uri not given, try opening activeTextEditor
-            if (!(uri instanceof vscode.Uri)) {
+            if (uri instanceof vscode.Uri) {
+                resource = uri;
+            } else {
                 const newUri = await this.getActiveEditorUri();
                 if (!newUri) {
                     continue;
                 }
                 resource = newUri;
-            } else {
-                resource = uri;
             }
             await this.exportSingleFile(
                 resource,
@@ -234,7 +234,7 @@ export class PreviewManager {
             (resolve, reject) => {
                 fs.readFile(
                     resource.fsPath,
-                    'utf-8',
+                    'utf8',
                     (error: NodeJS.ErrnoException | null, data: string) => {
                         if (error) {
                             reject(error);
@@ -294,11 +294,13 @@ export class PreviewManager {
         // Check for message item
         if (selected instanceof MessageItem) {
             switch (selected) {
-                case mKillAll:
+                case mKillAll: {
                     this.killAll();
                     break;
-                default:
+                }
+                default: {
                     break;
+                }
             }
             return;
         }
