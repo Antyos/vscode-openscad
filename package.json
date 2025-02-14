@@ -403,8 +403,8 @@
         "test-web": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --extensionTestsPath=dist/web/test/suite/index.js",
         "pretest": "pnpm run compile-web",
         "vscode:prepublish": "pnpm run package",
-        "lint": "eslint -c .eslintrc.json --ext .ts src",
-        "format": "prettier --config .prettierrc.json --write ./src/**/*.ts && eslint -c .eslintrc.json --ext .ts src --fix",
+        "lint": "eslint -c eslint.config.mjs src",
+        "format": "prettier --config .prettierrc.json --write ./src/**/*.ts && eslint -c eslint.config.mjs src --fix",
         "clean": "del-cli dist",
         "compile": "webpack",
         "compile-clean": "pnpm run clean && pnpm run compile",
@@ -414,6 +414,9 @@
         "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. ."
     },
     "devDependencies": {
+        "@eslint/compat": "^1.2.6",
+        "@eslint/eslintrc": "^3.2.0",
+        "@eslint/js": "^9.20.0",
         "@types/command-exists": "^1.2.0",
         "@types/glob": "^7.2.0",
         "@types/jsdom": "^16.2.15",
