@@ -1,5 +1,7 @@
 /* eslint-disable unicorn/no-process-exit */
 /* eslint-disable unicorn/prefer-module */
+// We cannot use top level await unless we change the target to ES2022 or later
+/* eslint-disable unicorn/prefer-top-level-await */
 
 import { runTests } from '@vscode/test-electron';
 import * as path from 'path';

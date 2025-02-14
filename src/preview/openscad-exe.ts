@@ -8,6 +8,9 @@ import * as child from 'child_process'; // node:child_process
 import { type } from 'os'; // node:os
 import { promisify } from 'util';
 
+// 'command-exists' is an older package and is declared with 'export =', so it
+// needs to use require() unless we turn on a TS flag.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 import commandExists = require('command-exists');
 import { realpath } from 'fs/promises';
 import { ExtensionContext } from 'vscode';

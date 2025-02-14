@@ -56,6 +56,7 @@ export default [
             'simple-import-sort/imports': [
                 'warn',
                 {
+                    // Default groups, but group 'src' with relative imports
                     groups: [['^\\u0000'], ['^@?\\w'], ['^'], ['^src', '^\\.']],
                 },
             ],

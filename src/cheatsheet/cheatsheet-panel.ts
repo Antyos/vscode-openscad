@@ -106,7 +106,7 @@ export class Cheatsheet {
         while (this._disposables.length > 0) {
             const x = this._disposables.pop();
             if (x) {
-                x.dispose;
+                x.dispose();
             }
         }
     }
@@ -227,19 +227,15 @@ export class Cheatsheet {
     /** True if there at least one open document of languageId `scad`? */
     private static isAnyOpenDocumentScad(): boolean {
         const openDocuments = vscode.workspace.textDocuments;
-        let isScadDocumentOpen = false;
-
-        // Iterate through open text documents
         for (const document of openDocuments) {
-            if (this.isDocumentScad(document))
-                // If document is of type 'scad' return true
-                isScadDocumentOpen = true;
+            if (this.isDocumentScad(document)) {
+                return true;
+            }
         }
-
-        return isScadDocumentOpen;
+        return false;
     }
 
-    /** True if a document languageId is `scad` */
+    /** True if a document.languageId is `scad` */
     private static isDocumentScad(document: vscode.TextDocument): boolean {
         // vscode.window.showInformationMessage("Doc: " + doc.fileName + "\nLang id: " + langId); // DEBUG
         return document.languageId === 'scad';
