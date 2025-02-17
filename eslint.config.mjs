@@ -1,47 +1,34 @@
-import prettier from 'eslint-plugin-prettier';
-import pluginSimpleImportSort from 'eslint-plugin-simple-import-sort';
-import pluginImport from 'eslint-plugin-import';
-import unicorn from 'eslint-plugin-unicorn';
-import { fixupPluginRules } from '@eslint/compat';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import tseslint from 'typescript-eslint';
 import eslint from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
+import importPlugin from 'eslint-plugin-import';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
+import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort';
+import unicornPlugin from 'eslint-plugin-unicorn';
+import tseslint from 'typescript-eslint';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: eslint.configs.recommended,
-    allConfig: eslint.configs.all,
-});
-
-export default [
+export default tseslint.config(
+    eslint.configs.recommended,
+    tseslint.configs.recommended,
+    prettierRecommended,
+    importPlugin.flatConfigs.recommended,
+    importPlugin.flatConfigs.typescript,
     {
         ignores: ['**/*.d.ts', 'dist/*'],
-    },
-    ...compat.extends(
-        'vscode-ext',
-        'eslint:recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:unicorn/recommended',
-        'prettier'
-    ),
-    {
         plugins: {
-            '@typescript-eslint': tseslint.plugin,
-            prettier,
-            'simple-import-sort': pluginSimpleImportSort,
-            import: fixupPluginRules(pluginImport),
-            unicorn,
+            // '@typescript-eslint': tseslint.plugin,
+            'simple-import-sort': simpleImportSortPlugin,
+            unicorn: unicornPlugin,
         },
 
         languageOptions: {
-            parser: tseslint.parser,
+            // parser: tseslint.parser,
             ecmaVersion: 6,
             sourceType: 'module',
+        },
+
+        settings: {
+            'import/resolver': {
+                typescript: { alwaysTryTypes: true },
+            },
         },
 
         rules: {
@@ -71,5 +58,5 @@ export default [
             'unicorn/prefer-node-protocol': 'off',
             'unicorn/import-style': 'off',
         },
-    },
-];
+    }
+);
