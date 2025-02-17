@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/prefer-module */
-
 import * as glob from 'glob';
 import * as Mocha from 'mocha';
 import * as path from 'path';

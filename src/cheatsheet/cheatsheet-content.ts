@@ -1,5 +1,4 @@
 // node-html-parser only has appendChild(), not append(); disable the warning.
-/* eslint-disable unicorn/prefer-dom-node-append */
 
 import { HTMLElement, parse } from 'node-html-parser';
 import * as vscode from 'vscode';
@@ -124,7 +123,7 @@ export class CheatsheetContent {
             'link',
             { id: id ?? '' },
             '',
-            // eslint-disable-next-line unicorn/no-null
+
             null,
             [0, 0]
         );
@@ -149,7 +148,6 @@ export class CheatsheetContent {
      *  - https://developers.google.com/web/fundamentals/security/csp/
      */
     protected getCSPElement(): HTMLElement {
-        // eslint-disable-next-line unicorn/no-null
         const element = new HTMLElement('meta', { id: '' }, '', null, [0, 0]);
 
         element.setAttributes({
