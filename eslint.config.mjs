@@ -6,21 +6,20 @@ import unicornPlugin from 'eslint-plugin-unicorn';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
+    { ignores: ['**/*.d.ts', 'dist/*'] },
     eslint.configs.recommended,
+    // eslint-disable-next-line import/no-named-as-default-member
     tseslint.configs.recommended,
     prettierRecommended,
     importPlugin.flatConfigs.recommended,
     importPlugin.flatConfigs.typescript,
     {
-        ignores: ['**/*.d.ts', 'dist/*'],
         plugins: {
-            // '@typescript-eslint': tseslint.plugin,
             'simple-import-sort': simpleImportSortPlugin,
             unicorn: unicornPlugin,
         },
 
         languageOptions: {
-            // parser: tseslint.parser,
             ecmaVersion: 6,
             sourceType: 'module',
         },
