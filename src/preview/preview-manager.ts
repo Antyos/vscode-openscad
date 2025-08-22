@@ -435,6 +435,12 @@ export class PreviewManager {
         }
     }
 
+    /** Returns if a preview is active for the given URI */
+    public isPreviewActiveFor(uri: vscode.Uri): boolean {
+        // Use PreviewStore.get to see if a Preview exists for this URI
+        return this.previewStore.get(uri) !== undefined;
+    }
+
     /** Gets the uri of the active editor */
     private async getActiveEditorUri(): Promise<vscode.Uri | undefined> {
         const editor = vscode.window.activeTextEditor;

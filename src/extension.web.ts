@@ -54,6 +54,7 @@ export function activate(context: vscode.ExtensionContext): void {
             loggingService.show();
         }),
         unsupportedWebCommand('openscad.preview'),
+        unsupportedWebCommand('openscad.previewPanel'),
         unsupportedWebCommand('openscad.exportByType'),
         unsupportedWebCommand('openscad.exportByConfig'),
         unsupportedWebCommand('openscad.exportWithSaveDialogue'),

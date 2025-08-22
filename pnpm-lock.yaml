@@ -4,10 +4,19 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  openscad-compiler: link:../../../Library/pnpm/global/5/node_modules/@bascanada/openscad-compiler
+
 importers:
 
   .:
     dependencies:
+      '@bascanada/cad-viewer':
+        specifier: 0.0.5
+        version: 0.0.5
+      '@bascanada/openscad-compiler':
+        specifier: 0.0.5
+        version: 0.0.5
       command-exists:
         specifier: ^1.2.9
         version: 1.2.9
@@ -101,7 +110,7 @@ importers:
         version: 0.11.10
       ts-loader:
         specifier: ^9.4.2
-        version: 9.4.2(typescript@4.9.5)(webpack@5.95.0(webpack-cli@5.1.4))
+        version: 9.4.2(typescript@4.9.5)(webpack@5.95.0)
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@16.18.16)(typescript@4.9.5)
@@ -258,6 +267,15 @@ packages:
   '@babel/types@7.23.0':
     resolution: {integrity: sha512-0oIyUfKoI3mSqMvsxBdclDwxXKXAUA8v/apZbc+iSyARYou1o8ZGDxbUYyLFoW2arqS2jDGqJuZvv1d/io1axg==}
     engines: {node: '>=6.9.0'}
+
+  '@bascanada/cad-viewer@0.0.1':
+    resolution: {integrity: sha512-71yOhMaIj7TWnNViYdGE+c4JUYJfXZioCxaLoIk8gGpT8+KM4Sh3zfeccAO4wdOKnS3UMiaDuyQZQWG/z1xH3Q==}
+
+  '@bascanada/cad-viewer@0.0.5':
+    resolution: {integrity: sha512-7VEh5GDTZIuFbkG4DNSEsaiXO32FkuAvNMiFsG833FNrHGBmErQjiDiGbYbgGDlgKJXfYssVF4QTgtO65LdozQ==}
+
+  '@bascanada/openscad-compiler@0.0.5':
+    resolution: {integrity: sha512-BZYWuovD3y5lDVVNMm71sVGsMBfG6gAR1Aw7JhwGUiujPW5CxCS3YMD/p/OSCoFvOXAOy6IxeapdSmghu3kvmg==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -1985,6 +2003,9 @@ packages:
   node-releases@2.0.18:
     resolution: {integrity: sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==}
 
+  node-stl@0.7.3:
+    resolution: {integrity: sha512-ZdqkD7vE7VskSOVgj6p9z9G5pYEXIAq53Vw276kCPdZyimintgxqwpbdwPAxspgJIvsrno3q8jB8g7UDwNREGg==}
+
   normalize-package-data@2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
 
@@ -2522,6 +2543,9 @@ packages:
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
 
+  three@0.179.1:
+    resolution: {integrity: sha512-5y/elSIQbrvKOISxpwXCR4sQqHtGiOI+MKLc3SsBdDXA2hz3Mdp3X59aUp8DyybMa34aeBwbFTpdoLJaUDEWSw==}
+
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
 
@@ -3000,6 +3024,20 @@ snapshots:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
+  '@bascanada/cad-viewer@0.0.1':
+    dependencies:
+      three: 0.179.1
+
+  '@bascanada/cad-viewer@0.0.5':
+    dependencies:
+      '@bascanada/cad-viewer': 0.0.1
+      three: 0.179.1
+
+  '@bascanada/openscad-compiler@0.0.5':
+    dependencies:
+      json5: 2.2.3
+      node-stl: 0.7.3
+
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
@@ -3389,17 +3427,17 @@ snapshots:
       '@webassemblyjs/ast': 1.12.1
       '@xtuc/long': 4.2.2
 
-  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))':
+  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.95.0)':
     dependencies:
       webpack: 5.95.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.95.0)
 
-  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))':
+  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.95.0)':
     dependencies:
       webpack: 5.95.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.95.0)
 
-  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))':
+  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack@5.95.0)':
     dependencies:
       webpack: 5.95.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.95.0)
@@ -4923,6 +4961,8 @@ snapshots:
 
   node-releases@2.0.18: {}
 
+  node-stl@0.7.3: {}
+
   normalize-package-data@2.5.0:
     dependencies:
       hosted-git-info: 2.8.9
@@ -5479,7 +5519,7 @@ snapshots:
       readable-stream: 3.6.2
     optional: true
 
-  terser-webpack-plugin@5.3.10(webpack@5.95.0(webpack-cli@5.1.4)):
+  terser-webpack-plugin@5.3.10(webpack@5.95.0):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
@@ -5496,6 +5536,8 @@ snapshots:
       source-map-support: 0.5.21
 
   text-table@0.2.0: {}
+
+  three@0.179.1: {}
 
   through@2.3.8: {}
 
@@ -5515,7 +5557,7 @@ snapshots:
 
   trim-newlines@4.0.2: {}
 
-  ts-loader@9.4.2(typescript@4.9.5)(webpack@5.95.0(webpack-cli@5.1.4)):
+  ts-loader@9.4.2(typescript@4.9.5)(webpack@5.95.0):
     dependencies:
       chalk: 4.1.2
       enhanced-resolve: 5.12.0
@@ -5659,9 +5701,9 @@ snapshots:
   webpack-cli@5.1.4(webpack@5.95.0):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))
-      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))
+      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.95.0)
+      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.95.0)
+      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack@5.95.0)
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.3
@@ -5703,7 +5745,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.95.0(webpack-cli@5.1.4))
+      terser-webpack-plugin: 5.3.10(webpack@5.95.0)
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     optionalDependencies:

@@ -9,6 +9,7 @@ import { LogLevel } from './logging-service';
 /** Extension config values */
 export interface ScadConfig {
     openscadPath?: string;
+    openScadPanelMode?: 'wasm' | 'native';
     launchArgs?: string[];
     skipLaunchPathValidation?: boolean;
     maxInstances?: number;
@@ -26,6 +27,7 @@ export interface ScadConfig {
 // Reflects the defaults configuration in package.json
 export const DEFAULT_CONFIG: Required<ScadConfig> = {
     openscadPath: '',
+    openScadPanelMode: 'wasm',
     skipLaunchPathValidation: false,
     launchArgs: [],
     maxInstances: 0,

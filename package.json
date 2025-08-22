@@ -9,6 +9,9 @@
     "engines": {
         "vscode": "^1.75.0"
     },
+    "enabledApiProposals": [
+        "chatProvider"
+    ],
     "categories": [
         "Programming Languages",
         "Snippets"
@@ -41,6 +44,15 @@
             {
                 "command": "openscad.preview",
                 "title": "Preview in OpenSCAD",
+                "category": "OpenSCAD",
+                "icon": {
+                    "light": "./media/icons/preview-light.svg",
+                    "dark": "./media/icons/preview-dark.svg"
+                }
+            },
+            {
+                "command": "openscad.previewPanel",
+                "title": "Preview inside vscode panel",
                 "category": "OpenSCAD",
                 "icon": {
                     "light": "./media/icons/preview-light.svg",
@@ -101,12 +113,52 @@
                 "command": "openscad.showOutput",
                 "title": "Show OpenSCAD output channel",
                 "category": "OpenSCAD"
+            },
+            {
+                "command": "openscad.showRenderLog",
+                "title": "Show Render Log",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "openscad.showErrorLog",
+                "title": "Show Error Log",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "openscad.showDimensions",
+                "title": "Show Dimensions",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "openscad.showSceneGraph",
+                "title": "Show Scene Graph",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "openscad.showPreviewImage",
+                "title": "Show Preview Image",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "openscad.writeDebugFiles",
+                "title": "Write Debug Files",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "openscad.showStl",
+                "title": "Show STL file",
+                "category": "OpenSCAD"
             }
         ],
         "menus": {
             "editor/title": [
                 {
                     "command": "openscad.preview",
+                    "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu && !virtualWorkspace",
+                    "group": "navigation@-1.2"
+                },
+                {
+                    "command": "openscad.previewPanel",
                     "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu && !virtualWorkspace",
                     "group": "navigation@-1.2"
                 },
@@ -128,6 +180,11 @@
                     "command": "openscad.preview",
                     "when": "resourceLangId == scad && config.openscad.interface.showPreviewInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
                     "group": "navigation@0"
+                },
+                {
+                    "command": "openscad.previewPanel",
+                    "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu && !virtualWorkspace",
+                    "group": "navigation@-1.2"
                 },
                 {
                     "command": "openscad.exportByConfig",
@@ -155,6 +212,10 @@
                     "when": "editorLangId == scad || resourceLangId == scad"
                 },
                 {
+                    "command": "openscad.previewPanel",
+                    "when": "areOpenScadPreviews"
+                },
+                {
                     "command": "openscad.kill",
                     "when": "areOpenScadPreviews"
                 },
@@ -176,6 +237,10 @@
                 },
                 {
                     "command": "openscad.exportByConfig",
+                    "when": "editorLangId == scad || resourceLangId == scad"
+                },
+                {
+                    "command": "openscad.writeDebugFiles",
                     "when": "editorLangId == scad || resourceLangId == scad"
                 }
             ]
@@ -245,6 +310,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Show message when a preview is killed."
+                },
+                "openscad.debug.autoWriteOnSave": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "When enabled, write OpenSCAD debug files to the workspace '.openscad/debug' directory automatically on each save of a '.scad' file."
                 },
                 "openscad.logLevel": {
                     "type": "string",
@@ -448,9 +518,12 @@
         "webpack-cli": "^5.1.4"
     },
     "dependencies": {
+        "@bascanada/openscad-compiler": "0.0.5",
+        "@bascanada/cad-viewer": "0.0.5",
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^4.0.0",
         "luxon": "^3.4.4",
         "node-html-parser": "^6.1.5"
-    }
+    },
+    "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
 }
