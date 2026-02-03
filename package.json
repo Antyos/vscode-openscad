@@ -429,7 +429,7 @@
         "@vscode/vsce": "^2.18.0",
         "assert": "^2.0.0",
         "del-cli": "^5.0.0",
-        "eslint": "^8.36.0",
+        "eslint": "^9.26.0",
         "eslint-config-prettier": "^8.7.0",
         "eslint-config-vscode-ext": "^1.1.0",
         "eslint-plugin-import": "^2.27.5",
